@@ -1,0 +1,72 @@
+<measure>
+  <schema_version>3.0</schema_version>
+  <name>set_building_to_construction_set</name>
+  <uid>718d27f6-02f6-4306-8b9a-07d13b126376</uid>
+  <version_id>76084e31-2e27-4f6f-b3db-599240b1a05c</version_id>
+  <version_modified>20161129T142416Z</version_modified>
+  <xml_checksum>16F8EDFC</xml_checksum>
+  <class_name>SetBuildingToConstructionSet</class_name>
+  <display_name>Set Building To Construction Set</display_name>
+  <description>This measures changes the building's default construction set to one selected by the user from a list of available default construction sets.</description>
+  <modeler_description>No checking of any sorts is performed. The available default construction sets are obtained via the constructionset = SELECTFROM(model.getDefaultConstructionSets) method and the seleted construction set is applied via the building = model.getBuilding and building.setDefaultConstructionSet(constructionset) methods.</modeler_description>
+  <arguments>
+    <argument>
+      <name>construction set</name>
+      <display_name>Select new construction set:</display_name>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+    </argument>
+  </arguments>
+  <provenances/>
+  <tags>
+    <tag>Envelope.Construction Sets</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Measure Type</name>
+      <value>ModelMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>Apply Measure Now</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>OpenStudio Application</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>Parametric Analysis Tool</value>
+      <datatype>string</datatype>
+    </attribute>
+  </attributes>
+  <files>
+    <file>
+      <filename>set_building_to_construction_set_test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>9AF4D78F</checksum>
+    </file>
+    <file>
+      <filename>example_model.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>04346FC4</checksum>
+    </file>
+    <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>1.13.0</identifier>
+        <min_compatible>1.13.0</min_compatible>
+      </version>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>0E504AB7</checksum>
+    </file>
+  </files>
+</measure>
