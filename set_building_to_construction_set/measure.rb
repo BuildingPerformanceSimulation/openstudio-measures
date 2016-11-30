@@ -62,7 +62,7 @@ class SetBuildingToConstructionSet < OpenStudio::Ruleset::ModelUserScript
 
     # check the construction set for reasonableness
     if constructionset.empty?
-      handle = runner.getStringArgumentValue("construction set",user_arguments)
+      handle = runner.getStringArgumentValue("constructionset",user_arguments)
       if handle.empty?
         runner.registerError("No construction set was chosen.")
       else
