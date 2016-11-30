@@ -41,7 +41,7 @@ class SetBuildingToConstructionSet < OpenStudio::Ruleset::ModelUserScript
     end
 
     # make argument for construction set
-    constructionset = OpenStudio::Ruleset::OSArgument::makeChoiceArgument("construction set", constructionset_handles, constructionset_display_names,true)
+    constructionset = OpenStudio::Ruleset::OSArgument::makeChoiceArgument("constructionset", constructionset_handles, constructionset_display_names,true)
     constructionset.setDisplayName("Select new construction set:")
     args << constructionset
 
@@ -58,10 +58,7 @@ class SetBuildingToConstructionSet < OpenStudio::Ruleset::ModelUserScript
     end
 
     # assign the user inputs to variables
-#    constructionset = runner.getOptionalWorkspaceObjectChoiceValue("construction set",user_arguments,model) #model is passed in because of argument type
-#    constructionset = runner.getDefaultConstructionSetChoiceValue("construction set",user_arguments,model) #model is passed in because of argument type
-#    constructionset = runner.getStringArgumentValue("construction set",user_arguments) #model is passed in because of argument type
-    constructionset = runner.getChoiceValue("construction set",user_arguments) #model is passed in because of argument type
+    constructionset = runner.getOptionalWorkspaceObjectChoiceValue("constructionset",user_arguments,model)
 
     # check the construction set for reasonableness
     if constructionset.empty?
@@ -72,6 +69,13 @@ class SetBuildingToConstructionSet < OpenStudio::Ruleset::ModelUserScript
         runner.registerError("The selected construction set with handle '#{handle}' was not found in the model. It may have been removed by another measure.")
       end
       return false
+    else
+      if not constructionset.get.to_DefaultConstructionSet.empty?
+        constructionset = constructionset.get.to_DefaultConstructionSet.get
+      else
+        runner.registerError("Script Error - argument not showing up as construction set.")
+        return false
+      end
     end
 
     # effect the change

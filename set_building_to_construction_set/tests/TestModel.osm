@@ -1,0 +1,209 @@
+
+OS:Version,
+  {0cbe475b-b51e-4e14-bfef-d89cbdadfc78}, !- Handle
+  1.13.4;                                 !- Version Identifier
+
+OS:Site,
+  {41bfb895-719b-4aee-b7a8-785bee0839d8}, !- Handle
+  Site 1,                                 !- Name
+  ,                                       !- Latitude {deg}
+  ,                                       !- Longitude {deg}
+  ,                                       !- Time Zone {hr}
+  ,                                       !- Elevation {m}
+  ;                                       !- Terrain
+
+OS:YearDescription,
+  {7ac0dcf9-27c8-4903-a643-c9808603dda0}; !- Handle
+
+OS:ClimateZones,
+  {d86358bf-7655-4482-8669-e05b2a494dfc}, !- Handle
+  ,                                       !- Active Institution
+  ,                                       !- Active Year
+  ASHRAE,                                 !- Climate Zone Institution Name 1
+  ANSI/ASHRAE Standard 169,               !- Climate Zone Document Name 1
+  2006,                                   !- Climate Zone Document Year 1
+  ,                                       !- Climate Zone Value 1
+  CEC,                                    !- Climate Zone Institution Name 2
+  California Climate Zone Descriptions,   !- Climate Zone Document Name 2
+  1995,                                   !- Climate Zone Document Year 2
+  ;                                       !- Climate Zone Value 2
+
+OS:Building,
+  {599a63ea-3776-41c4-9473-686461d8d1ad}, !- Handle
+  Building 1,                             !- Name
+  ,                                       !- Building Sector Type
+  ,                                       !- North Axis {deg}
+  ,                                       !- Nominal Floor to Floor Height {m}
+  ,                                       !- Space Type Name
+  {03e99ce2-2f87-4104-a759-63e6a605e746}, !- Default Construction Set Name
+  ;                                       !- Default Schedule Set Name
+
+OS:Facility,
+  {7e1d1f16-13e4-42a1-8ff5-e3699eaa3cee}; !- Handle
+
+OS:SimulationControl,
+  {cd58dab8-7805-438a-8005-dce9bdee44a5}; !- Handle
+
+OS:Sizing:Parameters,
+  {8caba44b-fdfb-415e-a9a7-fe196d32e2c6}, !- Handle
+  1.25,                                   !- Heating Sizing Factor
+  1.15;                                   !- Cooling Sizing Factor
+
+OS:Timestep,
+  {7a08aba6-09aa-4feb-a4f3-365c5ee73619}, !- Handle
+  6;                                      !- Number of Timesteps per Hour
+
+OS:ShadowCalculation,
+  {0fb3b7ec-fdcb-4539-ba9c-320ab9645f27}, !- Handle
+  20,                                     !- Calculation Frequency
+  15000;                                  !- Maximum Figures in Shadow Overlap Calculations
+
+OS:HeatBalanceAlgorithm,
+  {19ceb9c0-1dd7-487c-8bd4-cc95966f464e}, !- Handle
+  ConductionTransferFunction,             !- Algorithm
+  200;                                    !- Surface Temperature Upper Limit {C}
+
+OS:RunPeriod,
+  {38231555-a0b9-4799-b87f-141a4181c408}, !- Handle
+  Run Period 1,                           !- Name
+  1,                                      !- Begin Month
+  1,                                      !- Begin Day of Month
+  12,                                     !- End Month
+  31,                                     !- End Day of Month
+  ,                                       !- Use Weather File Holidays and Special Days
+  ,                                       !- Use Weather File Daylight Saving Period
+  ,                                       !- Apply Weekend Holiday Rule
+  ,                                       !- Use Weather File Rain Indicators
+  ,                                       !- Use Weather File Snow Indicators
+  ;                                       !- Number of Times Runperiod to be Repeated
+
+OS:LifeCycleCost:Parameters,
+  {e4db71bb-9138-4f94-9e86-7b2ee47d0efc}, !- Handle
+  ,                                       !- Analysis Type
+  ,                                       !- Discounting Convention
+  ,                                       !- Inflation Approach
+  ,                                       !- Real Discount Rate
+  ,                                       !- Nominal Discount Rate
+  ,                                       !- Inflation
+  ,                                       !- Base Date Month
+  ,                                       !- Base Date Year
+  ,                                       !- Service Date Month
+  ,                                       !- Service Date Year
+  ;                                       !- Length of Study Period in Years
+
+OS:DefaultConstructionSet,
+  {03e99ce2-2f87-4104-a759-63e6a605e746}, !- Handle
+  Default Construction Set 1,             !- Name
+  {a4653fd3-4dbd-4446-a963-65985f63c382}, !- Default Exterior Surface Constructions Name
+  {3a902ea4-0b4c-447c-a5a4-d2137daae24f}, !- Default Interior Surface Constructions Name
+  {17b981a0-8325-4eed-b24f-bb4f00282e1d}, !- Default Ground Contact Surface Constructions Name
+  {1b316b97-69b7-49af-b7d2-12386bd707b3}, !- Default Exterior SubSurface Constructions Name
+  {3b05ae80-b168-46a2-aa6b-3a787e1bc9c2}, !- Default Interior SubSurface Constructions Name
+  ,                                       !- Interior Partition Construction Name
+  ,                                       !- Space Shading Construction Name
+  ,                                       !- Building Shading Construction Name
+  ;                                       !- Site Shading Construction Name
+
+OS:DefaultSurfaceConstructions,
+  {a4653fd3-4dbd-4446-a963-65985f63c382}, !- Handle
+  Default Surface Constructions 1,        !- Name
+  ,                                       !- Floor Construction Name
+  ,                                       !- Wall Construction Name
+  ;                                       !- Roof Ceiling Construction Name
+
+OS:DefaultSurfaceConstructions,
+  {3a902ea4-0b4c-447c-a5a4-d2137daae24f}, !- Handle
+  Default Surface Constructions 2,        !- Name
+  ,                                       !- Floor Construction Name
+  ,                                       !- Wall Construction Name
+  ;                                       !- Roof Ceiling Construction Name
+
+OS:DefaultSurfaceConstructions,
+  {17b981a0-8325-4eed-b24f-bb4f00282e1d}, !- Handle
+  Default Surface Constructions 3,        !- Name
+  ,                                       !- Floor Construction Name
+  ,                                       !- Wall Construction Name
+  ;                                       !- Roof Ceiling Construction Name
+
+OS:DefaultSubSurfaceConstructions,
+  {1b316b97-69b7-49af-b7d2-12386bd707b3}, !- Handle
+  Default Sub Surface Constructions 1,    !- Name
+  ,                                       !- Fixed Window Construction Name
+  ,                                       !- Operable Window Construction Name
+  ,                                       !- Door Construction Name
+  ,                                       !- Glass Door Construction Name
+  ,                                       !- Overhead Door Construction Name
+  ,                                       !- Skylight Construction Name
+  ,                                       !- Tubular Daylight Dome Construction Name
+  ;                                       !- Tubular Daylight Diffuser Construction Name
+
+OS:DefaultSubSurfaceConstructions,
+  {3b05ae80-b168-46a2-aa6b-3a787e1bc9c2}, !- Handle
+  Default Sub Surface Constructions 2,    !- Name
+  ,                                       !- Fixed Window Construction Name
+  ,                                       !- Operable Window Construction Name
+  ,                                       !- Door Construction Name
+  ,                                       !- Glass Door Construction Name
+  ,                                       !- Overhead Door Construction Name
+  ,                                       !- Skylight Construction Name
+  ,                                       !- Tubular Daylight Dome Construction Name
+  ;                                       !- Tubular Daylight Diffuser Construction Name
+
+OS:DefaultConstructionSet,
+  {af2ab507-9b50-46d5-9615-fafdf8186c59}, !- Handle
+  Default Construction Set 2,             !- Name
+  {d51290c7-9721-417b-a0cd-b3845fc4c24d}, !- Default Exterior Surface Constructions Name
+  {d9977109-f030-479b-bde3-0d3dce1d5991}, !- Default Interior Surface Constructions Name
+  {02da67b5-d4dc-4cde-8470-e9d88dc7e451}, !- Default Ground Contact Surface Constructions Name
+  {025a0b63-3d6a-4756-b651-194fa2bd03ba}, !- Default Exterior SubSurface Constructions Name
+  {8412def0-3f72-4b41-8651-6c4e9e37441e}, !- Default Interior SubSurface Constructions Name
+  ,                                       !- Interior Partition Construction Name
+  ,                                       !- Space Shading Construction Name
+  ,                                       !- Building Shading Construction Name
+  ;                                       !- Site Shading Construction Name
+
+OS:DefaultSurfaceConstructions,
+  {d51290c7-9721-417b-a0cd-b3845fc4c24d}, !- Handle
+  Default Surface Constructions 4,        !- Name
+  ,                                       !- Floor Construction Name
+  ,                                       !- Wall Construction Name
+  ;                                       !- Roof Ceiling Construction Name
+
+OS:DefaultSurfaceConstructions,
+  {d9977109-f030-479b-bde3-0d3dce1d5991}, !- Handle
+  Default Surface Constructions 5,        !- Name
+  ,                                       !- Floor Construction Name
+  ,                                       !- Wall Construction Name
+  ;                                       !- Roof Ceiling Construction Name
+
+OS:DefaultSurfaceConstructions,
+  {02da67b5-d4dc-4cde-8470-e9d88dc7e451}, !- Handle
+  Default Surface Constructions 6,        !- Name
+  ,                                       !- Floor Construction Name
+  ,                                       !- Wall Construction Name
+  ;                                       !- Roof Ceiling Construction Name
+
+OS:DefaultSubSurfaceConstructions,
+  {025a0b63-3d6a-4756-b651-194fa2bd03ba}, !- Handle
+  Default Sub Surface Constructions 3,    !- Name
+  ,                                       !- Fixed Window Construction Name
+  ,                                       !- Operable Window Construction Name
+  ,                                       !- Door Construction Name
+  ,                                       !- Glass Door Construction Name
+  ,                                       !- Overhead Door Construction Name
+  ,                                       !- Skylight Construction Name
+  ,                                       !- Tubular Daylight Dome Construction Name
+  ;                                       !- Tubular Daylight Diffuser Construction Name
+
+OS:DefaultSubSurfaceConstructions,
+  {8412def0-3f72-4b41-8651-6c4e9e37441e}, !- Handle
+  Default Sub Surface Constructions 4,    !- Name
+  ,                                       !- Fixed Window Construction Name
+  ,                                       !- Operable Window Construction Name
+  ,                                       !- Door Construction Name
+  ,                                       !- Glass Door Construction Name
+  ,                                       !- Overhead Door Construction Name
+  ,                                       !- Skylight Construction Name
+  ,                                       !- Tubular Daylight Dome Construction Name
+  ;                                       !- Tubular Daylight Diffuser Construction Name
+
