@@ -2,8 +2,8 @@
   <schema_version>3.0</schema_version>
   <name>set_building_to_construction_set</name>
   <uid>718d27f6-02f6-4306-8b9a-07d13b126376</uid>
-  <version_id>580e6f01-ef66-454d-bef2-c8ffa3795594</version_id>
-  <version_modified>20161130T150850Z</version_modified>
+  <version_id>404d1ca5-fcf7-4152-a6a9-aec920026125</version_id>
+  <version_modified>20161209T215814Z</version_modified>
   <xml_checksum>0D0748A3</xml_checksum>
   <class_name>SetBuildingToConstructionSet</class_name>
   <display_name>Set Building To Construction Set</display_name>
@@ -53,6 +53,12 @@
       <checksum>11A75CC8</checksum>
     </file>
     <file>
+      <filename>new_measure_test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>BFD0A1F0</checksum>
+    </file>
+    <file>
       <version>
         <software_program>OpenStudio</software_program>
         <identifier>1.13.0</identifier>
@@ -61,13 +67,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>3D3D5041</checksum>
-    </file>
-    <file>
-      <filename>new_measure_test.rb</filename>
-      <filetype>rb</filetype>
-      <usage_type>test</usage_type>
-      <checksum>BFD0A1F0</checksum>
+      <checksum>654161A8</checksum>
     </file>
   </files>
 </measure>

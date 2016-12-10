@@ -1,0 +1,118 @@
+<measure>
+  <schema_version>3.0</schema_version>
+  <name>change_the_room_type</name>
+  <uid>7e1b4317-8488-44fa-bb55-cdf3867292ed</uid>
+  <version_id>8278eacd-ae1d-441f-bcb7-edc480d3a0b4</version_id>
+  <version_modified>20161210T202816Z</version_modified>
+  <xml_checksum>0346BF04</xml_checksum>
+  <class_name>ChangeTheRoomType</class_name>
+  <display_name>ChangeTheRoomType</display_name>
+  <description>Take stratification into account</description>
+  <modeler_description>By changing the room type to constant gradient (vertical)</modeler_description>
+  <arguments>
+    <argument>
+      <name>zone</name>
+      <display_name>Choose Thermal Zones to add zone ventilation to.</display_name>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+    </argument>
+    <argument>
+      <name>availSchRoomAirModel</name>
+      <display_name>Availability Schedule Name</display_name>
+      <type>String</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+    </argument>
+    <argument>
+      <name>patCtrlSchRoomAirModel</name>
+      <display_name>Pattern Control Schedule Name</display_name>
+      <type>String</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+    </argument>
+    <argument>
+      <name>nameRoomAirModel</name>
+      <display_name>Name the pattern</display_name>
+      <type>String</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+    </argument>
+    <argument>
+      <name>thermOffset</name>
+      <display_name>thermostat Offset</display_name>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>0</default_value>
+    </argument>
+    <argument>
+      <name>returnAirOffset</name>
+      <display_name>return Air Offset</display_name>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>0</default_value>
+    </argument>
+    <argument>
+      <name>exhaustAirOffset</name>
+      <display_name>exhaust Air Offset</display_name>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>0</default_value>
+    </argument>
+  </arguments>
+  <outputs/>
+  <provenances/>
+  <tags>
+    <tag>HVAC.Distribution</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Measure Type</name>
+      <value>EnergyPlusMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>OpenStudio Application</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>Parametric Analysis Tool</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Use Case</name>
+      <value>Model Articulation</value>
+      <datatype>string</datatype>
+    </attribute>
+  </attributes>
+  <files>
+    <file>
+      <filename>TestModel.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>A9B59D5A</checksum>
+    </file>
+    <file>
+      <filename>change_the_room_type_test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>1B8500A5</checksum>
+    </file>
+    <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>1.13.4</identifier>
+        <min_compatible>1.13.0</min_compatible>
+      </version>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>3A17CED3</checksum>
+    </file>
+  </files>
+</measure>
