@@ -1,0 +1,100 @@
+<measure>
+  <schema_version>3.0</schema_version>
+  <name>set_zone_height_volume_and_area</name>
+  <uid>64cbdf8e-a6d0-41ee-8bbe-909bf975db3e</uid>
+  <version_id>889c95a7-2c0d-4b28-bf4f-edaab4fa00b7</version_id>
+  <version_modified>20161212T180458Z</version_modified>
+  <xml_checksum>0D0748A3</xml_checksum>
+  <class_name>SetZoneHeightVolumeAndArea</class_name>
+  <display_name>Set Zone Height Volume and Area</display_name>
+  <description>This coudl be used anytime you want to overwrite the calculated values, but it was specifically designe for pinwheel model where there only exterior surfaces associated to the thermal zones. </description>
+  <modeler_description>Setting ceiling height and floor area is pretty straight forward using API methods. While floor area is stored in the OSM, there isn't a method expsoed to set it, so setString is used.</modeler_description>
+  <arguments>
+    <argument>
+      <name>zone</name>
+      <display_name>Choose Thermal Zones to alter.</display_name>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+    </argument>
+    <argument>
+      <name>ceiling_height</name>
+      <display_name>Ceiling Height</display_name>
+      <description>The requested zone ceiling height will override model geometry. Zone multiplier will still apply to this.</description>
+      <type>Double</type>
+      <units>ft</units>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+    </argument>
+    <argument>
+      <name>volume</name>
+      <display_name>Volume</display_name>
+      <description>The requested zone volume will override model geometry. Zone multiplier will still apply to this.</description>
+      <type>Double</type>
+      <units>ft^3</units>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+    </argument>
+    <argument>
+      <name>floor_area</name>
+      <display_name>Floor Area</display_name>
+      <description>This requested zone floor area will override model geometry. Zone multiplier will still apply to this.</description>
+      <type>Double</type>
+      <units>ft^2</units>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+    </argument>
+  </arguments>
+  <outputs/>
+  <provenances/>
+  <tags>
+    <tag>Envelope.Form</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Measure Type</name>
+      <value>ModelMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>Apply Measure Now</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>OpenStudio Application</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>Parametric Analysis Tool</value>
+      <datatype>string</datatype>
+    </attribute>
+  </attributes>
+  <files>
+    <file>
+      <filename>example_model.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>53D14E69</checksum>
+    </file>
+    <file>
+      <filename>set_zone_height_volume_and_area_test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>C8F76154</checksum>
+    </file>
+    <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>1.13.4</identifier>
+        <min_compatible>1.13.4</min_compatible>
+      </version>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>59BCAA5B</checksum>
+    </file>
+  </files>
+</measure>
