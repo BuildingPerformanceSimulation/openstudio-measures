@@ -1,0 +1,64 @@
+<measure>
+  <schema_version>3.0</schema_version>
+  <name>remove_hvac_systems</name>
+  <uid>169c5b60-6490-4096-8003-7d15090419a9</uid>
+  <version_id>ef69ae2d-513f-475d-b49e-bdf3ef4ccd6e</version_id>
+  <version_modified>20170313T132759Z</version_modified>
+  <xml_checksum>C49A7DAB</xml_checksum>
+  <class_name>RemoveHVACSystems</class_name>
+  <display_name>Remove HVAC Systems</display_name>
+  <description>TODO</description>
+  <modeler_description>TODO</modeler_description>
+  <arguments/>
+  <provenances/>
+  <tags>
+    <tag>HVAC.Whole System</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Measure Type</name>
+      <value>ModelMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>Apply Measure Now</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>OpenStudio Application</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>Parametric Analysis Tool</value>
+      <datatype>string</datatype>
+    </attribute>
+  </attributes>
+  <files>
+    <file>
+      <filename>remove_hvac_systems_test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>3D28694C</checksum>
+    </file>
+    <file>
+      <filename>example_model.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>53D14E69</checksum>
+    </file>
+    <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>1.14.0</identifier>
+        <min_compatible>1.14.0</min_compatible>
+      </version>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>865AC352</checksum>
+    </file>
+  </files>
+</measure>
