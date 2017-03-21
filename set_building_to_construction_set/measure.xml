@@ -2,9 +2,9 @@
   <schema_version>3.0</schema_version>
   <name>set_building_to_construction_set</name>
   <uid>718d27f6-02f6-4306-8b9a-07d13b126376</uid>
-  <version_id>404d1ca5-fcf7-4152-a6a9-aec920026125</version_id>
-  <version_modified>20161209T215814Z</version_modified>
-  <xml_checksum>0D0748A3</xml_checksum>
+  <version_id>d82fe3ec-2cb7-47fc-846c-d5031734b97e</version_id>
+  <version_modified>20170317T212731Z</version_modified>
+  <xml_checksum>16F8EDFC</xml_checksum>
   <class_name>SetBuildingToConstructionSet</class_name>
   <display_name>Set Building To Construction Set</display_name>
   <description>This measures changes the building's default construction set to one selected by the user from a list of available default construction sets.</description>

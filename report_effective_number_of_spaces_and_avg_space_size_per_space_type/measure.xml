@@ -2,14 +2,15 @@
   <schema_version>3.0</schema_version>
   <name>report_effective_number_of_spaces_and_avg_space_size_per_space_type</name>
   <uid>594a324e-156a-493c-93fb-0cbc0d15509e</uid>
-  <version_id>380d6b6e-f346-4d18-a2e1-6b20987b7454</version_id>
-  <version_modified>20170130T203918Z</version_modified>
+  <version_id>916502ff-a3a2-44bc-ba9f-58db7fcd4026</version_id>
+  <version_modified>20170317T212731Z</version_modified>
   <xml_checksum>2AF3A68E</xml_checksum>
   <class_name>ReportEffectiveNumberOfSpacesAndAvgSpaceSizePerSpaceType</class_name>
   <display_name>Report Effective Number of Spaces and Avg Space Size per space type</display_name>
-  <description>Replace this text with an explanation of what the measure does in terms that can be understood by a general building professional audience (building owners, architects, engineers, contractors, etc.).  This description will be used to create reports aimed at convincing the owner and/or design team to implement the measure in the actual building design.  For this reason, the description may include details about how the measure would be implemented, along with explanations of qualitative benefits associated with the measure.  It is good practice to include citations in the measure if the description is taken from a known source or if specific benefits are listed.</description>
-  <modeler_description>Replace this text with an explanation for the energy modeler specifically.  It should explain how the measure is modeled, including any requirements about how the baseline model must be set up, major assumptions, citations of references to applicable modeling resources, etc.  The energy modeler should be able to read this description and understand what changes the measure is making to the model and why these changes are being made.  Because the Modeler Description is written for an expert audience, using common abbreviations for brevity is good practice.</modeler_description>
+  <description>Quick measure to report the effective number of spaces, along with average and total floor area for each space type..</description>
+  <modeler_description>The difference between actual spaces and effective spaces takes into account the zone multipliers. The goal was to get average floor area assuming that each space represents a room vs. a collection of rooms. This was used to help determine average space sizes of different space types from the prototype buildings. In some cases I had to manaually adjust for where a space didn't map to a single room.</modeler_description>
   <arguments/>
+  <outputs/>
   <provenances/>
   <tags>
     <tag>Envelope.Form</tag>
@@ -58,7 +59,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>274FB2C6</checksum>
+      <checksum>5321EFEB</checksum>
     </file>
   </files>
 </measure>

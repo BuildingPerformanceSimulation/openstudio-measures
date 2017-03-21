@@ -2,9 +2,9 @@
   <schema_version>3.0</schema_version>
   <name>set_zone_height_volume_and_area</name>
   <uid>64cbdf8e-a6d0-41ee-8bbe-909bf975db3e</uid>
-  <version_id>889c95a7-2c0d-4b28-bf4f-edaab4fa00b7</version_id>
-  <version_modified>20161212T180458Z</version_modified>
-  <xml_checksum>0D0748A3</xml_checksum>
+  <version_id>e06455ed-8877-4e86-874a-6e68cbc35729</version_id>
+  <version_modified>20170317T212731Z</version_modified>
+  <xml_checksum>2AF3A68E</xml_checksum>
   <class_name>SetZoneHeightVolumeAndArea</class_name>
   <display_name>Set Zone Height Volume and Area</display_name>
   <description>This coudl be used anytime you want to overwrite the calculated values, but it was specifically designe for pinwheel model where there only exterior surfaces associated to the thermal zones. </description>

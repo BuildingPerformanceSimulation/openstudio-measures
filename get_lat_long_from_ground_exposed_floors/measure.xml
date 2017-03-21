@@ -1,0 +1,88 @@
+<measure>
+  <schema_version>3.0</schema_version>
+  <name>get_lat_long_from_ground_exposed_floors</name>
+  <uid>6f98a732-4826-4905-ab72-e7e081f77325</uid>
+  <version_id>606c027f-fd1b-47dc-98b5-342c8ff6f009</version_id>
+  <version_modified>20170321T033200Z</version_modified>
+  <xml_checksum>59C2BE35</xml_checksum>
+  <class_name>GetLatLongFromGroundExposedFloors</class_name>
+  <display_name>Get Lat Long from ground exposed floors</display_name>
+  <description>This is quick utility to gather geometry needed for geojson</description>
+  <modeler_description>When have existing OSM wanted to be able to grab geometry from model vs. trying to enter on website. This is useful when there is no built   structures yet to use as reference on the website.</modeler_description>
+  <arguments>
+    <argument>
+      <name>lat</name>
+      <display_name>Latitude</display_name>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>39.7392</default_value>
+    </argument>
+    <argument>
+      <name>lon</name>
+      <display_name>Longitude</display_name>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>-104.9903</default_value>
+    </argument>
+  </arguments>
+  <outputs/>
+  <provenances/>
+  <tags>
+    <tag>Reporting.QAQC</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Measure Type</name>
+      <value>ModelMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>Apply Measure Now</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>OpenStudio Application</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>Parametric Analysis Tool</value>
+      <datatype>string</datatype>
+    </attribute>
+  </attributes>
+  <files>
+    <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>2.0.5</identifier>
+        <min_compatible>2.0.5</min_compatible>
+      </version>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>3EBAD318</checksum>
+    </file>
+    <file>
+      <filename>get_lat_long_from_ground_exposed_floors_test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>BB677CCE</checksum>
+    </file>
+    <file>
+      <filename>example_model.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>2A84DF81</checksum>
+    </file>
+    <file>
+      <filename>secondary_school.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>C9835933</checksum>
+    </file>
+  </files>
+</measure>

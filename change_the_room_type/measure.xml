@@ -2,9 +2,9 @@
   <schema_version>3.0</schema_version>
   <name>change_the_room_type</name>
   <uid>7e1b4317-8488-44fa-bb55-cdf3867292ed</uid>
-  <version_id>8278eacd-ae1d-441f-bcb7-edc480d3a0b4</version_id>
-  <version_modified>20161210T202816Z</version_modified>
-  <xml_checksum>0346BF04</xml_checksum>
+  <version_id>004cdf58-07ec-413c-b743-4add08d15ba5</version_id>
+  <version_modified>20170317T212730Z</version_modified>
+  <xml_checksum>90EC6BF1</xml_checksum>
   <class_name>ChangeTheRoomType</class_name>
   <display_name>ChangeTheRoomType</display_name>
   <description>Take stratification into account</description>
