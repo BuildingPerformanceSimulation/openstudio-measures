@@ -2,8 +2,8 @@
   <schema_version>3.0</schema_version>
   <name>rename_vrf_terminal</name>
   <uid>94b4d3dc-719d-4957-8fb7-1590d7042503</uid>
-  <version_id>a3cc0667-1e63-4b4d-a3a8-7d6a5e1a13fd</version_id>
-  <version_modified>20170407T144615Z</version_modified>
+  <version_id>181e4f79-2e8f-475e-931d-8e32bb297864</version_id>
+  <version_modified>20170407T145655Z</version_modified>
   <xml_checksum>C49A7DAB</xml_checksum>
   <class_name>RenameVRFTerminal</class_name>
   <display_name>Rename VRF Terminal</display_name>
@@ -39,17 +39,6 @@
   </attributes>
   <files>
     <file>
-      <version>
-        <software_program>OpenStudio</software_program>
-        <identifier>2.1.0</identifier>
-        <min_compatible>2.1.0</min_compatible>
-      </version>
-      <filename>measure.rb</filename>
-      <filetype>rb</filetype>
-      <usage_type>script</usage_type>
-      <checksum>8BFEFDD0</checksum>
-    </file>
-    <file>
       <filename>rename_vrf_terminal_test.rb</filename>
       <filetype>rb</filetype>
       <usage_type>test</usage_type>
@@ -60,6 +49,17 @@
       <filetype>osm</filetype>
       <usage_type>test</usage_type>
       <checksum>5991EED0</checksum>
+    </file>
+    <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>2.1.0</identifier>
+        <min_compatible>2.1.0</min_compatible>
+      </version>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>ED114F4B</checksum>
     </file>
   </files>
 </measure>

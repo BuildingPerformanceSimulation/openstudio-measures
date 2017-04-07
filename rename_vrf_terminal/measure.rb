@@ -55,7 +55,7 @@ class RenameVRFTerminal < OpenStudio::Ruleset::ModelUserScript
         orig_name = terminal.name
         target_name = "#{vrf_sys.name} - #{thermal_zone_name}"
         terminal.setName(target_name)
-        runner.registerInfo("Renamed #{orig_name} to #{target_name}")
+        runner.registerInfo("Renamed #{orig_name} to #{terminal.name}")
 
       end
     end
