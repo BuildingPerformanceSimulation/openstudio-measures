@@ -1,0 +1,160 @@
+<measure>
+  <schema_version>3.0</schema_version>
+  <name>change_fan_variable_volume_coefficients</name>
+  <uid>c670986e-d20b-4254-9ffa-7495704b30a5</uid>
+  <version_id>31579613-6f03-446a-ae5c-e172b2277a6c</version_id>
+  <version_modified>20180121T214438Z</version_modified>
+  <xml_checksum>4FBBDDF7</xml_checksum>
+  <class_name>ChangeFanVariableVolumeCoefficients</class_name>
+  <display_name>Change Variable Volume Fan Coefficients</display_name>
+  <description>This measure changes the variable speed fan coefficients to model fan systems with different characteristics and static pressure reset controls.</description>
+  <modeler_description>This measure changes the polynomial curve coefficients and minimum fan power that define the fan power performance curve for Fan:VariableSpeed objects in EnergyPlus.  Curve coefficients come from ASHRAE Standard 90.1-2016 Performance Rating Method Reference Manual Table 50 Fan Curve Default Values (identical to ASHRAE 90.1-2010 PRM Reference Manual Table 47).  The OpenStudio default is "Multi-zone VAV with static pressure reset".  The default is originally sourced from a 2003 California Energy Commission report, "Advanced Variable Air Volume System Design Guide" Appendix 5 - DOE-2 Fan Curves, which were created by Jeff Stein and Mark Hydeman from their fan curve model, detailed in "Development and Testing of the Characteristic Curve Fan Model" ASHRAE Transactions. 2004, Vol. 110 Issue 1, p347-356. 10p.  The default assumes "Good Static Pressure Reset", and this measure also includes curve coefficients for "No Static Pressure Reset", "Typical Static Pressure Rest", and "Perfect Static Pressure Reset" (Single zone VAV fan) as detailed in the 2003 CEC report.  The ASHRAE 90.1 Appendix G default is also included, which assumes no static pressure reset, and is sourced separately (identical across ASHRAE 90.1-2007,2010,2013,2016).  Note that the PRM baseline is the OpenStudio default, which is different from the Appendix G baseline.  Source documentation is included in the resources folder of this measure.&#xd;&#xd;&#xd;&#xd;
+  </modeler_description>
+  <arguments>
+    <argument>
+      <name>fan_choice</name>
+      <display_name>Choose an Variable Volume Fan to change coefficients.</display_name>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>*All Variable Volume Fans*</default_value>
+      <choices>
+        <choice>
+          <value>{00000000-0000-0000-0000-000000000000}</value>
+          <display_name>*All Variable Volume Fans*</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>coeff_choice</name>
+      <display_name>Choose fan coefficient set to use:</display_name>
+      <description>The OpenStudio default is *Multi zone VAV with static pressure reset* and assumes a good static pressure reset.  This is the ASHRAE 90.1 PRM baseline for systems 5-8.  The ASHRAE 90.1 PRM baseline for system 11 is *Single zone VAV fan* representing a perfect static pressure reset.  The ASHRAE 90.1 App.G baseline is *Multi Zone VAV with VSD and fixed SP setpoint*.  See resources folder in measure for more information.</description>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>Multi zone VAV with static pressure reset</default_value>
+      <choices>
+        <choice>
+          <value>Multi Zone VAV with Airfoil or Backward Incline riding the curve</value>
+          <display_name>Multi Zone VAV with Airfoil or Backward Incline riding the curve</display_name>
+        </choice>
+        <choice>
+          <value>Multi Zone VAV with Airfoil or Backward Incline with inlet vanes</value>
+          <display_name>Multi Zone VAV with Airfoil or Backward Incline with inlet vanes</display_name>
+        </choice>
+        <choice>
+          <value>Multi Zone VAV with Forward Curved fans riding the curve</value>
+          <display_name>Multi Zone VAV with Forward Curved fans riding the curve</display_name>
+        </choice>
+        <choice>
+          <value>Multi Zone VAV with Forward Curved with inlet vanes</value>
+          <display_name>Multi Zone VAV with Forward Curved with inlet vanes</display_name>
+        </choice>
+        <choice>
+          <value>Multi Zone VAV with vane-axial with variable pitch blades</value>
+          <display_name>Multi Zone VAV with vane-axial with variable pitch blades</display_name>
+        </choice>
+        <choice>
+          <value>Multi Zone VAV with VSD and fixed SP setpoint</value>
+          <display_name>Multi Zone VAV with VSD and fixed SP setpoint</display_name>
+        </choice>
+        <choice>
+          <value>Multi zone VAV with static pressure reset</value>
+          <display_name>Multi zone VAV with static pressure reset</display_name>
+        </choice>
+        <choice>
+          <value>Single zone VAV fan</value>
+          <display_name>Single zone VAV fan</display_name>
+        </choice>
+        <choice>
+          <value>Typical VSD Fan</value>
+          <display_name>Typical VSD Fan</display_name>
+        </choice>
+        <choice>
+          <value>No SP Reset VSD Fan</value>
+          <display_name>No SP Reset VSD Fan</display_name>
+        </choice>
+      </choices>
+    </argument>
+  </arguments>
+  <outputs/>
+  <provenances/>
+  <tags>
+    <tag>HVAC.HVAC Controls</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Uses SketchUp API</name>
+      <value>false</value>
+      <datatype>boolean</datatype>
+    </attribute>
+    <attribute>
+      <name>Measure Type</name>
+      <value>ModelMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>Apply Measure Now</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>OpenStudio Application</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>Parametric Analysis Tool</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Use Case</name>
+      <value>Model Articulation</value>
+      <datatype>string</datatype>
+    </attribute>
+  </attributes>
+  <files>
+    <file>
+      <filename>OfficeWithHVAC.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>CD7AA727</checksum>
+    </file>
+    <file>
+      <filename>Variable Volume Fan Curve Coefficients Comparison.xlsx</filename>
+      <filetype>xlsx</filetype>
+      <usage_type>resource</usage_type>
+      <checksum>E4FEA2EA</checksum>
+    </file>
+    <file>
+      <filename>Variable Volume Fan Curve Coefficients.pdf</filename>
+      <filetype>pdf</filetype>
+      <usage_type>resource</usage_type>
+      <checksum>E2CE80EF</checksum>
+    </file>
+    <file>
+      <filename>OfficeWithoutHVAC.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>18CB71B3</checksum>
+    </file>
+    <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>1.0.3</identifier>
+        <min_compatible>1.0.0</min_compatible>
+      </version>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>09D37748</checksum>
+    </file>
+    <file>
+      <filename>ChangeFanVariableVolumeCoefficients_Test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>FB4971B8</checksum>
+    </file>
+  </files>
+</measure>
