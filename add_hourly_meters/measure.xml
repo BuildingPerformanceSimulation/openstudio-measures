@@ -1,0 +1,54 @@
+<measure>
+  <schema_version>3.0</schema_version>
+  <name>add_hourly_meters</name>
+  <uid>2ee535a3-90cd-4f87-9bc8-bdf31b4d12b9</uid>
+  <version_id>68a90b9a-797e-4ca5-aaa0-9866a6135d0f</version_id>
+  <version_modified>20180210T203925Z</version_modified>
+  <xml_checksum>9E530B22</xml_checksum>
+  <class_name>AddHourlyMeters</class_name>
+  <display_name>Add Hourly Meters</display_name>
+  <description>This measure adds hourly meters for the most common energy use types.</description>
+  <modeler_description>This measure adds these Output:Meter electricity and gas objects: Electricity:Facility,InteriorLights:Electricity,InteriorEquipment:Electricity,ExteriorEquipment:Electricity,Fans:Electricity,Pumps:Electricity,Heating:Electricity,Cooling:Electricity,HeatRejection:Electricity,Humidifer:Electricity,HeatRecovery:Electricity,WaterSystems:Electricity,Cogeneration:Electricity,Gas:Facility,InteriorEquipment:Gas,ExteriorEquipment:Gas,Heating:Gas,Cooling:Gas,WaterSystems:Gas,Cogeneration:Gas</modeler_description>
+  <arguments/>
+  <outputs/>
+  <provenances/>
+  <tags>
+    <tag>Reporting.QAQC</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Measure Function</name>
+      <value>Measure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Requires EnergyPlus Results</name>
+      <value>false</value>
+      <datatype>boolean</datatype>
+    </attribute>
+    <attribute>
+      <name>Uses SketchUp API</name>
+      <value>false</value>
+      <datatype>boolean</datatype>
+    </attribute>
+    <attribute>
+      <name>Measure Type</name>
+      <value>ModelMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+  </attributes>
+  <files>
+    <file>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type></usage_type>
+      <checksum>0AEF9075</checksum>
+    </file>
+    <file>
+      <filename>AddHourlyMeters_Test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>F994E2E5</checksum>
+    </file>
+  </files>
+</measure>
