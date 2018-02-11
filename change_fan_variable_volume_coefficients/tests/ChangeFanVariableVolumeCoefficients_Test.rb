@@ -46,9 +46,9 @@ class ChangeFanVariableVolumeCoefficients_Test < MiniTest::Unit::TestCase
 
     # get arguments and test that they are what we are expecting
     arguments = measure.arguments(model)
-    assert_equal(2, arguments.size)    
+    assert_equal(2, arguments.size)
     assert_equal("fan_choice", arguments[0].name)
-    assert_equal("coeff_choice", arguments[1].name) 
+    assert_equal("coeff_choice", arguments[1].name)
   end
 
   def test_all_fans
@@ -66,12 +66,6 @@ class ChangeFanVariableVolumeCoefficients_Test < MiniTest::Unit::TestCase
     model = translator.loadModel(model_with_HVAC_path)
     assert((not model.empty?))
     model = model.get
-
-    # get arguments
-    arguments = measure.arguments(model)
-    assert_equal(2, arguments.size)
-    assert_equal("fan_choice", arguments[0].name)
-    assert_equal("coeff_choice", arguments[1].name)
 
     # set argument values to good values and run the measure on model
     arguments = measure.arguments(model)
@@ -121,12 +115,6 @@ class ChangeFanVariableVolumeCoefficients_Test < MiniTest::Unit::TestCase
     assert((not model.empty?))
     model = model.get
 
-    # get arguments
-    arguments = measure.arguments(model)
-    assert_equal(2, arguments.size)
-    assert_equal("fan_choice", arguments[0].name)
-    assert_equal("coeff_choice", arguments[1].name)
-
     # set argument values to good values and run the measure on model
     arguments = measure.arguments(model)
     argument_map = OpenStudio::Ruleset::OSArgumentMap.new
@@ -174,12 +162,6 @@ class ChangeFanVariableVolumeCoefficients_Test < MiniTest::Unit::TestCase
     model = translator.loadModel(model_with_HVAC_path)
     assert((not model.empty?))
     model = model.get
-
-    # get arguments
-    arguments = measure.arguments(model)
-    assert_equal(2, arguments.size)
-    assert_equal("fan_choice", arguments[0].name)
-    assert_equal("coeff_choice", arguments[1].name)
 
     # set argument values to good values and run the measure on model
     arguments = measure.arguments(model)

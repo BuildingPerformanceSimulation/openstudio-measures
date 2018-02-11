@@ -30,10 +30,8 @@ class AddHourlyMeters_Test < MiniTest::Unit::TestCase
     # make an empty model
     model = OpenStudio::Model::Model.new
 
-    # get arguments and test that they are what we are expecting
-    arguments = measure.arguments(model)
-
-    # set argument values to good values and run the measure on model with spaces
+    # set arguments and run the measure
+    arguments = measure.arguments(model)    
     argument_map = OpenStudio::Ruleset::OSArgumentMap.new
     measure.run(model, runner, argument_map)
     result = runner.result
@@ -57,10 +55,8 @@ class AddHourlyMeters_Test < MiniTest::Unit::TestCase
     meter.setName("Electricity:Facility")
     meter.setReportingFrequency("Timestep")
 
-    # get arguments and test that they are what we are expecting
+    # set arguments and run the measure
     arguments = measure.arguments(model)
-
-    # set argument values to good values and run the measure on model with spaces
     argument_map = OpenStudio::Ruleset::OSArgumentMap.new
     measure.run(model, runner, argument_map)
     result = runner.result
