@@ -1,0 +1,144 @@
+<measure>
+  <schema_version>3.0</schema_version>
+  <name>add_wind_and_stack_open_area</name>
+  <uid>8055497a-0d38-48eb-a643-76383fa54664</uid>
+  <version_id>c78ea5a9-378b-41e0-8011-971b490bc0fc</version_id>
+  <version_modified>20180312T210246Z</version_modified>
+  <xml_checksum>76B1868C</xml_checksum>
+  <class_name>AddWindAndStackOpenArea</class_name>
+  <display_name>Add Wind and Stack Open Area</display_name>
+  <description>This measure models natural ventilation to thermal zones with operable windows.  It is not intended to model natural ventilation that relies on interzone, stack driven air transfer.</description>
+  <modeler_description>This measure adds ZoneVentilation:WindandStackOpenArea objects to a zone for each window of a specified operable window construction.  The user can specify values for minimum and maximum zone and outdoor air temperatures and wind speed that set limits on when the ventilation is active. The airflow rate is the quadrature sum of wind driven and stack effect driven air flow.  Airflow driven by wind is a function of opening effectiveness, area, scheduled open area fraction, and wind speed.  Airflow driven by the stack effect is a function of the discharge coefficient, area, scheduled open area fraction, and height difference to the neutral pressure level.  This measure takes the height difference as half the window height, and as such is only intended to model natural ventilation in single zones where a few large operable windows or doors account for the majority of operable area.  It is not intended to model natural ventilation that relies on interzone, stack driven air transfer where ventilation flow through a opening is unidirectional.</modeler_description>
+  <arguments>
+    <argument>
+      <name>construction</name>
+      <display_name>Window Construction for Operable Windows:</display_name>
+      <description>(Leave blank to apply to all windows)</description>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value></default_value>
+      <choices>
+        <choice>
+          <value></value>
+          <display_name></display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>open_area_fraction_schedule</name>
+      <display_name>Open Area Fraction Schedule</display_name>
+      <description>A typical operable window does not open fully.  The actual opening area in a zone is the product of the area of operable windows and the open area fraction schedule.</description>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+    </argument>
+    <argument>
+      <name>min_indoor_temp</name>
+      <display_name>Minimum Indoor Temperature (degC)</display_name>
+      <description>The indoor temperature below which ventilation is shutoff.</description>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>10</default_value>
+    </argument>
+    <argument>
+      <name>max_indoor_temp</name>
+      <display_name>Maximum Indoor Temperature (degC)</display_name>
+      <description>The indoor temperature above which ventilation is shutoff.</description>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>60</default_value>
+    </argument>
+    <argument>
+      <name>delta_temp</name>
+      <display_name>Maximum Indoor-Outdoor Temperature Difference (degC)</display_name>
+      <description>This is the temperature difference between the indoor and outdoor air dry-bulb
+temperatures below which ventilation is shutoff.  For example, a delta temperature of 2 degC means ventilation is available if the outside air temperature is at least 2 degC cooler than the zone air temperature. Values can be negative.</description>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>0</default_value>
+    </argument>
+    <argument>
+      <name>min_outdoor_temp</name>
+      <display_name>Minimum Outdoor Temperature (degC)</display_name>
+      <description>The outdoor temperature below which ventilation is shut off.</description>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>18.3333</default_value>
+    </argument>
+    <argument>
+      <name>max_outdoor_temp</name>
+      <display_name>Maximum Outdoor Temperature (degC)</display_name>
+      <description>The outdoor temperature above which ventilation is shut off.</description>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>25.5556</default_value>
+    </argument>
+    <argument>
+      <name>max_wind_speed</name>
+      <display_name>Maximum Wind Speed (m/s)</display_name>
+      <description>This is the wind speed above which ventilation is shut off.  The default values assume windows are closed when wind is above a gentle breeze to avoid blowing around papers in the space.</description>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>5.4</default_value>
+    </argument>
+  </arguments>
+  <outputs/>
+  <provenances/>
+  <tags>
+    <tag>Envelope.Fenestration</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Measure Function</name>
+      <value>Measure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Requires EnergyPlus Results</name>
+      <value>false</value>
+      <datatype>boolean</datatype>
+    </attribute>
+    <attribute>
+      <name>Measure Type</name>
+      <value>EnergyPlusMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Uses SketchUp API</name>
+      <value>false</value>
+      <datatype>boolean</datatype>
+    </attribute>
+  </attributes>
+  <files>
+    <file>
+      <filename>AddWindAndStackOpenArea_Test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>EB848F3E</checksum>
+    </file>
+    <file>
+      <filename>Office.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>6B38526A</checksum>
+    </file>
+    <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>1.6.0</identifier>
+        <min_compatible>1.8.0</min_compatible>
+      </version>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>A919D115</checksum>
+    </file>
+  </files>
+</measure>
