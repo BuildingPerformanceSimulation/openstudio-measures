@@ -1,0 +1,101 @@
+<measure>
+  <schema_version>3.0</schema_version>
+  <name>add_waterside_economizer</name>
+  <uid>a16cc194-2275-4556-99ec-0d42e84960cf</uid>
+  <version_id>ad3aa91e-899e-4383-80e1-d5c49cfc44ca</version_id>
+  <version_modified>20180314T202258Z</version_modified>
+  <xml_checksum>E5B1EF33</xml_checksum>
+  <class_name>AddWatersideEconomizer</class_name>
+  <display_name>Add Waterside Economizer</display_name>
+  <description>This measure adds a waterside economizer to provide free cooling to a user-selected chilled water loop from a user-selected condenser water loop when the outdoor wetbulb temperature is low enough.</description>
+  <modeler_description>This measure adds a heat exchanger in parallel with other demand-side components on the condenser water loop and in series with other cooling equipment on the supply side of the chilled water loop.  The heat exchanger is modeled as Ideal, which means effectiveness is set to 1.0 and the UA calculation is ignored.  The heat exchanger operates using the CoolingSetpointOnOff control type, which means the heat exchanger will operate if the setpoints allow heat transfer from the chilled water loop to the condenser water loop.  The inlet temperatures to the heat exchanger must exceed a minimum temperature difference limit of 4F to operate.  The heat exchanger will not operate if the inlet condenser loop temperature is below 32F or above 72F.  These setpoints are editable in the model once you apply the measure.  See the HeatExchanger:FluidToFluid section in the EnergyPlus Input Output reference for more detail.
+  The heat exchanger is autosized, so you will need to make sure your model includes a wet-bulb sizing design day to size the heat exchanger.  This measure does not add pressure drop to the pumps on the chilled or condenser water loops, which would be present in a real building.</modeler_description>
+  <arguments>
+    <argument>
+      <name>condenser_water_loop</name>
+      <display_name>Select the condenser water loop:</display_name>
+      <type>Choice</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+    </argument>
+    <argument>
+      <name>chilled_water_loop</name>
+      <display_name>Select the chilled water loop:</display_name>
+      <type>Choice</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+    </argument>
+  </arguments>
+  <outputs/>
+  <provenances/>
+  <tags>
+    <tag>HVAC.Cooling</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Measure Function</name>
+      <value>Measure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Requires EnergyPlus Results</name>
+      <value>false</value>
+      <datatype>boolean</datatype>
+    </attribute>
+    <attribute>
+      <name>Uses SketchUp API</name>
+      <value>false</value>
+      <datatype>boolean</datatype>
+    </attribute>
+    <attribute>
+      <name>Measure Type</name>
+      <value>ModelMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>Apply Measure Now</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>OpenStudio Application</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Use Case</name>
+      <value>Model Articulation</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Use Case</name>
+      <value>New Construction EE</value>
+      <datatype>string</datatype>
+    </attribute>
+  </attributes>
+  <files>
+    <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>1.0.0</identifier>
+        <min_compatible>1.8.0</min_compatible>
+      </version>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>B89BC6F6</checksum>
+    </file>
+    <file>
+      <filename>AddWatersideEconomizer_Test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>0259EC19</checksum>
+    </file>
+    <file>
+      <filename>office.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>7DD09FDA</checksum>
+    </file>
+  </files>
+</measure>
