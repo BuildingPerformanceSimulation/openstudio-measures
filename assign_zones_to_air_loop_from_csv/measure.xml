@@ -1,0 +1,180 @@
+<measure>
+  <schema_version>3.0</schema_version>
+  <name>assign_zones_to_air_loop_from_csv</name>
+  <uid>d156658b-747b-4722-aeed-17b856f09d3f</uid>
+  <version_id>7166d965-6ef2-4b63-be06-beb51c6f01df</version_id>
+  <version_modified>20180314T171934Z</version_modified>
+  <xml_checksum>33A0EF6F</xml_checksum>
+  <class_name>AssignZonesToAirLoopFromCSV</class_name>
+  <display_name>Assign Zones to Air Loop from CSV</display_name>
+  <description>This measure adds thermal zones and air terminals to an air loop from a user-defined .csv file.</description>
+  <modeler_description>This measure takes in a .csv file with "Thermal Zone" names in the first column and "AirLoop" names in the second column.  It adds a branch for each thermal zone on the listed air loop.  The user can select which type of AirTerminal object to add and the plant loop(s) that serves the terminal unit if applicable.  An example file is in the tests directory of this measure.</modeler_description>
+  <arguments>
+    <argument>
+      <name>file_path</name>
+      <display_name>Enter the path to the file:</display_name>
+      <description>Example: 'C:\Projects\AHU_assignment.csv'</description>
+      <type>String</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+    </argument>
+    <argument>
+      <name>default_air_terminal_type</name>
+      <display_name>Select default type of AirTerminal:</display_name>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>AirTerminal:SingleDuct:Uncontrolled</default_value>
+      <choices>
+        <choice>
+          <value>AirTerminal:SingleDuct:Uncontrolled</value>
+          <display_name>AirTerminal:SingleDuct:Uncontrolled</display_name>
+        </choice>
+        <choice>
+          <value>AirTerminal:SingleDuct:VAV:NoReheat</value>
+          <display_name>AirTerminal:SingleDuct:VAV:NoReheat</display_name>
+        </choice>
+        <choice>
+          <value>AirTerminal:SingleDuct:VAV:Reheat(HW)</value>
+          <display_name>AirTerminal:SingleDuct:VAV:Reheat(HW)</display_name>
+        </choice>
+        <choice>
+          <value>AirTerminal:SingleDuct:ConstantVolume:Reheat(HW)</value>
+          <display_name>AirTerminal:SingleDuct:ConstantVolume:Reheat(HW)</display_name>
+        </choice>
+        <choice>
+          <value>AirTerminal:SingleDuct:ConstantVolume:FourPipeInduction</value>
+          <display_name>AirTerminal:SingleDuct:ConstantVolume:FourPipeInduction</display_name>
+        </choice>
+        <choice>
+          <value>AirTerminal:SingleDuct:ConstantVolume:CooledBeam</value>
+          <display_name>AirTerminal:SingleDuct:ConstantVolume:CooledBeam</display_name>
+        </choice>
+        <choice>
+          <value>AirTerminal:DualDuct:VAV</value>
+          <display_name>AirTerminal:DualDuct:VAV</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>heating_plant_loop</name>
+      <display_name>Select the heating plant loop for use for air terminals, if applicable.</display_name>
+      <type>Choice</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+    </argument>
+    <argument>
+      <name>cooling_plant_loop</name>
+      <display_name>Select the cooling plant loop for use with the air terminals, if applicable.</display_name>
+      <type>Choice</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+    </argument>
+  </arguments>
+  <outputs/>
+  <provenances/>
+  <tags>
+    <tag>HVAC.Distribution</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Uses SketchUp API</name>
+      <value>false</value>
+      <datatype>boolean</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>Apply Measure Now</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>OpenStudio Application</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Use Case</name>
+      <value>New Construction EE</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Use Case</name>
+      <value>Retrofit EE</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Measure Type</name>
+      <value>ModelMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>Apply Measure Now</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>OpenStudio Application</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Use Case</name>
+      <value>New Construction EE</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Use Case</name>
+      <value>Retrofit EE</value>
+      <datatype>string</datatype>
+    </attribute>
+  </attributes>
+  <files>
+    <file>
+      <filename>ahu_list_example.csv</filename>
+      <filetype>csv</filetype>
+      <usage_type>test</usage_type>
+      <checksum>D3E0F748</checksum>
+    </file>
+    <file>
+      <filename>office.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>77922B42</checksum>
+    </file>
+    <file>
+      <filename>ahu_list_example_mislabeled_air_loop.csv</filename>
+      <filetype>csv</filetype>
+      <usage_type>test</usage_type>
+      <checksum>09F80639</checksum>
+    </file>
+    <file>
+      <filename>ahu_list_example_mislabeled_zone.csv</filename>
+      <filetype>csv</filetype>
+      <usage_type>test</usage_type>
+      <checksum>43EDA017</checksum>
+    </file>
+    <file>
+      <filename>ahu_list_example_missing_air_loop.csv</filename>
+      <filetype>csv</filetype>
+      <usage_type>test</usage_type>
+      <checksum>A66C1A6B</checksum>
+    </file>
+    <file>
+      <filename>AssignZonesToAirLoopFromCSV_Test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>AEA6297E</checksum>
+    </file>
+    <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>1.3.0</identifier>
+        <min_compatible>1.3.0</min_compatible>
+      </version>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>28F3CC6B</checksum>
+    </file>
+  </files>
+</measure>

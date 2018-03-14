@@ -1,0 +1,17 @@
+Thermal Zone,AirLoop
+Mislabeled Basement ZN,Example Air Loop
+Core_bottom ZN,Example Air Loop
+Core_mid ZN,Example Air Loop
+Core_top ZN,Example Air Loop
+Perimeter_bot_ZN_1 ZN,Example Air Loop
+Perimeter_bot_ZN_2 ZN,Example Air Loop
+Perimeter_bot_ZN_3 ZN,Example Air Loop
+Perimeter_bot_ZN_4 ZN,Example Air Loop
+Perimeter_mid_ZN_1 ZN,Example Air Loop
+Perimeter_mid_ZN_2 ZN,Example Air Loop
+Perimeter_mid_ZN_3 ZN,Example Air Loop
+Perimeter_mid_ZN_4 ZN,Example Air Loop
+Perimeter_top_ZN_1 ZN,Example Air Loop
+Perimeter_top_ZN_2 ZN,Example Air Loop
+Perimeter_top_ZN_3 ZN,Example Air Loop
+Perimeter_top_ZN_4 ZN,Example Air Loop
