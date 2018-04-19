@@ -106,7 +106,7 @@ class IdealLoadsOptions_Test < MiniTest::Unit::TestCase
     argument_map["dcv_type"] = dcv_type
 
     economizer_type = arguments[10].clone
-    assert(economizer_type.setValue("DifferentialDryBulb"))
+    assert(economizer_type.setValue("NoEconomizer"))
     argument_map["economizer_type"] = economizer_type
     
     heat_recovery_type = arguments[11].clone

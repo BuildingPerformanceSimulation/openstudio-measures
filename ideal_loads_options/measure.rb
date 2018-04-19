@@ -406,6 +406,7 @@ class IdealLoadsOptions < OpenStudio::Ruleset::WorkspaceUserScript
           if version == "OSv1" #OS v1 ZoneHVAC:IdealLoadsAirSystem
             ideal_loads_object.setString(19,design_spec_oa_name)          
           else #OS v2 HVACTemplate:Zone:IdealLoadsAirSystem
+            ideal_loads_object.setString(20,"DetailedSpecification")
 				    ideal_loads_object.setString(24,design_spec_oa_name)
           end
         end
