@@ -17,10 +17,11 @@ class AddIntervalScheduleFromFile_Test < MiniTest::Unit::TestCase
 
     # get arguments and test that they are what we are expecting
     arguments = measure.arguments(model)
-    assert_equal(3, arguments.size)
-    assert_equal("schedule_name", arguments[0].name)
-    assert_equal("file_path", arguments[1].name)
-    assert_equal("unit_choice", arguments[2].name)
+    assert_equal(4, arguments.size)
+    assert_equal("remove", arguments[0].name)
+    assert_equal("schedule_name", arguments[1].name)
+    assert_equal("file_path", arguments[2].name)
+    assert_equal("unit_choice", arguments[3].name)
   end
 
   def test_good_hourly_values
@@ -38,15 +39,19 @@ class AddIntervalScheduleFromFile_Test < MiniTest::Unit::TestCase
     arguments = measure.arguments(model)    
     argument_map = OpenStudio::Ruleset::OSArgumentMap.new
     
-    schedule_name = arguments[0].clone
+    remove = arguments[0].clone
+    assert(remove.setValue(true))
+    argument_map["remove"] = remove
+    
+    schedule_name = arguments[1].clone
     assert(schedule_name.setValue("Hourly Values"))    
     argument_map["schedule_name"] = schedule_name    
     
-    file_path = arguments[1].clone
+    file_path = arguments[2].clone
     assert(file_path.setValue("#{File.dirname(__FILE__)}/hourly_values.csv"))
     argument_map["file_path"] = file_path
     
-    unit_choice = arguments[2].clone
+    unit_choice = arguments[3].clone
     assert(unit_choice.setValue("W"))
     argument_map["unit_choice"] = unit_choice
 
@@ -80,15 +85,19 @@ class AddIntervalScheduleFromFile_Test < MiniTest::Unit::TestCase
     arguments = measure.arguments(model)    
     argument_map = OpenStudio::Ruleset::OSArgumentMap.new
     
-    schedule_name = arguments[0].clone
+    remove = arguments[0].clone
+    assert(remove.setValue(true))
+    argument_map["remove"] = remove
+    
+    schedule_name = arguments[1].clone
     assert(schedule_name.setValue("Leap Year Hourly Values"))    
     argument_map["schedule_name"] = schedule_name    
     
-    file_path = arguments[1].clone
+    file_path = arguments[2].clone
     assert(file_path.setValue("#{File.dirname(__FILE__)}/leap_year_hourly_values.csv"))
     argument_map["file_path"] = file_path
     
-    unit_choice = arguments[2].clone
+    unit_choice = arguments[3].clone
     assert(unit_choice.setValue("W"))
     argument_map["unit_choice"] = unit_choice
 
@@ -121,16 +130,20 @@ class AddIntervalScheduleFromFile_Test < MiniTest::Unit::TestCase
     # set argument values to good values and run the measure on model
     arguments = measure.arguments(model)    
     argument_map = OpenStudio::Ruleset::OSArgumentMap.new
-    
-    schedule_name = arguments[0].clone
+ 
+    remove = arguments[0].clone
+    assert(remove.setValue(true))
+    argument_map["remove"] = remove    
+ 
+    schedule_name = arguments[1].clone
     assert(schedule_name.setValue("15min Values"))
     argument_map["schedule_name"] = schedule_name    
     
-    file_path = arguments[1].clone
+    file_path = arguments[2].clone
     assert(file_path.setValue("#{File.dirname(__FILE__)}/15min_values.csv"))
     argument_map["file_path"] = file_path
     
-    unit_choice = arguments[2].clone
+    unit_choice = arguments[3].clone
     assert(unit_choice.setValue("unitless"))
     argument_map["unit_choice"] = unit_choice
 
@@ -164,15 +177,19 @@ class AddIntervalScheduleFromFile_Test < MiniTest::Unit::TestCase
     arguments = measure.arguments(model)    
     argument_map = OpenStudio::Ruleset::OSArgumentMap.new
     
-    schedule_name = arguments[0].clone
+    remove = arguments[0].clone
+    assert(remove.setValue(true))
+    argument_map["remove"] = remove
+    
+    schedule_name = arguments[1].clone
     assert(schedule_name.setValue("Bad Hourly Values"))
     argument_map["schedule_name"] = schedule_name    
     
-    file_path = arguments[1].clone
+    file_path = arguments[2].clone
     assert(file_path.setValue("#{File.dirname(__FILE__)}/bad_hourly_values.csv"))
     argument_map["file_path"] = file_path
     
-    unit_choice = arguments[2].clone
+    unit_choice = arguments[3].clone
     assert(unit_choice.setValue("W"))
     argument_map["unit_choice"] = unit_choice
 
@@ -204,15 +221,19 @@ class AddIntervalScheduleFromFile_Test < MiniTest::Unit::TestCase
     arguments = measure.arguments(model)    
     argument_map = OpenStudio::Ruleset::OSArgumentMap.new
     
-    schedule_name = arguments[0].clone
+    remove = arguments[0].clone
+    assert(remove.setValue(true))
+    argument_map["remove"] = remove
+    
+    schedule_name = arguments[1].clone
     assert(schedule_name.setValue("Hourly Values"))
     argument_map["schedule_name"] = schedule_name    
     
-    file_path = arguments[1].clone
+    file_path = arguments[2].clone
     assert(file_path.setValue("#{File.dirname(__FILE__)}/does_not_exist.csv"))
     argument_map["file_path"] = file_path
     
-    unit_choice = arguments[2].clone
+    unit_choice = arguments[3].clone
     assert(unit_choice.setValue("W"))
     argument_map["unit_choice"] = unit_choice
 
