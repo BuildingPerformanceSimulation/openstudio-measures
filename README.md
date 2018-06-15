@@ -3,3 +3,5 @@
 ---
 
 A repository for community development and sharing of OpenStudio Measures.
+
+Measures in this repository will be posted to Building Component Library website through the [UnmetHours BCL group](https://bcl.nrel.gov/node/84652).
