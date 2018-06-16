@@ -1,0 +1,66 @@
+<measure>
+  <schema_version>3.0</schema_version>
+  <name>plant_loop_report_variables</name>
+  <uid>8d1c8376-9703-48ed-bfe7-a6c4b609953c</uid>
+  <version_id>2e544754-4ebe-49f5-850b-16676c2cef05</version_id>
+  <version_modified>20170301T235505Z</version_modified>
+  <xml_checksum>9BF1E6AC</xml_checksum>
+  <class_name>PlantLoopReportVariables</class_name>
+  <display_name>Plant Loop Report Variables</display_name>
+  <description>Adds a bunch of output variables that are useful for debugging plantloop operation.  Does not create a report.</description>
+  <modeler_description></modeler_description>
+  <arguments/>
+  <outputs/>
+  <provenances/>
+  <tags>
+    <tag>Reporting.QAQC</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Measure Type</name>
+      <value>ReportingMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>OpenStudio Application</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>Parametric Analysis Tool</value>
+      <datatype>string</datatype>
+    </attribute>
+  </attributes>
+  <files>
+    <file>
+      <filename>plant_loop_report_variables_test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>928129F6</checksum>
+    </file>
+    <file>
+      <filename>example_model.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>A0199A45</checksum>
+    </file>
+    <file>
+      <filename>report.html.in</filename>
+      <filetype>in</filetype>
+      <usage_type>resource</usage_type>
+      <checksum>3501204C</checksum>
+    </file>
+    <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>1.11.0</identifier>
+        <min_compatible>1.11.0</min_compatible>
+      </version>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>A92F4E39</checksum>
+    </file>
+  </files>
+</measure>
