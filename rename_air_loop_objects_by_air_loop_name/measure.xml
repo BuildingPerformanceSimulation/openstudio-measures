@@ -1,0 +1,75 @@
+<measure>
+  <schema_version>3.0</schema_version>
+  <name>rename_air_loop_objects_by_air_loop_name</name>
+  <uid>3c4592ac-7b89-4623-8c77-55d632c4d10d</uid>
+  <version_id>de68fd0f-af12-4db2-8914-7830950f3b9f</version_id>
+  <version_modified>20180616T012109Z</version_modified>
+  <xml_checksum>38AFEEFF</xml_checksum>
+  <class_name>RenameAirLoopObjectsByAirLoopName</class_name>
+  <display_name>Rename Air Loop Objects By Air Loop Name</display_name>
+  <description>This measure will rename node, fan, and outdoor air system objects from a generic name  "Node 10" to the air loop name and type of object  "AHU 1 Supply Air Node".  This is helpful when investigating air loop controls and operation in outdoor variables.</description>
+  <modeler_description>This is a modeling aid. It cleans up air loop naming and will not have any impact on the simulation results. This will help in sort order on pull down lists.</modeler_description>
+  <arguments/>
+  <outputs/>
+  <provenances/>
+  <tags>
+    <tag>HVAC.Whole System</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Measure Function</name>
+      <value>Measure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Requires EnergyPlus Results</name>
+      <value>false</value>
+      <datatype>boolean</datatype>
+    </attribute>
+    <attribute>
+      <name>Uses SketchUp API</name>
+      <value>false</value>
+      <datatype>boolean</datatype>
+    </attribute>
+    <attribute>
+      <name>Measure Type</name>
+      <value>ModelMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>Apply Measure Now</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Use Case</name>
+      <value>Model Articulation</value>
+      <datatype>string</datatype>
+    </attribute>
+  </attributes>
+  <files>
+    <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>1.0.0</identifier>
+        <min_compatible>1.8.0</min_compatible>
+      </version>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>20B5A06E</checksum>
+    </file>
+    <file>
+      <filename>office.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>F492B1BA</checksum>
+    </file>
+    <file>
+      <filename>RenameAirLoopObjectsByAirLoopName_Test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>60D4824B</checksum>
+    </file>
+  </files>
+</measure>
