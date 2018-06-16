@@ -1,0 +1,64 @@
+<measure>
+  <schema_version>3.0</schema_version>
+  <name>exclude_plenums_from_floor_area</name>
+  <uid>f7f19d57-d2c2-4247-bcc9-26812e340f7a</uid>
+  <version_id>6ba18a28-9735-4981-bcf1-e505f88dc403</version_id>
+  <version_modified>20170810T234157Z</version_modified>
+  <xml_checksum>D8922A73</xml_checksum>
+  <class_name>ExcludePlenumsFromFloorArea</class_name>
+  <display_name>ExcludePlenumsFromFloorArea</display_name>
+  <description>Spaces with plenum in the name are excluded from the total floor area calculation.</description>
+  <modeler_description>Spaces with plenum in the name are excluded from the total floor area calculation.</modeler_description>
+  <arguments/>
+  <provenances/>
+  <tags>
+    <tag>Whole Building.Space Types</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Measure Type</name>
+      <value>ModelMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>Apply Measure Now</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>OpenStudio Application</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>Parametric Analysis Tool</value>
+      <datatype>string</datatype>
+    </attribute>
+  </attributes>
+  <files>
+    <file>
+      <filename>exclude_plenums_from_floor_area_test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>2A6B6298</checksum>
+    </file>
+    <file>
+      <filename>example_model.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>53D14E69</checksum>
+    </file>
+    <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>1.14.0</identifier>
+        <min_compatible>1.14.0</min_compatible>
+      </version>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>04DA6053</checksum>
+    </file>
+  </files>
+</measure>
