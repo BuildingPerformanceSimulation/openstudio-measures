@@ -2,13 +2,13 @@
   <schema_version>3.0</schema_version>
   <name>swap_construction_in_construction_set</name>
   <uid>f2dd07a6-51e8-4c66-b814-861f3b0ee678</uid>
-  <version_id>f1894868-2e14-4b6e-934d-c7bff84c77b0</version_id>
-  <version_modified>20180211T010621Z</version_modified>
+  <version_id>c6127221-b090-4bf7-8f2e-9790baac95d9</version_id>
+  <version_modified>20180617T234741Z</version_modified>
   <xml_checksum>1FE39238</xml_checksum>
   <class_name>SwapConstructionInConstructionSet</class_name>
   <display_name>Swap Construction In Construction Set</display_name>
   <description>This will swap a construction assigned in any construction set with another defined in your model. This will make the change in all construction sets.</description>
-  <modeler_description>This looks for a construction in each Construction Set object and replace it with the user selected construction.  If you don't want all constructions to change, say you are using multiple construction defaults by floor and only want to change the definition on one floor, you will need to copy the selected construction and assign it.</modeler_description>
+  <modeler_description>This looks for the old construction in each Construction Set object and replaces it with the new construction.  If you don't want all constructions to change, say you are using multiple construction defaults by floor and only want to change the definition on one floor, you will need to copy the selected construction and assign it.</modeler_description>
   <arguments>
     <argument>
       <name>old_construction</name>
@@ -72,13 +72,19 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>B69E043E</checksum>
+      <checksum>F08FAC75</checksum>
     </file>
     <file>
       <filename>SwapConstructionInConstructionSet_Test.rb</filename>
       <filetype>rb</filetype>
       <usage_type>test</usage_type>
-      <checksum>44C5CAEE</checksum>
+      <checksum>E64043FC</checksum>
+    </file>
+    <file>
+      <filename>office.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>ED1FC30F</checksum>
     </file>
   </files>
 </measure>

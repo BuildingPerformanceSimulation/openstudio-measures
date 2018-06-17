@@ -1,60 +1,59 @@
-#start the measure
 class SwapConstructionInConstructionSet < OpenStudio::Ruleset::ModelUserScript
 
-  #define the name that a user will see, this method may be deprecated as
-  #the display name in PAT comes from the name field in measure.xml
+  # define the name that a user will see, this method may be deprecated as
+  # the display name in PAT comes from the name field in measure.xml
   def name
     return "Swap Construction In Construction Set"
   end
 
-  #define the arguments that the user will input
+  # define the arguments that the user will input
   def arguments(model)
     args = OpenStudio::Ruleset::OSArgumentVector.new
 
-    #make a choice argument for constructions
+    # make a choice argument for constructions
     construction_handles = OpenStudio::StringVector.new
     construction_display_names = OpenStudio::StringVector.new
 
-    #putting space types and names into hash
+    # putting space types and names into hash
     construction_args = model.getConstructions
     construction_args_hash = {}
     construction_args.each do |construction_arg|
       construction_args_hash[construction_arg.name.to_s] = construction_arg
     end
 
-    #looping through sorted hash of model objects
+    # looping through sorted hash of model objects
     construction_args_hash.sort.map do |key,value|
       construction_handles << value.handle.to_s
       construction_display_names << key
     end
 
-    #make a choice argument for old construction to be replaced
+    # make a choice argument for old construction to be replaced
     old_construction = OpenStudio::Ruleset::OSArgument::makeChoiceArgument("old_construction", construction_handles, construction_display_names,true)
     old_construction.setDisplayName("Pick a construction to be replaced:")
     args << old_construction
     
-    #make a choice argument for new construction
+    # make a choice argument for new construction
     new_construction = OpenStudio::Ruleset::OSArgument::makeChoiceArgument("new_construction", construction_handles, construction_display_names,true)
     new_construction.setDisplayName("Pick a construction to replace the old construction. This construction must the same type (Surface, Subsurface) as the old construction.")
     args << new_construction
 
     return args
-  end #end the arguments method
+  end # end the arguments method
 
-  #define what happens when the measure is run
+  # define what happens when the measure is run
   def run(model, runner, user_arguments)
     super(model, runner, user_arguments)
 
-    #use the built-in error checking 
+    # use the built-in error checking 
     if not runner.validateUserArguments(arguments(model), user_arguments)
       return false
     end
 
-    #assign the user inputs to variables
+    # assign the user inputs to variables
     old_construction = runner.getOptionalWorkspaceObjectChoiceValue("old_construction",user_arguments,model)
     new_construction = runner.getOptionalWorkspaceObjectChoiceValue("new_construction",user_arguments,model)
 
-    #check the old construction for reasonableness
+    # check the old construction for reasonableness
     if old_construction.empty?
       handle = runner.getStringArgumentValue("old_construction",user_arguments)
       if handle.empty?
@@ -70,9 +69,9 @@ class SwapConstructionInConstructionSet < OpenStudio::Ruleset::ModelUserScript
         runner.registerError("Script Error - argument not showing up as construction.")
         return false
       end
-    end  #end of if old_construction.empty?
+    end  # end of if old_construction.empty?
 
-    #check the new construction for reasonableness
+    # check the new construction for reasonableness
     if new_construction.empty?
       handle = runner.getStringArgumentValue("new_construction",user_arguments)
       if handle.empty?
@@ -88,12 +87,17 @@ class SwapConstructionInConstructionSet < OpenStudio::Ruleset::ModelUserScript
         runner.registerError("Script Error - argument not showing up as construction.")
         return false
       end
-    end  #end of if new_construction.empty?
+    end  # end of if new_construction.empty?
+    
+    # check for fenestration vs. opaque
+    if (old_construction.isOpaque != new_construction.isOpaque) || (old_construction.isFenestration != new_construction.isFenestration)
+      runner.registerError("old construction and new construction are not of the same type (opaque or fenestration)")
+    end
     
     runner.registerInfo("This measure will replace #{old_construction.name.to_s} with #{new_construction.name.to_s}")
     
     num_swaps = 0
-    #loop through construction sets used in the model
+    # loop through construction sets used in the model
     default_construction_sets = model.getDefaultConstructionSets
     default_construction_sets.each do |default_construction_set|
     
@@ -231,15 +235,15 @@ class SwapConstructionInConstructionSet < OpenStudio::Ruleset::ModelUserScript
           num_swaps += 1
         end
       end
-    end #end of loop through default_construction_sets
+    end # end of loop through default_construction_sets
     
     runner.registerFinalCondition("#{num_swaps} substitutions were made in the model.")
    
     return true
 
-  end #end the run method
+  end # end the run method
 
-end #end the measure
+end # end the measure
 
-#this allows the measure to be use by the application
+# this allows the measure to be use by the application
 SwapConstructionInConstructionSet.new.registerWithApplication
