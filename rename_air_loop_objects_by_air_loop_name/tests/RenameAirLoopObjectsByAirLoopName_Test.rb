@@ -12,7 +12,7 @@ class RenameAirLoopObjectsByAirLoopName_Test < MiniTest::Unit::TestCase
   end
   
   def test_number_of_arguments
-    #this test ensures that the current test is matched to the measure inputs
+    # this test ensures that the current test is matched to the measure inputs
     
     # create an instance of the measure
     measure = RenameAirLoopObjectsByAirLoopName.new
@@ -25,7 +25,7 @@ class RenameAirLoopObjectsByAirLoopName_Test < MiniTest::Unit::TestCase
   end
   
   def test_rename_loops
-    #this measure tests a curve applied to all fans
+    # this measure tests renaming all loops
     test_name = "test_rename_loops"
     puts "TEST:" + test_name
     
@@ -56,7 +56,7 @@ class RenameAirLoopObjectsByAirLoopName_Test < MiniTest::Unit::TestCase
     assert_equal("Success", result.value.valueName)
     assert(result.warnings.size == 0)
     
-    #save the model for testing purposes
+    # save the model for testing purposes
     output_file_path = model_output_path(test_name)
     model.save(output_file_path,true)
   end

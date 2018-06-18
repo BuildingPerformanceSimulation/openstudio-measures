@@ -31,7 +31,7 @@ class AddWatersideEconomizer_Test < MiniTest::Unit::TestCase
   end
   
   def test_good_arguments
-    #this measure tests a curve applied to all fans
+    #this tests adding a waterside economizer
     test_name = "test_good_arguments"
     puts "TEST:" + test_name
     
@@ -47,7 +47,7 @@ class AddWatersideEconomizer_Test < MiniTest::Unit::TestCase
     assert((not model.empty?))
     model = model.get
     
-    # set argument values to good values and run the measure on model
+    # set argument values to good values and run the measure
     arguments = measure.arguments(model)
     argument_map = OpenStudio::Ruleset::OSArgumentMap.new
     
@@ -70,7 +70,7 @@ class AddWatersideEconomizer_Test < MiniTest::Unit::TestCase
     assert_equal("Success", result.value.valueName)
     assert(result.warnings.size == 0)
     
-    #save the model for testing purposes
+    # save the model for testing purposes
     output_file_path = model_output_path(test_name)
     model.save(output_file_path,true)
   end

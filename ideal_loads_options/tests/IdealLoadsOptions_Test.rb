@@ -12,7 +12,7 @@ class IdealLoadsOptions_Test < MiniTest::Unit::TestCase
   end
 
   def test_number_of_arguments_and_argument_names
-    #this test ensures that the current test is matched to the measure inputs
+    # this test ensures that the current test is matched to the measure inputs
     
     # create an instance of the measure
     measure = IdealLoadsOptions.new
@@ -136,7 +136,7 @@ class IdealLoadsOptions_Test < MiniTest::Unit::TestCase
     assert_equal("Success", result.value.valueName)
     assert(result.warnings.size == 0)
     
-    #save the workspace for testing purposes
+    # save the workspace for testing purposes
     if !File.exist?("#{File.dirname(__FILE__)}/output")
       FileUtils.mkdir_p("#{File.dirname(__FILE__)}/output")
     end
@@ -145,7 +145,7 @@ class IdealLoadsOptions_Test < MiniTest::Unit::TestCase
   end
 
   def test_bad_oa_input
-    #this measure tests a curve applied to all fans
+    # this measure tests bad outdoor air input
     test_name = "test_bad_oa_input"
 
     # create an instance of the measure
@@ -240,7 +240,7 @@ class IdealLoadsOptions_Test < MiniTest::Unit::TestCase
     assert_equal("Fail", result.value.valueName)
     assert(result.warnings.size == 0)
     
-    #save the workspace for testing purposes
+    # save the workspace for testing purposes
     if !File.exist?("#{File.dirname(__FILE__)}/output")
       FileUtils.mkdir_p("#{File.dirname(__FILE__)}/output")
     end
@@ -249,7 +249,7 @@ class IdealLoadsOptions_Test < MiniTest::Unit::TestCase
   end
 
   def test_humidistats
-    #this measure tests a curve applied to all fans
+    # this measure tests adding humidistats
     test_name = "test_humidistats"
 
     # create an instance of the measure
@@ -344,7 +344,7 @@ class IdealLoadsOptions_Test < MiniTest::Unit::TestCase
     assert_equal("Success", result.value.valueName)
     assert(result.warnings.size == 0)
     
-    #save the workspace for testing purposes
+    # save the workspace for testing purposes
     if !File.exist?("#{File.dirname(__FILE__)}/output")
       FileUtils.mkdir_p("#{File.dirname(__FILE__)}/output")
     end
