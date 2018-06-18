@@ -7,7 +7,7 @@ require 'fileutils'
 class AddIntervalScheduleFromFile_Test < MiniTest::Unit::TestCase
 
   def test_number_of_arguments_and_argument_names
-    #this test ensures that the current test is matched to the measure inputs
+    # this test ensures that the current test is matched to the measure inputs
     
     # create an instance of the measure
     measure = AddIntervalScheduleFromFile.new
@@ -244,10 +244,8 @@ class AddIntervalScheduleFromFile_Test < MiniTest::Unit::TestCase
     # show the output
     show_output(result)
     
-    # assertions to check that it ran correctly
+    # assertions to check that it failed
     assert(result.value.valueName == "Fail")
-    #assert(result.warnings.size == 0)
-    #assert(result.info.size == 0)
   end
   
 end

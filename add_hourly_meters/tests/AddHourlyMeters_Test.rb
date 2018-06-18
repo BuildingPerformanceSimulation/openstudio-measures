@@ -7,7 +7,7 @@ require 'fileutils'
 class AddHourlyMeters_Test < MiniTest::Unit::TestCase
 
   def test_number_of_arguments_and_argument_names
-    #this test ensures that the current test is matched to the measure inputs
+    # this test ensures that the current test is matched to the measure inputs
     
     # create an instance of the measure
     measure = AddHourlyMeters.new

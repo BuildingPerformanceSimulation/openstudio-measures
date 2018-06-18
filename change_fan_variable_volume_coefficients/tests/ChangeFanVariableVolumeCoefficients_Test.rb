@@ -33,7 +33,7 @@ class ChangeFanVariableVolumeCoefficients_Test < MiniTest::Unit::TestCase
   end
   
   def test_number_of_arguments_and_argument_names
-    #this test ensures that the current test is matched to the measure inputs
+    # this test ensures that the current test is matched to the measure inputs
     
     # create an instance of the measure
     measure = ChangeFanVariableVolumeCoefficients.new
@@ -52,7 +52,7 @@ class ChangeFanVariableVolumeCoefficients_Test < MiniTest::Unit::TestCase
   end
 
   def test_all_fans
-    #this measure tests a curve applied to all fans
+    # this measure tests a curve applied to all fans
     test_name = "test_all_fans"
 
     # create an instance of the measure
@@ -90,7 +90,7 @@ class ChangeFanVariableVolumeCoefficients_Test < MiniTest::Unit::TestCase
     assert_equal("Success", result.value.valueName)
     assert(result.warnings.size == 0)
     
-    #save the model for testing purposes
+    # save the model for testing purposes
     if !File.exist?(run_dir(test_name))
       FileUtils.mkdir_p(run_dir(test_name))
     end
@@ -100,7 +100,7 @@ class ChangeFanVariableVolumeCoefficients_Test < MiniTest::Unit::TestCase
   end
 
   def test_no_HVAC
-    #this measure tests a curve applied to all fans
+    # this measure tests the model having no air loops
     test_name = "test_no_HVAC"
 
     # create an instance of the measure
@@ -138,7 +138,7 @@ class ChangeFanVariableVolumeCoefficients_Test < MiniTest::Unit::TestCase
     assert_equal("Fail", result.value.valueName)
     assert(result.warnings.size == 0)
     
-    #save the model for testing purposes
+    # save the model for testing purposes
     if !File.exist?(run_dir(test_name))
       FileUtils.mkdir_p(run_dir(test_name))
     end
@@ -148,7 +148,7 @@ class ChangeFanVariableVolumeCoefficients_Test < MiniTest::Unit::TestCase
   end
   
   def test_single_fan
-    #this measure tests a curve applied to all fans
+    # this measure tests a curve applied to a single fan
     test_name = "test_single_fan"
 
     # create an instance of the measure
@@ -186,7 +186,7 @@ class ChangeFanVariableVolumeCoefficients_Test < MiniTest::Unit::TestCase
     assert_equal("Success", result.value.valueName)
     assert(result.warnings.size == 0)
     
-    #save the model for testing purposes
+    # save the model for testing purposes
     if !File.exist?(run_dir(test_name))
       FileUtils.mkdir_p(run_dir(test_name))
     end

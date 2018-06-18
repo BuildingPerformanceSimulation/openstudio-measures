@@ -12,7 +12,7 @@ class AddWindAndStackOpenArea_Test < MiniTest::Unit::TestCase
   end
   
   def test_number_of_arguments_and_argument_names
-    #this test ensures that the current test is matched to the measure inputs
+    # this test ensures that the current test is matched to the measure inputs
     
     # create an instance of the measure
     measure = AddWindAndStackOpenArea.new
@@ -34,7 +34,7 @@ class AddWindAndStackOpenArea_Test < MiniTest::Unit::TestCase
   end
 
   def test_good_inputs
-    #this measure tests a curve applied to all fans
+    # this tests good input values
     test_name = "test_good_inputs"
     
     # create an instance of the measure
@@ -110,7 +110,7 @@ class AddWindAndStackOpenArea_Test < MiniTest::Unit::TestCase
   end
 
   def test_bad_temps
-    #this measure tests a curve applied to all fans
+    # this tests bad temperatures
     test_name = "test_bad_temps"
     
     # create an instance of the measure
@@ -179,7 +179,7 @@ class AddWindAndStackOpenArea_Test < MiniTest::Unit::TestCase
   end
   
   def test_bad_construction
-    #this measure tests a curve applied to all fans
+    # this tests an incorrect construction 
     test_name = "test_bad_construction"
     
     # create an instance of the measure
