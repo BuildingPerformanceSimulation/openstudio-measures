@@ -15,9 +15,10 @@ class AddIntervalScheduleFromFile < OpenStudio::Ruleset::ModelUserScript
     args = OpenStudio::Ruleset::OSArgumentVector.new
 
     # make an argumet for removing existing
-    remove = OpenStudio::Ruleset::OSArgument::makeBoolArgument("remove", false)
-    remove.setDisplayName("Remove existing ScheduleInterval objects?")
-    args << remove
+    remove_existing_schedule_intervals = OpenStudio::Ruleset::OSArgument::makeBoolArgument("remove_existing_schedule_intervals", false)
+    remove_existing_schedule_intervals.setDisplayName("Remove existing ScheduleInterval objects?")
+    remove_existing_schedule_intervals.setDefaultValue(false)
+    args << remove_existing_schedule_intervals
 
     #make an argument for schedule name
     schedule_name = OpenStudio::Ruleset::OSArgument::makeStringArgument("schedule_name", true)
@@ -58,7 +59,7 @@ class AddIntervalScheduleFromFile < OpenStudio::Ruleset::ModelUserScript
     end
 
     #assign the user inputs to variables
-    remove = runner.getBoolArgumentValue("remove", user_arguments)
+    remove_existing_schedule_intervals = runner.getBoolArgumentValue("remove_existing_schedule_intervals", user_arguments)
     schedule_name = runner.getStringArgumentValue("schedule_name", user_arguments)
     file_path = runner.getStringArgumentValue("file_path", user_arguments)
     unit_choice = runner.getOptionalStringArgumentValue("unit_choice", user_arguments)
@@ -70,7 +71,7 @@ class AddIntervalScheduleFromFile < OpenStudio::Ruleset::ModelUserScript
     runner.registerInitialCondition("number of ScheduleInterval objects = #{schedule_intervals.size}")
 
     # remove existing schedules
-    schedule_intervals.each(&:remove) if remove
+    schedule_intervals.each(&:remove) if remove_existing_schedule_intervals
 
     #check schedule name for reasonableness
     if schedule_name == ""
