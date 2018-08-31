@@ -2,8 +2,8 @@
   <schema_version>3.0</schema_version>
   <name>ideal_loads_options</name>
   <uid>ae756607-68ba-4615-87df-a0870beede98</uid>
-  <version_id>6acbf367-fd6d-4ebb-a316-b6215b984483</version_id>
-  <version_modified>20180419T185750Z</version_modified>
+  <version_id>b505cac2-d6d4-4ff8-9983-dc4de7c031d3</version_id>
+  <version_modified>20180831T172047Z</version_modified>
   <xml_checksum>DAE0171F</xml_checksum>
   <class_name>IdealLoadsOptions</class_name>
   <display_name>Ideal Loads Options</display_name>
@@ -389,13 +389,19 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>EC83EE00</checksum>
+      <checksum>6A19AE17</checksum>
     </file>
     <file>
       <filename>IdealLoadsOptions_Test.rb</filename>
       <filetype>rb</filetype>
       <usage_type>test</usage_type>
-      <checksum>5CC02045</checksum>
+      <checksum>472DBB99</checksum>
+    </file>
+    <file>
+      <filename>test_v2.4_office_no_ideal.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>EC832037</checksum>
     </file>
   </files>
 </measure>

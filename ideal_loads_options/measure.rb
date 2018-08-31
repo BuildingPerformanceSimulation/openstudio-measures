@@ -15,7 +15,7 @@ class IdealLoadsOptions < OpenStudio::Ruleset::WorkspaceUserScript
   def description
     return "This measure allows the user to edit ideal air loads fields including availability schedules, maximum and minimum supply air temperatures, humidity ratios and flow rates, humidity control, outdoor air requirements, demand controlled ventilation, economizer operation, and heat recovery."
   end
-  
+
   # human readable description of modeling approach
   def modeler_description
     return "This measure assigns fields to all IdealLoadsAirSystem objects."
@@ -38,14 +38,12 @@ class IdealLoadsOptions < OpenStudio::Ruleset::WorkspaceUserScript
 
   def filterSchedulesByLimitType(workspace, schedules, limit_type)
     filtered_schedules = []
-    
     schedules.each do |sch|
       sch_typ = getScheduleLimitType(workspace,sch)
       if  (sch_typ == limit_type)
         filtered_schedules << sch.getString(0).to_s
       end
     end
-    
     return filtered_schedules
   end  
 
@@ -59,15 +57,14 @@ class IdealLoadsOptions < OpenStudio::Ruleset::WorkspaceUserScript
     end
     return false
   end
-  
+
   # merge all summary reports that are not in the current workspace
   def merge_output_table_summary_reports(current_object, new_object)
-  
     current_fields = []
     current_object.extensibleGroups.each do |current_extensible_group|
       current_fields << current_extensible_group.getString(0).to_s
     end
-        
+
     fields_to_add = []
     new_object.extensibleGroups.each do |new_extensible_group|
       field = new_extensible_group.getString(0).to_s
@@ -76,7 +73,7 @@ class IdealLoadsOptions < OpenStudio::Ruleset::WorkspaceUserScript
         fields_to_add << field
       end
     end
-    
+
     if !fields_to_add.empty?
       fields_to_add.each do |field|
         values = OpenStudio::StringVector.new
@@ -85,16 +82,15 @@ class IdealLoadsOptions < OpenStudio::Ruleset::WorkspaceUserScript
       end
       return true
     end
-    
+
     return false
   end
   
   # examines object and determines whether or not to add it to the workspace
   def add_object(runner, workspace, idf_object)
-
     num_added = 0
     idd_object = idf_object.iddObject
-   
+
     allowed_objects = []
     allowed_objects << "Output:Surfaces:List"
     allowed_objects << "Output:Surfaces:Drawing"
@@ -109,7 +105,7 @@ class IdealLoadsOptions < OpenStudio::Ruleset::WorkspaceUserScript
     allowed_objects << "Output:Meter:Cumulative:MeterFileOnly"
     allowed_objects << "Meter:Custom"
     allowed_objects << "Meter:CustomDecrement"
-    
+
     if allowed_objects.include?(idd_object.name)
       if !check_for_object(runner, workspace, idf_object, idd_object.type)
         runner.registerInfo("Adding idf object #{idf_object.to_s.strip}")
@@ -119,7 +115,7 @@ class IdealLoadsOptions < OpenStudio::Ruleset::WorkspaceUserScript
         runner.registerInfo("Workspace already includes #{idf_object.to_s.strip}")
       end
     end
-    
+
     allowed_unique_objects = []
     #allowed_unique_objects << "Output:EnergyManagementSystem" # TODO: have to merge
     #allowed_unique_objects << "OutputControl:SurfaceColorScheme" # TODO: have to merge
@@ -127,7 +123,7 @@ class IdealLoadsOptions < OpenStudio::Ruleset::WorkspaceUserScript
     # OutputControl:Table:Style # not allowed
     # OutputControl:ReportingTolerances # not allowed
     # Output:SQLite # not allowed
-   
+
     if allowed_unique_objects.include?(idf_object.iddObject.name)
       if idf_object.iddObject.name == "Output:Table:SummaryReports"
         summary_reports = workspace.getObjectsByType(idf_object.iddObject.type)
@@ -142,14 +138,14 @@ class IdealLoadsOptions < OpenStudio::Ruleset::WorkspaceUserScript
         end
       end
     end
-    
+
     return num_added
   end
 
   # define the arguments that the user will input
   def arguments(workspace)
     args = OpenStudio::Ruleset::OSArgumentVector.new
-    
+
     #make choice argument for availability_schedule
     sch_choices = OpenStudio::StringVector.new
     sch_compacts = workspace.getObjectsByType("Schedule:Compact".to_IddObjectType)
@@ -176,7 +172,7 @@ class IdealLoadsOptions < OpenStudio::Ruleset::WorkspaceUserScript
         sch_choices << sch.getString(0).to_s
       end
     end
-    
+
     #argument for system availability schedule
     availability_schedule = OpenStudio::Ruleset::OSArgument::makeChoiceArgument("availability_schedule", sch_choices, true)
     availability_schedule.setDisplayName("System Availability Schedule:")
@@ -186,7 +182,7 @@ class IdealLoadsOptions < OpenStudio::Ruleset::WorkspaceUserScript
     heating_availability_schedule = OpenStudio::Ruleset::OSArgument::makeChoiceArgument("heating_availability_schedule", sch_choices, true)
     heating_availability_schedule.setDisplayName("Heating Availability Schedule:")
     args << heating_availability_schedule
-    
+
     #argument for cooling availability schedule
     cooling_availability_schedule = OpenStudio::Ruleset::OSArgument::makeChoiceArgument("cooling_availability_schedule", sch_choices, true)
     cooling_availability_schedule.setDisplayName("Cooling Availability Schedule:")
@@ -213,7 +209,7 @@ class IdealLoadsOptions < OpenStudio::Ruleset::WorkspaceUserScript
     cooling_limit_type.setDisplayName("Cooling Limit Type:")
     cooling_limit_type.setDefaultValue("NoLimit")
     args << cooling_limit_type
-    
+
     #argument for Dehumidification Control Type
     choices = OpenStudio::StringVector.new
     choices << "None"
@@ -230,7 +226,7 @@ class IdealLoadsOptions < OpenStudio::Ruleset::WorkspaceUserScript
     cooling_sensible_heat_ratio.setDisplayName("Cooling Sensible Heat Ratio")
     cooling_sensible_heat_ratio.setDefaultValue(0.7)
     args << cooling_sensible_heat_ratio
-    
+
     #argument for Humidification Control Type
     choices = OpenStudio::StringVector.new
     choices << "None"
@@ -249,7 +245,7 @@ class IdealLoadsOptions < OpenStudio::Ruleset::WorkspaceUserScript
     oa_spec.setDisplayName("Outdoor Air Specification:")
     oa_spec.setDefaultValue("Use Individual Zone Design Outdoor Air")
     args << oa_spec
-    
+
     #argument for Demand Controlled Ventilation
     choices = OpenStudio::StringVector.new
     choices << "None"
@@ -269,7 +265,7 @@ class IdealLoadsOptions < OpenStudio::Ruleset::WorkspaceUserScript
     economizer_type.setDisplayName("Economizer Type (Requires a Flow Rate Cooling Limit Type and Outdoor Air):")
     economizer_type.setDefaultValue("NoEconomizer")
     args << economizer_type
-    
+
     #argument for Heat Recovery Type
     choices = OpenStudio::StringVector.new
     choices << "None"
@@ -279,19 +275,19 @@ class IdealLoadsOptions < OpenStudio::Ruleset::WorkspaceUserScript
     heat_recovery_type.setDisplayName("Heat Recovery Type (Requires Outdoor Air):")
     heat_recovery_type.setDefaultValue("None")
     args << heat_recovery_type
-    
+
     #argument for Heat Recovery Sensible Effectiveness
     sensible_effectiveness = OpenStudio::Ruleset::OSArgument::makeDoubleArgument("sensible_effectiveness", true)
     sensible_effectiveness.setDisplayName("Heat Recovery Sensible Effectiveness")
     sensible_effectiveness.setDefaultValue(0.7)
     args << sensible_effectiveness
-    
+
     #argument for Heat Recovery Latent Effectiveness
 	  latent_effectiveness = OpenStudio::Ruleset::OSArgument::makeDoubleArgument("latent_effectiveness", true)
     latent_effectiveness.setDisplayName("Heat Recovery Latent Effectiveness")
     latent_effectiveness.setDefaultValue(0.65)
     args << latent_effectiveness
-    
+
     #add output meter
     add_meters = OpenStudio::Ruleset::OSArgument.makeBoolArgument("add_meters",true)
     add_meters.setDisplayName("Add Meter:Custom and Output:Meter objects to sum ZoneHVAC:IdealLoadsAirSystem variables?")
@@ -304,7 +300,7 @@ class IdealLoadsOptions < OpenStudio::Ruleset::WorkspaceUserScript
   # define what happens when the measure is run
   def run(workspace, runner, user_arguments)
     super(workspace, runner, user_arguments)
-    
+
     # use the built-in error checking 
     if not runner.validateUserArguments(arguments(workspace), user_arguments)
       return false
@@ -313,7 +309,7 @@ class IdealLoadsOptions < OpenStudio::Ruleset::WorkspaceUserScript
     #default is OpenStudio version >= 2.0, set to OSv1 for OpenStudio version <=1.14
     # version = "OSv1"
     version = "OSv2"
-    
+
     #assign the user inputs to variables
     availability_schedule = runner.getStringArgumentValue("availability_schedule",user_arguments)
     heating_availability_schedule = runner.getStringArgumentValue("heating_availability_schedule",user_arguments)
@@ -330,21 +326,26 @@ class IdealLoadsOptions < OpenStudio::Ruleset::WorkspaceUserScript
     sensible_effectiveness = runner.getDoubleArgumentValue("sensible_effectiveness",user_arguments)
     latent_effectiveness = runner.getDoubleArgumentValue("latent_effectiveness",user_arguments)
     add_meters = runner.getBoolArgumentValue("add_meters",user_arguments)
-    
+
     #get ideal air loads objects
     if version == "OSv1" #OS v1 ZoneHVAC:IdealLoadsAirSystem
       ideal_loads_objects = workspace.getObjectsByType("ZoneHVAC:IdealLoadsAirSystem".to_IddObjectType)
     else #OS v2 HVACTemplate:Zone:IdealLoadsAirSystem
       ideal_loads_objects = workspace.getObjectsByType("HVACTemplate:Zone:IdealLoadsAirSystem".to_IddObjectType)
     end
-    runner.registerInitialCondition("The model has #{ideal_loads_objects.length} ideal air loads objects.")
-    
+
+    if ideal_loads_objects.empty?
+      runner.registerError("The model has no ideal air loads objects; cannot apply measure.  Make sure at least one zone has ideal air loads enabled.")
+    else  
+      runner.registerInitialCondition("The model has #{ideal_loads_objects.size} ideal air loads objects.")
+    end
+
     equipment_connection_objects = workspace.getObjectsByType("ZoneHVAC:EquipmentConnections".to_IddObjectType)
     zone_sizing_objects = workspace.getObjectsByType("Sizing:Zone".to_IddObjectType)
 
     num_set = 0
     ideal_loads_objects.each do |ideal_loads_object|
-      
+
       if version == "OSv1" #OS v1 ZoneHVAC:IdealLoadsAirSystem
         ideal_loads_object.setString(1,availability_schedule)
         ideal_loads_object.setString(8,heating_limit_type)
@@ -364,12 +365,12 @@ class IdealLoadsOptions < OpenStudio::Ruleset::WorkspaceUserScript
         ideal_loads_object.setDouble(16,cooling_sensible_heat_ratio)
         ideal_loads_object.setString(18,humid_type)
       end
-      
+
       if oa_spec == "Use Individual Zone Design Outdoor Air"
-      
+
         #get design specification outdoor air object name for this zone
         design_spec_oa_name = ""
-        
+
         if version == "OSv1" #OS v1 ZoneHVAC:IdealLoadsAirSystem
           zone_supply_node_name = ideal_loads_object.getString(2)
           zone_name = ""
@@ -382,7 +383,7 @@ class IdealLoadsOptions < OpenStudio::Ruleset::WorkspaceUserScript
         else #OS v2 HVACTemplate:Zone:IdealLoadsAirSystem
           zone_name = ideal_loads_object.getString(0).to_s
         end
-           
+
         if zone_name == ""
           if version == "OSv1" #OS v1 ZoneHVAC:IdealLoadsAirSystem
             runner.registerError("Unable to find zone for ideal air loads system. Check ZoneHVAC:IdealLoadsAirSystem supply node fields.")
@@ -398,7 +399,7 @@ class IdealLoadsOptions < OpenStudio::Ruleset::WorkspaceUserScript
             end
           end
         end
-				
+
         if design_spec_oa_name == ""
           runner.registerError("Unable to find design specification outdoor air for zone #{zone_name}.  Please specify a design specification outdoor air object for the zone, or select None for Outdoor Air Specification.")
           return false
@@ -428,11 +429,11 @@ class IdealLoadsOptions < OpenStudio::Ruleset::WorkspaceUserScript
       end
       num_set += 1
     end
-    
+
     if add_meters
       #ideal air loads system variables to include
       ideal_air_loads_system_variables = ["Zone Ideal Loads Supply Air Sensible Heating Energy","Zone Ideal Loads Supply Air Latent Heating Energy","Zone Ideal Loads Supply Air Total Heating Energy","Zone Ideal Loads Supply Air Sensible Cooling Energy","Zone Ideal Loads Supply Air Latent Cooling Energy","Zone Ideal Loads Supply Air Total Cooling Energy","Zone Ideal Loads Zone Sensible Heating Energy","Zone Ideal Loads Zone Latent Heating Energy","Zone Ideal Loads Zone Total Heating Energy","Zone Ideal Loads Zone Sensible Cooling Energy","Zone Ideal Loads Zone Latent Cooling Energy","Zone Ideal Loads Zone Total Cooling Energy","Zone Ideal Loads Outdoor Air Sensible Heating Energy","Zone Ideal Loads Outdoor Air Latent Heating Energy","Zone Ideal Loads Outdoor Air Total Heating Energy","Zone Ideal Loads Outdoor Air Sensible Cooling Energy","Zone Ideal Loads Outdoor Air Latent Cooling Energy","Zone Ideal Loads Outdoor Air Total Cooling Energy","Zone Ideal Loads Heat Recovery Sensible Heating Energy","Zone Ideal Loads Heat Recovery Latent Heating Energy","Zone Ideal Loads Heat Recovery Total Heating Energy","Zone Ideal Loads Heat Recovery Sensible Cooling Energy","Zone Ideal Loads Heat Recovery Latent Cooling Energy","Zone Ideal Loads Heat Recovery Total Cooling Energy"]
-      
+
       ideal_loads_names = []
       ideal_loads_objects.each do |object|
         if version == "OSv1" #OS v1 ZoneHVAC:IdealLoadsAirSystem
@@ -450,7 +451,7 @@ class IdealLoadsOptions < OpenStudio::Ruleset::WorkspaceUserScript
           end
         end
       end
-      
+
       meters_added = 0
       outputs_added = 0      
       ideal_air_loads_system_variables.each do |variable|        
@@ -483,9 +484,7 @@ class IdealLoadsOptions < OpenStudio::Ruleset::WorkspaceUserScript
     end
 
     return true
-
   end
-
 end
 
 # register the measure to be used by the application
