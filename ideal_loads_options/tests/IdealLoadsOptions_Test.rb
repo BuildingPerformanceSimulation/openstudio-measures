@@ -40,6 +40,55 @@ class IdealLoadsOptions_Test < MiniTest::Unit::TestCase
     assert_equal("add_meters", arguments[14].name)
   end
 
+  def test_no_ideal_loads
+    #this measure tests a curve applied to all fans
+    test_name = "test_no_ideal_loads"
+
+    # create an instance of the measure
+    measure = IdealLoadsOptions.new
+
+    # create an instance of a runner
+    runner = OpenStudio::Ruleset::OSRunner.new
+    
+    # load the test model
+    translator = OpenStudio::OSVersion::VersionTranslator.new
+    path = OpenStudio::Path.new(File.dirname(__FILE__) + "/test_v2.4_office_no_ideal.osm")
+    model = translator.loadModel(path)
+    assert((not model.empty?))
+    model = model.get
+
+    # forward translate OSM file to IDF file
+    ft = OpenStudio::EnergyPlus::ForwardTranslator.new
+    workspace = ft.translateModel(model)
+    
+    # set argument values to good values
+    arguments = measure.arguments(workspace)
+    argument_map = OpenStudio::Ruleset::OSArgumentMap.new
+    
+    availability_schedule = arguments[0].clone
+    assert(availability_schedule.setValue("Always On Discrete"))
+    argument_map["availability_schedule"] = availability_schedule
+
+    heating_availability_schedule = arguments[1].clone
+    assert(heating_availability_schedule.setValue("Always On Discrete"))
+    argument_map["heating_availability_schedule"] = heating_availability_schedule
+    
+    cooling_availability_schedule = arguments[2].clone
+    assert(cooling_availability_schedule.setValue("Always On Discrete"))
+    argument_map["cooling_availability_schedule"] = cooling_availability_schedule
+
+    # run the measure
+    measure.run(workspace, runner, argument_map)
+    result = runner.result
+    
+    # show the output
+    show_output(result)
+    
+    # assert that it ran correctly
+    assert_equal("Fail", result.value.valueName)
+    assert(result.warnings.size == 0)
+  end
+
   def test_good_inputs
     #this measure tests a curve applied to all fans
     test_name = "test_good_inputs"
