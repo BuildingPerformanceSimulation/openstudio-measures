@@ -1,0 +1,341 @@
+<measure>
+  <schema_version>3.0</schema_version>
+  <name>ideal_air_loads_zone_hvac</name>
+  <uid>9cdff3b9-7ce1-4982-b555-bb83c73727e4</uid>
+  <version_id>b119c7b6-cad9-4824-a601-2c39a12c8c7d</version_id>
+  <version_modified>20180904T222340Z</version_modified>
+  <xml_checksum>1423DDF2</xml_checksum>
+  <class_name>IdealAirLoadsZoneHVAC</class_name>
+  <display_name>Ideal Air Loads Zone HVAC</display_name>
+  <description>This OpenStudio measure will replace the existing HVAC system with ideal air loads objects for each conditioned zone and allow the user to specify input fields including availability schedules, humidity controls, outdoor air ventilation, demand controlled ventilation, economizer operation, and heat recovery.  The measure optionally creates custom meter and output meter objects that sum all ideal loads output variables for further analysis.</description>
+  <modeler_description>This measure creates ZoneHVACIdealLoadsAirSystem objects for each conditioned zone using the model_add_ideal_air_loads method in the openstudio-standards gem.</modeler_description>
+  <arguments>
+    <argument>
+      <name>availability_schedule</name>
+      <display_name>System Availability Schedule:</display_name>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>Default Always On</default_value>
+      <choices>
+        <choice>
+          <value>Default Always On</value>
+          <display_name>Default Always On</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>heating_availability_schedule</name>
+      <display_name>Heating Availability Schedule:</display_name>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>Default Always On</default_value>
+      <choices>
+        <choice>
+          <value>Default Always On</value>
+          <display_name>Default Always On</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>cooling_availability_schedule</name>
+      <display_name>Cooling Availability Schedule:</display_name>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>Default Always On</default_value>
+      <choices>
+        <choice>
+          <value>Default Always On</value>
+          <display_name>Default Always On</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>heating_limit_type</name>
+      <display_name>Heating Limit Type:</display_name>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>NoLimit</default_value>
+      <choices>
+        <choice>
+          <value>NoLimit</value>
+          <display_name>NoLimit</display_name>
+        </choice>
+        <choice>
+          <value>LimitFlowRate</value>
+          <display_name>LimitFlowRate</display_name>
+        </choice>
+        <choice>
+          <value>LimitCapacity</value>
+          <display_name>LimitCapacity</display_name>
+        </choice>
+        <choice>
+          <value>LimitFlowRateAndCapacity</value>
+          <display_name>LimitFlowRateAndCapacity</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>cooling_limit_type</name>
+      <display_name>Cooling Limit Type:</display_name>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>NoLimit</default_value>
+      <choices>
+        <choice>
+          <value>NoLimit</value>
+          <display_name>NoLimit</display_name>
+        </choice>
+        <choice>
+          <value>LimitFlowRate</value>
+          <display_name>LimitFlowRate</display_name>
+        </choice>
+        <choice>
+          <value>LimitCapacity</value>
+          <display_name>LimitCapacity</display_name>
+        </choice>
+        <choice>
+          <value>LimitFlowRateAndCapacity</value>
+          <display_name>LimitFlowRateAndCapacity</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>dehumid_type</name>
+      <display_name>Dehumidification Control:</display_name>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>ConstantSensibleHeatRatio</default_value>
+      <choices>
+        <choice>
+          <value>None</value>
+          <display_name>None</display_name>
+        </choice>
+        <choice>
+          <value>ConstantSensibleHeatRatio</value>
+          <display_name>ConstantSensibleHeatRatio</display_name>
+        </choice>
+        <choice>
+          <value>Humidistat</value>
+          <display_name>Humidistat</display_name>
+        </choice>
+        <choice>
+          <value>ConstantSupplyHumidityRatio</value>
+          <display_name>ConstantSupplyHumidityRatio</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>cooling_sensible_heat_ratio</name>
+      <display_name>Cooling Sensible Heat Ratio</display_name>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>0.7</default_value>
+    </argument>
+    <argument>
+      <name>humid_type</name>
+      <display_name>Humidification Control:</display_name>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>None</default_value>
+      <choices>
+        <choice>
+          <value>None</value>
+          <display_name>None</display_name>
+        </choice>
+        <choice>
+          <value>Humidistat</value>
+          <display_name>Humidistat</display_name>
+        </choice>
+        <choice>
+          <value>ConstantSupplyHumidityRatio</value>
+          <display_name>ConstantSupplyHumidityRatio</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>include_outdoor_air</name>
+      <display_name>Include Outdoor Air Ventilation?:</display_name>
+      <type>Boolean</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>true</default_value>
+      <choices>
+        <choice>
+          <value>true</value>
+          <display_name>true</display_name>
+        </choice>
+        <choice>
+          <value>false</value>
+          <display_name>false</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>enable_dcv</name>
+      <display_name>Enable Demand Controlled Ventilation?:</display_name>
+      <type>Boolean</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>false</default_value>
+      <choices>
+        <choice>
+          <value>true</value>
+          <display_name>true</display_name>
+        </choice>
+        <choice>
+          <value>false</value>
+          <display_name>false</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>economizer_type</name>
+      <display_name>Economizer Type (Requires a Flow Rate Cooling Limit Type and Outdoor Air):</display_name>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>NoEconomizer</default_value>
+      <choices>
+        <choice>
+          <value>NoEconomizer</value>
+          <display_name>NoEconomizer</display_name>
+        </choice>
+        <choice>
+          <value>DifferentialDryBulb</value>
+          <display_name>DifferentialDryBulb</display_name>
+        </choice>
+        <choice>
+          <value>DifferentialEnthalpy</value>
+          <display_name>DifferentialEnthalpy</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>heat_recovery_type</name>
+      <display_name>Heat Recovery Type (Requires Outdoor Air):</display_name>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>None</default_value>
+      <choices>
+        <choice>
+          <value>None</value>
+          <display_name>None</display_name>
+        </choice>
+        <choice>
+          <value>Sensible</value>
+          <display_name>Sensible</display_name>
+        </choice>
+        <choice>
+          <value>Enthalpy</value>
+          <display_name>Enthalpy</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>sensible_effectiveness</name>
+      <display_name>Heat Recovery Sensible Effectiveness</display_name>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>0.7</default_value>
+    </argument>
+    <argument>
+      <name>latent_effectiveness</name>
+      <display_name>Heat Recovery Latent Effectiveness</display_name>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>0.65</default_value>
+    </argument>
+    <argument>
+      <name>add_meters</name>
+      <display_name>Add Meter:Custom and Output:Meter objects to sum ZoneHVAC:IdealLoadsAirSystem variables?</display_name>
+      <type>Boolean</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>true</default_value>
+      <choices>
+        <choice>
+          <value>true</value>
+          <display_name>true</display_name>
+        </choice>
+        <choice>
+          <value>false</value>
+          <display_name>false</display_name>
+        </choice>
+      </choices>
+    </argument>
+  </arguments>
+  <outputs/>
+  <provenances/>
+  <tags>
+    <tag>HVAC.Whole System</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Uses SketchUp API</name>
+      <value>false</value>
+      <datatype>boolean</datatype>
+    </attribute>
+    <attribute>
+      <name>Measure Type</name>
+      <value>ModelMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>OpenStudio Application</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>Parametric Analysis Tool</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Use Case</name>
+      <value>Automatic Report Generation</value>
+      <datatype>string</datatype>
+    </attribute>
+  </attributes>
+  <files>
+    <file>
+      <filename>IdealAirLoadsZoneHVAC_Test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>85847BDB</checksum>
+    </file>
+    <file>
+      <filename>office.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>1FD7CBD7</checksum>
+    </file>
+    <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>2.6.2</identifier>
+        <min_compatible>2.6.2</min_compatible>
+      </version>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>56C85623</checksum>
+    </file>
+    <file>
+      <filename>office_no_design_oa.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>57F7FB68</checksum>
+    </file>
+  </files>
+</measure>
