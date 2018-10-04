@@ -323,8 +323,8 @@
     <file>
       <version>
         <software_program>OpenStudio</software_program>
-        <identifier>2.6.2</identifier>
-        <min_compatible>2.6.2</min_compatible>
+        <identifier>2.7.0</identifier>
+        <min_compatible>2.7.0</min_compatible>
       </version>
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
