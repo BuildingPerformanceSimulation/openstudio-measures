@@ -160,7 +160,8 @@ class AddWindAndStackOpenArea < OpenStudio::Ruleset::WorkspaceUserScript
     angle = surface_angle + relative_north
     if angle < 0.0
       angle += 360.0
-    elsif angle >= 360.0
+    end
+    if angle >= 360.0
       angle -= 360.0
     end
     return angle
@@ -354,6 +355,7 @@ class AddWindAndStackOpenArea < OpenStudio::Ruleset::WorkspaceUserScript
 
       # determine outward normal angle for surface; need one for each window object
       effective_angle = get_window_effective_angle(workspace, w)
+      runner.registerInfo("Effective angle #{effective_angle} degrees for window #{window_name}")
 
       # IDF object text for ZoneVentilationWindStackOpenArea
       idf_objects_to_add << "

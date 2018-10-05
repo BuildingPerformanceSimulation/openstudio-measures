@@ -2,8 +2,8 @@
   <schema_version>3.0</schema_version>
   <name>add_wind_and_stack_open_area</name>
   <uid>8055497a-0d38-48eb-a643-76383fa54664</uid>
-  <version_id>670f9339-d45c-4e95-a852-2a8c4f4ab1cf</version_id>
-  <version_modified>20181003T182651Z</version_modified>
+  <version_id>9b12c497-2f97-4fbb-a35c-fbbc0b9e65fd</version_id>
+  <version_modified>20181005T191214Z</version_modified>
   <xml_checksum>76B1868C</xml_checksum>
   <class_name>AddWindAndStackOpenArea</class_name>
   <display_name>Add Wind and Stack Open Area</display_name>
@@ -129,6 +129,12 @@
       <checksum>18202E7D</checksum>
     </file>
     <file>
+      <filename>README.md</filename>
+      <filetype>md</filetype>
+      <usage_type>readme</usage_type>
+      <checksum>61BF8359</checksum>
+    </file>
+    <file>
       <version>
         <software_program>OpenStudio</software_program>
         <identifier>1.6.0</identifier>
@@ -137,13 +143,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>D641D227</checksum>
-    </file>
-    <file>
-      <filename>README.md</filename>
-      <filetype>md</filetype>
-      <usage_type>readme</usage_type>
-      <checksum>61BF8359</checksum>
+      <checksum>101E60DE</checksum>
     </file>
   </files>
 </measure>
