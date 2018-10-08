@@ -2,8 +2,8 @@
   <schema_version>3.0</schema_version>
   <name>add_wind_and_stack_open_area</name>
   <uid>8055497a-0d38-48eb-a643-76383fa54664</uid>
-  <version_id>9b12c497-2f97-4fbb-a35c-fbbc0b9e65fd</version_id>
-  <version_modified>20181005T191214Z</version_modified>
+  <version_id>15b25557-fec1-4ef3-b212-9f8e133ce2cb</version_id>
+  <version_modified>20181008T190647Z</version_modified>
   <xml_checksum>76B1868C</xml_checksum>
   <class_name>AddWindAndStackOpenArea</class_name>
   <display_name>Add Wind and Stack Open Area</display_name>
@@ -117,33 +117,33 @@
   </attributes>
   <files>
     <file>
-      <filename>Office.osm</filename>
-      <filetype>osm</filetype>
-      <usage_type>test</usage_type>
-      <checksum>6B38526A</checksum>
-    </file>
-    <file>
-      <filename>AddWindAndStackOpenArea_Test.rb</filename>
-      <filetype>rb</filetype>
-      <usage_type>test</usage_type>
-      <checksum>18202E7D</checksum>
-    </file>
-    <file>
       <filename>README.md</filename>
       <filetype>md</filetype>
       <usage_type>readme</usage_type>
       <checksum>61BF8359</checksum>
     </file>
     <file>
+      <filename>Office.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>D287090D</checksum>
+    </file>
+    <file>
       <version>
         <software_program>OpenStudio</software_program>
-        <identifier>1.6.0</identifier>
-        <min_compatible>1.8.0</min_compatible>
+        <identifier>2.7</identifier>
+        <min_compatible>2.7</min_compatible>
       </version>
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>101E60DE</checksum>
+      <checksum>A1A56FA2</checksum>
+    </file>
+    <file>
+      <filename>AddWindAndStackOpenArea_Test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>DCC668C4</checksum>
     </file>
   </files>
 </measure>

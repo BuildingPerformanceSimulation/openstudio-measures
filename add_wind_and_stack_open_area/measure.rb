@@ -85,18 +85,21 @@ class AddWindAndStackOpenArea < OpenStudio::Ruleset::WorkspaceUserScript
     # assumes 4 vertices, but could handle more if fenestration surfaces in EnergyPlus gets extended to handle more in the future
 
     # get x,y,z values of vertices from window object
-    x1 = window.getDouble(10).get
-    y1 = window.getDouble(11).get
-    z1 = window.getDouble(12).get
-    y2 = window.getDouble(14).get
-    x2 = window.getDouble(13).get
-    z2 = window.getDouble(15).get
-    x3 = window.getDouble(16).get
-    y3 = window.getDouble(17).get
-    z3 = window.getDouble(18).get
-    x4 = window.getDouble(19).get
-    y4 = window.getDouble(20).get
-    z4 = window.getDouble(21).get
+    x1 = window.getDouble(9).get
+    y1 = window.getDouble(10).get
+    z1 = window.getDouble(11).get
+
+    x2 = window.getDouble(12).get
+    y2 = window.getDouble(13).get
+    z2 = window.getDouble(14).get
+
+    x3 = window.getDouble(15).get
+    y3 = window.getDouble(16).get
+    z3 = window.getDouble(17).get
+
+    x4 = window.getDouble(18).get
+    y4 = window.getDouble(19).get
+    z4 = window.getDouble(20).get
 
     vertices = []
     vertices << [x1, y1, z1]
@@ -112,10 +115,10 @@ class AddWindAndStackOpenArea < OpenStudio::Ruleset::WorkspaceUserScript
 
     # assume z coordinates
     z_values = []
-    z_values << window.getDouble(12).get
-    z_values << window.getDouble(15).get
-    z_values << window.getDouble(18).get
-    z_values << window.getDouble(21).get
+    z_values << window.getDouble(11).get
+    z_values << window.getDouble(14).get
+    z_values << window.getDouble(17).get
+    z_values << window.getDouble(20).get
 
     zmin = z_values[0]
     zmax = z_values[0]
@@ -139,8 +142,8 @@ class AddWindAndStackOpenArea < OpenStudio::Ruleset::WorkspaceUserScript
     x1 = surface.getDouble(10).get
     y1 = surface.getDouble(11).get
     z1 = surface.getDouble(12).get
-    y2 = surface.getDouble(14).get
     x2 = surface.getDouble(13).get
+    y2 = surface.getDouble(14).get
     z2 = surface.getDouble(15).get
     x3 = surface.getDouble(16).get
     y3 = surface.getDouble(17).get
@@ -158,6 +161,7 @@ class AddWindAndStackOpenArea < OpenStudio::Ruleset::WorkspaceUserScript
     end
 
     angle = surface_angle + relative_north
+    angle = angle.round(2)
     if angle < 0.0
       angle += 360.0
     end
