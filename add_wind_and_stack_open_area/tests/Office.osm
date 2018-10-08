@@ -63,7 +63,7 @@ OS:Space,
   {c7b057c5-cbd8-4354-a8e5-2ee853163eab}, !- Space Type Name
   ,                                       !- Default Construction Set Name
   ,                                       !- Default Schedule Set Name
-  15,                                     !- Direction of Relative North {deg}
+  0,                                      !- Direction of Relative North {deg}
   5.60100324584802,                       !- X Origin {m}
   3.23374073172232,                       !- Y Origin {m}
   33.5366,                                !- Z Origin {m}
@@ -320,7 +320,7 @@ OS:Space,
   {ccf5b724-7469-42d7-b81f-1c1f7c411429}, !- Space Type Name
   ,                                       !- Default Construction Set Name
   ,                                       !- Default Schedule Set Name
-  15,                                     !- Direction of Relative North {deg}
+  0,                                      !- Direction of Relative North {deg}
   0,                                      !- X Origin {m}
   0,                                      !- Y Origin {m}
   0,                                      !- Z Origin {m}
@@ -359,7 +359,7 @@ OS:Space,
   {ccf5b724-7469-42d7-b81f-1c1f7c411429}, !- Space Type Name
   ,                                       !- Default Construction Set Name
   ,                                       !- Default Schedule Set Name
-  15,                                     !- Direction of Relative North {deg}
+  0,                                      !- Direction of Relative North {deg}
   0,                                      !- X Origin {m}
   0,                                      !- Y Origin {m}
   0,                                      !- Z Origin {m}
@@ -664,7 +664,7 @@ OS:Space,
   {ccf5b724-7469-42d7-b81f-1c1f7c411429}, !- Space Type Name
   ,                                       !- Default Construction Set Name
   ,                                       !- Default Schedule Set Name
-  15,                                     !- Direction of Relative North {deg}
+  0,                                      !- Direction of Relative North {deg}
   0,                                      !- X Origin {m}
   0,                                      !- Y Origin {m}
   0,                                      !- Z Origin {m}
@@ -738,7 +738,7 @@ OS:Space,
   {ccf5b724-7469-42d7-b81f-1c1f7c411429}, !- Space Type Name
   ,                                       !- Default Construction Set Name
   ,                                       !- Default Schedule Set Name
-  15,                                     !- Direction of Relative North {deg}
+  0,                                      !- Direction of Relative North {deg}
   0,                                      !- X Origin {m}
   0,                                      !- Y Origin {m}
   0,                                      !- Z Origin {m}
@@ -837,7 +837,7 @@ OS:Space,
   ,                                       !- Space Type Name
   ,                                       !- Default Construction Set Name
   ,                                       !- Default Schedule Set Name
-  15,                                     !- Direction of Relative North {deg}
+  0,                                      !- Direction of Relative North {deg}
   0,                                      !- X Origin {m}
   0,                                      !- Y Origin {m}
   0,                                      !- Z Origin {m}
@@ -1004,7 +1004,7 @@ OS:Space,
   {ccf5b724-7469-42d7-b81f-1c1f7c411429}, !- Space Type Name
   ,                                       !- Default Construction Set Name
   ,                                       !- Default Schedule Set Name
-  15,                                     !- Direction of Relative North {deg}
+  0,                                      !- Direction of Relative North {deg}
   0,                                      !- X Origin {m}
   0,                                      !- Y Origin {m}
   0,                                      !- Z Origin {m}
@@ -1033,7 +1033,7 @@ OS:SubSurface,
   {2ffc08d9-3d87-472d-9fb8-4d03d298cea2}, !- Handle
   Perimeter_top_ZN_3_Wall_North_Window,   !- Name
   FixedWindow,                            !- Sub Surface Type
-  ,                                       !- Construction Name
+  {81bd4367-7846-4969-a74e-001a5369f448}, !- Construction Name
   {22589ad2-e202-40f0-8ea4-3a1465dc671e}, !- Surface Name
   ,                                       !- Outside Boundary Condition Object
   ,                                       !- View Factor to Ground
@@ -2353,7 +2353,7 @@ OS:SubSurface,
   {653a73e1-2713-4171-a291-8f2a76d32df9}, !- Handle
   Perimeter_top_ZN_1_Wall_South_Window,   !- Name
   FixedWindow,                            !- Sub Surface Type
-  ,                                       !- Construction Name
+  {81bd4367-7846-4969-a74e-001a5369f448}, !- Construction Name
   {4dd079cc-3c4c-49b7-8eeb-039223867855}, !- Surface Name
   ,                                       !- Outside Boundary Condition Object
   ,                                       !- View Factor to Ground
@@ -2518,7 +2518,7 @@ OS:SubSurface,
   {37760421-293e-4754-8028-4b540f335473}, !- Handle
   Perimeter_top_ZN_4_Wall_West_Window,    !- Name
   FixedWindow,                            !- Sub Surface Type
-  ,                                       !- Construction Name
+  {81bd4367-7846-4969-a74e-001a5369f448}, !- Construction Name
   {89cd241e-4345-48f8-b4f3-b90e490a2fd3}, !- Surface Name
   ,                                       !- Outside Boundary Condition Object
   ,                                       !- View Factor to Ground
