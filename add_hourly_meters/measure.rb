@@ -21,7 +21,7 @@ class AddHourlyMeters < OpenStudio::Ruleset::ModelUserScript
       return false
     end
 	
-    meter_names = ["Electricity:Facility","InteriorLights:Electricity","InteriorEquipment:Electricity","ExteriorEquipment:Electricity","Fans:Electricity","Pumps:Electricity","Heating:Electricity","Cooling:Electricity","HeatRejection:Electricity","Humidifer:Electricity","HeatRecovery:Electricity","WaterSystems:Electricity","Cogeneration:Electricity","Gas:Facility","InteriorEquipment:Gas","ExteriorEquipment:Gas","Heating:Gas","Cooling:Gas","WaterSystems:Gas","Cogeneration:Gas","DistrictHeating:Facility","DistrictCooling:Facility"];
+    meter_names = ["Electricity:Facility","ExteriorLights:Electricity","InteriorLights:Electricity","InteriorEquipment:Electricity","ExteriorEquipment:Electricity","Fans:Electricity","Pumps:Electricity","Heating:Electricity","Cooling:Electricity","HeatRejection:Electricity","Humidifer:Electricity","HeatRecovery:Electricity","WaterSystems:Electricity","Cogeneration:Electricity","Gas:Facility","InteriorEquipment:Gas","ExteriorEquipment:Gas","Heating:Gas","Cooling:Gas","WaterSystems:Gas","Cogeneration:Gas","DistrictHeating:Facility","DistrictCooling:Facility"];
 	
     meters = model.getOutputMeters
     #reporting initial condition of model
