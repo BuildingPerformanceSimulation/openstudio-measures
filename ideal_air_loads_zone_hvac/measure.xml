@@ -2,13 +2,13 @@
   <schema_version>3.0</schema_version>
   <name>ideal_air_loads_zone_hvac</name>
   <uid>9cdff3b9-7ce1-4982-b555-bb83c73727e4</uid>
-  <version_id>b119c7b6-cad9-4824-a601-2c39a12c8c7d</version_id>
-  <version_modified>20180904T222340Z</version_modified>
+  <version_id>2a56071b-8455-4a72-b78f-733240c202e8</version_id>
+  <version_modified>20190325T222118Z</version_modified>
   <xml_checksum>1423DDF2</xml_checksum>
   <class_name>IdealAirLoadsZoneHVAC</class_name>
   <display_name>Ideal Air Loads Zone HVAC</display_name>
   <description>This OpenStudio measure will replace the existing HVAC system with ideal air loads objects for each conditioned zone and allow the user to specify input fields including availability schedules, humidity controls, outdoor air ventilation, demand controlled ventilation, economizer operation, and heat recovery.  The measure optionally creates custom meter and output meter objects that sum all ideal loads output variables for further analysis.</description>
-  <modeler_description>This measure creates ZoneHVACIdealLoadsAirSystem objects for each conditioned zone using the model_add_ideal_air_loads method in the openstudio-standards gem.</modeler_description>
+  <modeler_description>This measure creates ZoneHVACIdealLoadsAirSystem objects for each conditioned zone using the model_add_ideal_air_loads method in the openstudio-standards gem.  If the 'Include Outdoor Air Ventilation?' option is set to false, the measure will remove all Design Specification Outdoor Air objects in the model so that they don't get written to the ideal loads objects during forward translation.</modeler_description>
   <arguments>
     <argument>
       <name>availability_schedule</name>
@@ -309,16 +309,22 @@
   </attributes>
   <files>
     <file>
-      <filename>IdealAirLoadsZoneHVAC_Test.rb</filename>
-      <filetype>rb</filetype>
-      <usage_type>test</usage_type>
-      <checksum>85847BDB</checksum>
-    </file>
-    <file>
       <filename>office.osm</filename>
       <filetype>osm</filetype>
       <usage_type>test</usage_type>
       <checksum>1FD7CBD7</checksum>
+    </file>
+    <file>
+      <filename>office_no_design_oa.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>57F7FB68</checksum>
+    </file>
+    <file>
+      <filename>IdealAirLoadsZoneHVAC_Test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>A1C814B9</checksum>
     </file>
     <file>
       <version>
@@ -329,13 +335,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>56C85623</checksum>
-    </file>
-    <file>
-      <filename>office_no_design_oa.osm</filename>
-      <filetype>osm</filetype>
-      <usage_type>test</usage_type>
-      <checksum>57F7FB68</checksum>
+      <checksum>EEAE324E</checksum>
     </file>
   </files>
 </measure>

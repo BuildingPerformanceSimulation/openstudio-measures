@@ -15,7 +15,7 @@ class IdealAirLoadsZoneHVAC < OpenStudio::Ruleset::ModelUserScript
 
   # human readable description of modeling approach
   def modeler_description
-    return 'This measure creates ZoneHVACIdealLoadsAirSystem objects for each conditioned zone using the model_add_ideal_air_loads method in the openstudio-standards gem.'
+    return "This measure creates ZoneHVACIdealLoadsAirSystem objects for each conditioned zone using the model_add_ideal_air_loads method in the openstudio-standards gem.  If the 'Include Outdoor Air Ventilation?' option is set to false, the measure will remove all Design Specification Outdoor Air objects in the model so that they don't get written to the ideal loads objects during forward translation."
   end
 
   # define the arguments that the user will input
@@ -141,7 +141,7 @@ class IdealAirLoadsZoneHVAC < OpenStudio::Ruleset::ModelUserScript
     args << sensible_effectiveness
 
     # argument for Heat Recovery Latent Effectiveness
-	  latent_effectiveness = OpenStudio::Ruleset::OSArgument::makeDoubleArgument('latent_effectiveness', true)
+    latent_effectiveness = OpenStudio::Ruleset::OSArgument::makeDoubleArgument('latent_effectiveness', true)
     latent_effectiveness.setDisplayName('Heat Recovery Latent Effectiveness')
     latent_effectiveness.setDefaultValue(0.65)
     args << latent_effectiveness
@@ -227,12 +227,16 @@ class IdealAirLoadsZoneHVAC < OpenStudio::Ruleset::ModelUserScript
     end
     if include_outdoor_air
       ideal_load_objects_with_oa = ideal_loads_objects.select { |obj| obj.designSpecificationOutdoorAirObject.is_initialized }
-      if ideal_load_objects_with_oa.empty?      
-        runner.registerError('Outdoor air ventilation request, but ideal loads objects are missing design outdoor air specification objects.  See logs from [openstudio.model.Model].  Likely cause is spaces or space types missing design specification outdoor air objects.')
+      if ideal_load_objects_with_oa.empty?
+        runner.registerError('Outdoor air ventilation requested, but ideal loads objects are missing design outdoor air specification objects.  See logs from [openstudio.model.Model].  Likely cause is spaces or space types missing design specification outdoor air objects.')
         return false
       elsif ideal_load_objects_with_oa.size < ideal_loads_objects.size
-        runner.registerWarning('Outdoor air ventilation request, but some ideal loads objects are missing design outdoor air specification objects.  See logs from [openstudio.model.Model].  Likely cause is a space or space missing a design specification outdoor air objects.  This could be intentional.')
+        runner.registerWarning('Outdoor air ventilation requested, but some ideal loads objects are missing design outdoor air specification objects.  See logs from [openstudio.model.Model].  Likely cause is a space or space missing a design specification outdoor air objects.  This could be intentional.')
       end
+    else
+      # remove design specification outdoor air objects
+      runner.registerWarning('No outdoor air ventilation requested; removing Design Specification Outdoor Air objects from model.')
+      model.getDesignSpecificationOutdoorAirs.each(&:remove)
     end
 
     runner.registerFinalCondition("The model has #{ideal_loads_objects.size} ideal air loads objects.")
