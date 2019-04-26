@@ -2,13 +2,13 @@
   <schema_version>3.0</schema_version>
   <name>set_output_table_to_i_punits</name>
   <uid>c4381bc7-2426-486a-8050-e50c60e718a2</uid>
-  <version_id>8a5b6109-57b1-4d49-abb1-b9ab76b79acd</version_id>
-  <version_modified>20180719T180928Z</version_modified>
+  <version_id>b1aac4a7-79ab-49f4-8067-815084e0365f</version_id>
+  <version_modified>20190426T215502Z</version_modified>
   <xml_checksum>E700F594</xml_checksum>
   <class_name>SetOutputTableToIPunits</class_name>
   <display_name>Set Output Table To IP Units</display_name>
-  <description>This measure changes the output table to be in IP units</description>
-  <modeler_description>Sets the OutputControl:Table:Style to be InchPound.</modeler_description>
+  <description>This measure changes the output table to be in IP units.</description>
+  <modeler_description>This EnergyPlus measure sets the OutputControl:Table:Style to InchPound.</modeler_description>
   <arguments/>
   <outputs/>
   <provenances/>
@@ -39,6 +39,12 @@
   </attributes>
   <files>
     <file>
+      <filename>example.idf</filename>
+      <filetype>idf</filetype>
+      <usage_type>test</usage_type>
+      <checksum>8810333C</checksum>
+    </file>
+    <file>
       <version>
         <software_program>OpenStudio</software_program>
         <identifier>0.11.3</identifier>
@@ -47,19 +53,13 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>5C1AF6A3</checksum>
-    </file>
-    <file>
-      <filename>example.idf</filename>
-      <filetype>idf</filetype>
-      <usage_type>test</usage_type>
-      <checksum>8810333C</checksum>
+      <checksum>37EBB72A</checksum>
     </file>
     <file>
       <filename>SetOutputTableToIPUnits_Test.rb</filename>
       <filetype>rb</filetype>
       <usage_type>test</usage_type>
-      <checksum>F10131EF</checksum>
+      <checksum>E3A58D85</checksum>
     </file>
   </files>
 </measure>
