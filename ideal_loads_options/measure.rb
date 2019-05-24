@@ -343,6 +343,11 @@ class IdealLoadsOptions < OpenStudio::Ruleset::WorkspaceUserScript
     equipment_connection_objects = workspace.getObjectsByType("ZoneHVAC:EquipmentConnections".to_IddObjectType)
     zone_sizing_objects = workspace.getObjectsByType("Sizing:Zone".to_IddObjectType)
 
+    if zone_sizing_objects.empty?
+      runner.registerError("Unable to find zone sizing objects in .idf file. Check that sizing design days are included in the model.")
+      return false
+    end
+
     num_set = 0
     ideal_loads_objects.each do |ideal_loads_object|
 
