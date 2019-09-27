@@ -1,8 +1,18 @@
-class AddWindAndStackOpenArea < OpenStudio::Ruleset::WorkspaceUserScript
+class AddWindAndStackOpenArea < OpenStudio::Measure::EnergyPlusMeasure
 
   # define the name that a user will see
   def name
     return 'Add Wind and Stack Open Area'
+  end
+
+  # human readable description
+  def description
+    return 'This measure models natural ventilation to thermal zones with operable windows.  It is not intended to model natural ventilation that relies on interzone, stack driven air transfer.'
+  end
+
+  # human readable description of modeling approach
+  def modeler_description
+    return   'This measure adds ZoneVentilation:WindandStackOpenArea objects to a zone for each window of a specified operable window construction.  The user can specify values for minimum and maximum zone and outdoor air temperatures and wind speed that set limits on when the ventilation is active. The airflow rate is the quadrature sum of wind driven and stack effect driven air flow.  Airflow driven by wind is a function of opening effectiveness, area, scheduled open area fraction, and wind speed.  Airflow driven by the stack effect is a function of the discharge coefficient, area, scheduled open area fraction, and height difference to the neutral pressure level.  This measure takes the height difference as half the window height, and as such is only intended to model natural ventilation in single zones where a few large operable windows or doors account for the majority of operable area.  It is not intended to model natural ventilation that relies on interzone, stack driven air transfer where ventilation flow through a opening is unidirectional.'
   end
 
   ###
@@ -191,34 +201,34 @@ class AddWindAndStackOpenArea < OpenStudio::Ruleset::WorkspaceUserScript
     args << construction
 
     # make choice argument for fractional schedule
-    sch_choices = OpenStudio::StringVector.new
+    sch_choices_fractional = OpenStudio::StringVector.new
     sch_compacts = workspace.getObjectsByType('Schedule:Compact'.to_IddObjectType)
     sch_constants = workspace.getObjectsByType('Schedule:Constant'.to_IddObjectType)
     sch_years = workspace.getObjectsByType('Schedule:Year'.to_IddObjectType)
     sch_files = workspace.getObjectsByType('Schedule:File'.to_IddObjectType)
     sch_compacts.each do |sch|
       if sch.getString(1).to_s.downcase == 'fractional'
-        sch_choices << sch.getString(0).to_s
+        sch_choices_fractional << sch.getString(0).to_s
       end
     end
     sch_constants.each do |sch|
       if sch.getString(1).to_s.downcase == 'fractional'
-        sch_choices << sch.getString(0).to_s
+        sch_choices_fractional << sch.getString(0).to_s
       end
     end
     sch_years.each do |sch|
       if sch.getString(1).to_s.downcase == 'fractional'
-        sch_choices << sch.getString(0).to_s
+        sch_choices_fractional << sch.getString(0).to_s
       end
     end
     sch_files.each do |sch|
       if sch.getString(1).to_s.downcase == 'fractional'
-        sch_choices << sch.getString(0).to_s
+        sch_choices_fractional << sch.getString(0).to_s
       end
     end
 
     # make an argument for open area fraction
-    open_area_fraction_schedule = OpenStudio::Ruleset::OSArgument::makeChoiceArgument('open_area_fraction_schedule', sch_choices, true)
+    open_area_fraction_schedule = OpenStudio::Ruleset::OSArgument::makeChoiceArgument('open_area_fraction_schedule', sch_choices_fractional, true)
     open_area_fraction_schedule.setDisplayName('Open Area Fraction Schedule')
     open_area_fraction_schedule.setDescription('A typical operable window does not open fully.  The actual opening area in a zone is the product of the area of operable windows and the open area fraction schedule.')
     args << open_area_fraction_schedule
@@ -230,35 +240,98 @@ class AddWindAndStackOpenArea < OpenStudio::Ruleset::WorkspaceUserScript
     min_indoor_temp.setDefaultValue(10.0)
     args << min_indoor_temp
 
-    # make an argument for max indoor temp
+    # make choice argument for temperature schedule
+    sch_choices_tempature = OpenStudio::StringVector.new
+    sch_choices_tempature << ''
+    sch_compacts = workspace.getObjectsByType('Schedule:Compact'.to_IddObjectType)
+    sch_constants = workspace.getObjectsByType('Schedule:Constant'.to_IddObjectType)
+    sch_years = workspace.getObjectsByType('Schedule:Year'.to_IddObjectType)
+    sch_files = workspace.getObjectsByType('Schedule:File'.to_IddObjectType)
+    sch_compacts.each do |sch|
+      if sch.getString(1).to_s.downcase == 'temperature'
+        sch_choices_tempature << sch.getString(0).to_s
+      end
+    end
+    sch_constants.each do |sch|
+      if sch.getString(1).to_s.downcase == 'temperature'
+        sch_choices_tempature << sch.getString(0).to_s
+      end
+    end
+    sch_years.each do |sch|
+      if sch.getString(1).to_s.downcase == 'temperature'
+        sch_choices_tempature << sch.getString(0).to_s
+      end
+    end
+    sch_files.each do |sch|
+      if sch.getString(1).to_s.downcase == 'temperature'
+        sch_choices_tempature << sch.getString(0).to_s
+      end
+    end
+
+    # make an argument for minimum indoor temperature schedule
+    min_indoor_temp_schedule = OpenStudio::Ruleset::OSArgument::makeChoiceArgument('min_indoor_temp_schedule', sch_choices_tempature, true)
+    min_indoor_temp_schedule.setDisplayName('Minimum Indoor Temperature Schedule')
+    min_indoor_temp_schedule.setDescription('The indoor temperature below which ventilation is shutoff. If specified, this will be used instead of the Minimum Indoor Temperature field above.')
+    min_indoor_temp_schedule.setDefaultValue('')
+    args << min_indoor_temp_schedule
+
+    # make an argument for maximum indoor temperature
     max_indoor_temp = OpenStudio::Ruleset::OSArgument::makeDoubleArgument('max_indoor_temp', true)
     max_indoor_temp.setDisplayName('Maximum Indoor Temperature (degC)')
     max_indoor_temp.setDescription('The indoor temperature above which ventilation is shutoff.')
     max_indoor_temp.setDefaultValue(60.0)
     args << max_indoor_temp
 
-    # make an argument for delta temp
+    # make an argument for maximum indoor temperature schedule
+    max_indoor_temp_schedule = OpenStudio::Ruleset::OSArgument::makeChoiceArgument('max_indoor_temp_schedule', sch_choices_tempature, true)
+    max_indoor_temp_schedule.setDisplayName('Maximum Indoor Temperature Schedule')
+    max_indoor_temp_schedule.setDescription('The indoor temperature above which ventilation is shutoff. If specified, this will be used instead of the Maximum Indoor Temperature field above.')
+    max_indoor_temp_schedule.setDefaultValue('')
+    args << max_indoor_temp_schedule
+
+    # make an argument for delta temperature
     delta_temp = OpenStudio::Ruleset::OSArgument::makeDoubleArgument('delta_temp', true)
     delta_temp.setDisplayName('Maximum Indoor-Outdoor Temperature Difference (degC)')
     delta_temp.setDescription('This is the temperature difference between the indoor and outdoor air dry-bulb temperatures below which ventilation is shutoff.  For example, a delta temperature of 2 degC means ventilation is available if the outside air temperature is at least 2 degC cooler than the zone air temperature. Values can be negative.')
     delta_temp.setDefaultValue(0.0)
     args << delta_temp
 
-    # make an argument for min outdoor temp
+    # make an argument for delta temperature schedule
+    delta_temp_schedule = OpenStudio::Ruleset::OSArgument::makeChoiceArgument('delta_temp_schedule', sch_choices_tempature, true)
+    delta_temp_schedule.setDisplayName('Maximum Indoor-Outdoor Temperature Difference Schedule')
+    delta_temp_schedule.setDescription('This is the temperature difference between the indoor and outdoor air dry-bulb temperatures below which ventilation is shutoff. If specified, this will be used instead of the Maximum Indoor-Outdoor Temperature Difference field above.')
+    delta_temp_schedule.setDefaultValue('')
+    args << delta_temp_schedule
+
+    # make an argument for minimum outdoor temperature
     min_outdoor_temp = OpenStudio::Ruleset::OSArgument::makeDoubleArgument('min_outdoor_temp', true)
     min_outdoor_temp.setDisplayName('Minimum Outdoor Temperature (degC)')
     min_outdoor_temp.setDescription('The outdoor temperature below which ventilation is shut off.')
     min_outdoor_temp.setDefaultValue(18.3333)
     args << min_outdoor_temp
 
-    # make an argument for max outdoor temp
+    # make an argument for minimum outdoor temperature schedule
+    min_outdoor_temp_schedule = OpenStudio::Ruleset::OSArgument::makeChoiceArgument('min_outdoor_temp_schedule', sch_choices_tempature, true)
+    min_outdoor_temp_schedule.setDisplayName('Minimum Outdoor Temperature Schedule')
+    min_outdoor_temp_schedule.setDescription('The outdoor temperature below which ventilation is shut off. If specified, this will be used instead of the Minimum Outdoor Temperature field above.')
+    min_outdoor_temp_schedule.setDefaultValue('')
+    args << min_outdoor_temp_schedule
+
+    # make an argument for maximum outdoor temperature
     max_outdoor_temp = OpenStudio::Ruleset::OSArgument::makeDoubleArgument('max_outdoor_temp', true)
     max_outdoor_temp.setDisplayName('Maximum Outdoor Temperature (degC)')
     max_outdoor_temp.setDescription('The outdoor temperature above which ventilation is shut off.')
     max_outdoor_temp.setDefaultValue(25.5556)
     args << max_outdoor_temp
 
-    # make an argument for max wind speed
+    # make an argument for maximum outdoor temperature schedule
+    max_outdoor_temp_schedule = OpenStudio::Ruleset::OSArgument::makeChoiceArgument('max_outdoor_temp_schedule', sch_choices_tempature, true)
+    max_outdoor_temp_schedule.setDisplayName('Maximum Outdoor Temperature Schedule')
+    max_outdoor_temp_schedule.setDescription('The outdoor temperature above which ventilation is shut off. If specified, this will be used instead of the Maximum Outdoor Temperature field above.')
+    max_outdoor_temp_schedule.setDefaultValue('')
+    args << max_outdoor_temp_schedule
+
+    # make an argument for maximum wind speed
     max_wind_speed = OpenStudio::Ruleset::OSArgument::makeDoubleArgument('max_wind_speed', true)
     max_wind_speed.setDisplayName('Maximum Wind Speed (m/s)')
     max_wind_speed.setDescription('This is the wind speed above which ventilation is shut off.  The default values assume windows are closed when wind is above a gentle breeze to avoid blowing around papers in the space.')
@@ -266,7 +339,7 @@ class AddWindAndStackOpenArea < OpenStudio::Ruleset::WorkspaceUserScript
     args << max_wind_speed
 
     return args
-  end # end the arguments method
+  end
 
   # define what happens when the measure is run
   def run(workspace, runner, user_arguments)
@@ -276,10 +349,15 @@ class AddWindAndStackOpenArea < OpenStudio::Ruleset::WorkspaceUserScript
     construction = runner.getStringArgumentValue('construction', user_arguments)
     open_area_fraction_schedule = runner.getStringArgumentValue('open_area_fraction_schedule', user_arguments)
     min_indoor_temp = runner.getDoubleArgumentValue('min_indoor_temp', user_arguments)
+    min_indoor_temp_schedule = runner.getOptionalStringArgumentValue('min_indoor_temp_schedule', user_arguments)
     max_indoor_temp = runner.getDoubleArgumentValue('max_indoor_temp', user_arguments)
+    max_indoor_temp_schedule = runner.getOptionalStringArgumentValue('max_indoor_temp_schedule', user_arguments)
     delta_temp = runner.getDoubleArgumentValue('delta_temp', user_arguments)
+    delta_temp_schedule = runner.getOptionalStringArgumentValue('delta_temp_schedule', user_arguments)
     min_outdoor_temp = runner.getDoubleArgumentValue('min_outdoor_temp', user_arguments)
+    min_outdoor_temp_schedule = runner.getOptionalStringArgumentValue('min_outdoor_temp_schedule', user_arguments)
     max_outdoor_temp = runner.getDoubleArgumentValue('max_outdoor_temp', user_arguments)
+    max_outdoor_temp_schedule = runner.getOptionalStringArgumentValue('max_outdoor_temp_schedule', user_arguments)
     max_wind_speed = runner.getDoubleArgumentValue('max_wind_speed', user_arguments)
 
     # check value for reasonableness
@@ -291,6 +369,15 @@ class AddWindAndStackOpenArea < OpenStudio::Ruleset::WorkspaceUserScript
       return false
     end
 
+    # set idf code for minimum indoor temperature
+    if min_indoor_temp_schedule.is_initialized
+      min_indoor_temp_idf = ",                        !- Minimum Indoor Temperature {C}
+    #{min_indoor_temp_schedule},                        !- Minimum Indoor Temperature Schedule Name"
+    else
+      min_indoor_temp_idf = "#{min_indoor_temp},      !- Minimum Indoor Temperature {C}
+    ,                        !- Minimum Indoor Temperature Schedule Name"
+    end
+
     # check value for reasonableness
     if max_indoor_temp < -100.0
       runner.registerError('Please enter a value greater than -100.0 degC for Maximum Indoor Temperature.')
@@ -298,6 +385,15 @@ class AddWindAndStackOpenArea < OpenStudio::Ruleset::WorkspaceUserScript
     elsif max_indoor_temp > 100.0
       runner.registerError('Please enter a value less than 100.0 degC for Maximum Indoor Temperature.')
       return false
+    end
+
+    # set idf code for maximum indoor temperature
+    if max_indoor_temp_schedule.is_initialized
+      max_indoor_temp_idf = ",                        !- Maximum Indoor Temperature {C}
+    #{max_indoor_temp_schedule},                        !- Maximum Indoor Temperature Schedule Name"
+    else
+      max_indoor_temp_idf = "#{max_indoor_temp},      !- Maximum Indoor Temperature {C}
+    ,                        !- Maximum Indoor Temperature Schedule Name"
     end
 
     # check value for reasonableness
@@ -309,6 +405,15 @@ class AddWindAndStackOpenArea < OpenStudio::Ruleset::WorkspaceUserScript
       return false
     end
 
+    # set idf code for delta temperature
+    if delta_temp_schedule.is_initialized
+      delta_temp_idf = ",                        !- Delta Temperature {deltaC}
+    #{delta_temp_schedule},                        !- Delta Temperature Schedule Name"
+    else
+      delta_temp_idf = "#{delta_temp},      !- Delta Temperature {deltaC}
+    ,                        !- Delta Temperature Schedule Name"
+    end
+
     # check value for reasonableness
     if min_outdoor_temp < -100.0
       runner.registerError('Please enter a value greater than -100.0 degC for Minimum Outdoor Temperature.')
@@ -318,6 +423,15 @@ class AddWindAndStackOpenArea < OpenStudio::Ruleset::WorkspaceUserScript
       return false
     end
 
+    # set idf code for minimum outdoor temperature
+    if min_outdoor_temp_schedule.is_initialized
+      min_outdoor_temp_idf = ",                        !- Minimum Outdoor Temperature {C}
+    #{min_outdoor_temp_schedule},                        !- Minimum Outdoor Temperature Schedule Name"
+    else
+      min_outdoor_temp_idf = "#{min_outdoor_temp},      !- Minimum Outdoor Temperature {C}
+    ,                        !- Minimum Outdoor Temperature Schedule Name"
+    end
+
     # check value for reasonableness
     if max_outdoor_temp < -100.0
       runner.registerError('Please enter a value greater than -100.0 degC for Maximum Outdoor Temperature.')
@@ -325,6 +439,15 @@ class AddWindAndStackOpenArea < OpenStudio::Ruleset::WorkspaceUserScript
     elsif max_outdoor_temp > 100.0
       runner.registerError('Please enter a value less than 100.0 degC for Maximum Outdoor Temperature.')
       return false
+    end
+
+    # set idf code for maximum outdoor temperature
+    if max_outdoor_temp_schedule.is_initialized
+      max_outdoor_temp_idf = ",                        !- Maximum Outdoor Temperature {C}
+    #{max_outdoor_temp_schedule},                        !- Maximum Outdoor Temperature Schedule Name"
+    else
+      max_outdoor_temp_idf = "#{max_outdoor_temp},      !- Maximum Outdoor Temperature {C}
+    ,                        !- Maximum Outdoor Temperature Schedule Name"
     end
 
     # check value for reasonableness
@@ -372,16 +495,11 @@ class AddWindAndStackOpenArea < OpenStudio::Ruleset::WorkspaceUserScript
         #{effective_angle},      !- Effective Angle {deg}
         #{height_difference},    !- Height Difference {m}
         Autocalculate,           !- Discharge Coefficient for Opening
-        #{min_indoor_temp},      !- Minimum Indoor Temperature {C}
-        ,                        !- Minimum Indoor Temperature Schedule Name
-        #{max_indoor_temp},      !- Maximum Indoor Temperature {C}
-        ,                        !- Maximum Indoor Temperature Schedule Name
-        #{delta_temp},           !- Delta Temperature {deltaC}
-        ,                        !- Delta Temperature Schedule Name
-        #{min_outdoor_temp},     !- Minimum Outdoor Temperature {C}
-        ,                        !- Minimum Outdoor Temperature Schedule Name
-        #{max_outdoor_temp},     !- Maximum Outdoor Temperature {C}
-        ,                        !- Maximum Outdoor Temperature Schedule Name
+        #{min_indoor_temp_idf}
+        #{max_indoor_temp_idf}
+        #{delta_temp_idf}
+        #{min_outdoor_temp_idf}
+        #{max_outdoor_temp_idf}
         #{max_wind_speed};       !- Maximum Wind Speed {m/s}
         "
     end
