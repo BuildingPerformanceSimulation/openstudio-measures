@@ -10001,18 +10001,18 @@ OS:Schedule:Day,
 
 OS:Schedule:Ruleset,
   {353d8e7f-9d88-48f8-91f9-275f7cee2ac1}, !- Handle
-  Supply Air Temp - 55.04F,               !- Name
+  Nat Vent Min Indoor Temp Sch - 50F,     !- Name
   {98ca809e-2027-4473-a323-5312fe04e842}, !- Schedule Type Limits Name
   {b9ad1fe6-b200-4b8f-85c6-4267ae24e21e}; !- Default Day Schedule Name
 
 OS:Schedule:Day,
   {b9ad1fe6-b200-4b8f-85c6-4267ae24e21e}, !- Handle
-  Supply Air Temp - 55.04F Default,       !- Name
+  Nat Vent Min Indoor Temp Sch - 50F Default, !- Name
   {98ca809e-2027-4473-a323-5312fe04e842}, !- Schedule Type Limits Name
   ,                                       !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
-  12.8;                                   !- Value Until Time 1
+  10.0;                                   !- Value Until Time 1
 
 OS:AirLoopHVAC,
   {c9a14282-e15d-4404-866a-76019bf77c23}, !- Handle
@@ -11342,18 +11342,18 @@ OS:Connection,
 
 OS:Schedule:Ruleset,
   {7babceae-ffc2-427d-af23-85dbaedda92f}, !- Handle
-  Supply Air Temp - 55.04F 1,             !- Name
+  Nat Vent Max Indoor Temp Sch - 140F,    !- Name
   {98ca809e-2027-4473-a323-5312fe04e842}, !- Schedule Type Limits Name
   {4aa3b4e8-96fc-4da0-83a3-251df7a446a6}; !- Default Day Schedule Name
 
 OS:Schedule:Day,
   {4aa3b4e8-96fc-4da0-83a3-251df7a446a6}, !- Handle
-  Supply Air Temp - 55.04F Default 1,     !- Name
+  Nat Vent Max Indoor Temp Sch - 140F Default, !- Name
   {98ca809e-2027-4473-a323-5312fe04e842}, !- Schedule Type Limits Name
   ,                                       !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
-  12.8;                                   !- Value Until Time 1
+  60.0;                                   !- Value Until Time 1
 
 OS:AirLoopHVAC,
   {ed4b4689-a27f-41e4-8379-9bf58ae35ab6}, !- Handle
@@ -12667,18 +12667,18 @@ OS:Connection,
 
 OS:Schedule:Ruleset,
   {4fcdf85c-3f8e-4fee-a91e-b3a40020b742}, !- Handle
-  Supply Air Temp - 55.04F 2,             !- Name
+  Nat Vent Min Outdoor Temp Sch - 65F,    !- Name
   {98ca809e-2027-4473-a323-5312fe04e842}, !- Schedule Type Limits Name
   {c4e8fee1-103d-4f18-9cd4-b3223d456a8b}; !- Default Day Schedule Name
 
 OS:Schedule:Day,
   {c4e8fee1-103d-4f18-9cd4-b3223d456a8b}, !- Handle
-  Supply Air Temp - 55.04F Default 2,     !- Name
+  Nat Vent Min Outdoor Temp Sch - 65F Default, !- Name
   {98ca809e-2027-4473-a323-5312fe04e842}, !- Schedule Type Limits Name
   ,                                       !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
-  12.8;                                   !- Value Until Time 1
+  18.3333;                                !- Value Until Time 1
 
 OS:AirLoopHVAC,
   {f23a9c8e-4586-4cf5-aa70-3fc03c6b133e}, !- Handle
@@ -14154,18 +14154,18 @@ OS:Sizing:System,
 
 OS:Schedule:Ruleset,
   {73af2348-b5be-4089-966f-1324a6856b85}, !- Handle
-  Supply Air Temp - 55.04F 3,             !- Name
+  Nat Vent Max Outdoor Temp Sch - 78F,    !- Name
   {98ca809e-2027-4473-a323-5312fe04e842}, !- Schedule Type Limits Name
   {195e81bd-7b91-45b6-ac72-aa4d0fff679a}; !- Default Day Schedule Name
 
 OS:Schedule:Day,
   {195e81bd-7b91-45b6-ac72-aa4d0fff679a}, !- Handle
-  Supply Air Temp - 55.04F Default 3,     !- Name
+  Nat Vent Max Outdoor Temp Sch - 78F Default, !- Name
   {98ca809e-2027-4473-a323-5312fe04e842}, !- Schedule Type Limits Name
   ,                                       !- Interpolate to Timestep
   24,                                     !- Hour 1
   0,                                      !- Minute 1
-  12.8;                                   !- Value Until Time 1
+  25.5556;                                !- Value Until Time 1
 
 OS:SetpointManager:Scheduled,
   {5be0130e-05e8-4653-b78e-ed25a29e0f96}, !- Handle
