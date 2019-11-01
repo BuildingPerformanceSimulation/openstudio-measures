@@ -1,0 +1,189 @@
+<measure>
+  <schema_version>3.0</schema_version>
+  <name>meter_custom</name>
+  <uid>4b323dbc-652b-447f-a883-fbdc9f2e651b</uid>
+  <version_id>ce9301c7-9611-4279-90d8-77442dcddb86</version_id>
+  <version_modified>20191101T001436Z</version_modified>
+  <xml_checksum>0519EBDC</xml_checksum>
+  <class_name>MeterCustom</class_name>
+  <display_name>Meter Custom</display_name>
+  <description>This measure creates a Custom Meter to combine output variables and meters from a user-defined .csv file.  This is helpful for combining energy use by floor, by space type, or for specific zones. You can easily create this grouping by generating the SpaceTypeReport, then filtering and copying the zones you want to group together. An example .csv file is included in the resources folder for this measure. The measure optionally outputs the custom meter.</description>
+  <modeler_description>This measure creates a Meter:Custom object based on a user-defined .csv file and optionally adds an Output:Meter for the custom meter to save the values to the .eio and .mtr files.  Common errors: (1) Using space names instead of thermal zone names as key variables, (2) not specifying the Zone variable, e.g. Lights Electric Energy vs. Zone Lights Electric Energy, (3) Requesting a variable or meter that is not there.  E.g., if a zone has no electric equipment, you cannot request a Zone Electric Equipment Electric Energy variable.</modeler_description>
+  <arguments>
+    <argument>
+      <name>custom_meter_name</name>
+      <display_name>Name of Custom Meter:</display_name>
+      <type>String</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>custom meter name</default_value>
+    </argument>
+    <argument>
+      <name>fuel_type</name>
+      <display_name>Fuel Type:</display_name>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>Electricity</default_value>
+      <choices>
+        <choice>
+          <value>Electricity</value>
+          <display_name>Electricity</display_name>
+        </choice>
+        <choice>
+          <value>NaturalGas</value>
+          <display_name>NaturalGas</display_name>
+        </choice>
+        <choice>
+          <value>PropaneGas</value>
+          <display_name>PropaneGas</display_name>
+        </choice>
+        <choice>
+          <value>FuelOil#1</value>
+          <display_name>FuelOil#1</display_name>
+        </choice>
+        <choice>
+          <value>FuelOil21</value>
+          <display_name>FuelOil21</display_name>
+        </choice>
+        <choice>
+          <value>Coal</value>
+          <display_name>Coal</display_name>
+        </choice>
+        <choice>
+          <value>Diesel</value>
+          <display_name>Diesel</display_name>
+        </choice>
+        <choice>
+          <value>Water</value>
+          <display_name>Water</display_name>
+        </choice>
+        <choice>
+          <value>Generic</value>
+          <display_name>Generic</display_name>
+        </choice>
+        <choice>
+          <value>OtherFuel1</value>
+          <display_name>OtherFuel1</display_name>
+        </choice>
+        <choice>
+          <value>OtherFuel2</value>
+          <display_name>OtherFuel2</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>file_path</name>
+      <display_name>Enter the path to the file:</display_name>
+      <description>Example: 'C:\MyProject\custom_meter_assignment.csv'</description>
+      <type>String</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+    </argument>
+    <argument>
+      <name>add_output_meter</name>
+      <display_name>Include associated Output:Meter object?</display_name>
+      <type>Boolean</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>true</default_value>
+      <choices>
+        <choice>
+          <value>true</value>
+          <display_name>true</display_name>
+        </choice>
+        <choice>
+          <value>false</value>
+          <display_name>false</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>reporting_frequency</name>
+      <display_name>Select reporting frequency for Output:Meter object:</display_name>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>hourly</default_value>
+      <choices>
+        <choice>
+          <value>detailed</value>
+          <display_name>detailed</display_name>
+        </choice>
+        <choice>
+          <value>timestep</value>
+          <display_name>timestep</display_name>
+        </choice>
+        <choice>
+          <value>hourly</value>
+          <display_name>hourly</display_name>
+        </choice>
+        <choice>
+          <value>daily</value>
+          <display_name>daily</display_name>
+        </choice>
+        <choice>
+          <value>monthly</value>
+          <display_name>monthly</display_name>
+        </choice>
+      </choices>
+    </argument>
+  </arguments>
+  <outputs/>
+  <provenances/>
+  <tags>
+    <tag>Reporting.QAQC</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Measure Type</name>
+      <value>ModelMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>Parametric Analysis Tool</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Use Case</name>
+      <value>Model Articulation</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Use Case</name>
+      <value>Automatic Report Generation</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>OpenStudio Application</value>
+      <datatype>string</datatype>
+    </attribute>
+  </attributes>
+  <files>
+    <file>
+      <filename>meter_custom_test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>CEAFEE08</checksum>
+    </file>
+    <file>
+      <filename>example_file.csv</filename>
+      <filetype>csv</filetype>
+      <usage_type>test</usage_type>
+      <checksum>0B8411A9</checksum>
+    </file>
+    <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>2.0.0</identifier>
+        <min_compatible>2.0.0</min_compatible>
+      </version>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>1F530F39</checksum>
+    </file>
+  </files>
+</measure>
