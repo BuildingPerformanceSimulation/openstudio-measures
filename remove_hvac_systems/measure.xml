@@ -2,14 +2,142 @@
   <schema_version>3.0</schema_version>
   <name>remove_hvac_systems</name>
   <uid>169c5b60-6490-4096-8003-7d15090419a9</uid>
-  <version_id>ef69ae2d-513f-475d-b49e-bdf3ef4ccd6e</version_id>
-  <version_modified>20170313T132759Z</version_modified>
+  <version_id>7c4c819f-6206-4172-a649-53d7c9e7e56c</version_id>
+  <version_modified>20190426T213719Z</version_modified>
   <xml_checksum>C49A7DAB</xml_checksum>
   <class_name>RemoveHVACSystems</class_name>
   <display_name>Remove HVAC Systems</display_name>
-  <description>TODO</description>
-  <modeler_description>TODO</modeler_description>
-  <arguments/>
+  <description>This measure removes HVAC systems from an OpenStudio model.</description>
+  <modeler_description>The user can optionally selected to remove air loops, plant loops, zone hvac, vrf systems, and curves from the model.  By default all systems except water systems and zone exhaust fans are removed.</modeler_description>
+  <arguments>
+    <argument>
+      <name>remove_air_loops</name>
+      <display_name>Remove Air Loops?:</display_name>
+      <type>Boolean</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>true</default_value>
+      <choices>
+        <choice>
+          <value>true</value>
+          <display_name>true</display_name>
+        </choice>
+        <choice>
+          <value>false</value>
+          <display_name>false</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>remove_plant_loops</name>
+      <display_name>Remove Plant Loops?:</display_name>
+      <type>Boolean</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>true</default_value>
+      <choices>
+        <choice>
+          <value>true</value>
+          <display_name>true</display_name>
+        </choice>
+        <choice>
+          <value>false</value>
+          <display_name>false</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>remove_shw_loops</name>
+      <display_name>Also Remove Service Hot Water Plant Loops?:</display_name>
+      <type>Boolean</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>false</default_value>
+      <choices>
+        <choice>
+          <value>true</value>
+          <display_name>true</display_name>
+        </choice>
+        <choice>
+          <value>false</value>
+          <display_name>false</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>remove_zone_equipment</name>
+      <display_name>Remove Zone Equipment?:</display_name>
+      <type>Boolean</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>true</default_value>
+      <choices>
+        <choice>
+          <value>true</value>
+          <display_name>true</display_name>
+        </choice>
+        <choice>
+          <value>false</value>
+          <display_name>false</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>remove_zone_exhaust_fans</name>
+      <display_name>Also Zone Exhaust Fans?:</display_name>
+      <type>Boolean</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>false</default_value>
+      <choices>
+        <choice>
+          <value>true</value>
+          <display_name>true</display_name>
+        </choice>
+        <choice>
+          <value>false</value>
+          <display_name>false</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>remove_vrf</name>
+      <display_name>Remove VRF?:</display_name>
+      <type>Boolean</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>true</default_value>
+      <choices>
+        <choice>
+          <value>true</value>
+          <display_name>true</display_name>
+        </choice>
+        <choice>
+          <value>false</value>
+          <display_name>false</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>remove_unused_curves</name>
+      <display_name>Remove Unused Curves?:</display_name>
+      <type>Boolean</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>true</default_value>
+      <choices>
+        <choice>
+          <value>true</value>
+          <display_name>true</display_name>
+        </choice>
+        <choice>
+          <value>false</value>
+          <display_name>false</display_name>
+        </choice>
+      </choices>
+    </argument>
+  </arguments>
+  <outputs/>
   <provenances/>
   <tags>
     <tag>HVAC.Whole System</tag>
@@ -38,16 +166,16 @@
   </attributes>
   <files>
     <file>
-      <filename>remove_hvac_systems_test.rb</filename>
-      <filetype>rb</filetype>
-      <usage_type>test</usage_type>
-      <checksum>3D28694C</checksum>
-    </file>
-    <file>
       <filename>example_model.osm</filename>
       <filetype>osm</filetype>
       <usage_type>test</usage_type>
       <checksum>53D14E69</checksum>
+    </file>
+    <file>
+      <filename>remove_hvac_systems_test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>D7E67B08</checksum>
     </file>
     <file>
       <version>
@@ -58,7 +186,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>865AC352</checksum>
+      <checksum>7A1E140A</checksum>
     </file>
   </files>
 </measure>

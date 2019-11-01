@@ -12,7 +12,7 @@ class AssignZonesToAirLoopFromCSV_Test < MiniTest::Unit::TestCase
   end
   
   def test_number_of_arguments_and_argument_names
-    #this test ensures that the current test is matched to the measure inputs
+    # this test ensures that the current test is matched to the measure inputs
     
     # create an instance of the measure
     measure = AssignZonesToAirLoopFromCSV.new
@@ -33,7 +33,7 @@ class AssignZonesToAirLoopFromCSV_Test < MiniTest::Unit::TestCase
   end
   
   def test_good_uncontrolled
-    #this measure tests a curve applied to all fans
+    #this tests good inputs for uncontrolled terminals
     test_name = "test_good_uncontrolled"
     puts "TEST:" + test_name
     
@@ -72,13 +72,13 @@ class AssignZonesToAirLoopFromCSV_Test < MiniTest::Unit::TestCase
     assert_equal("Success", result.value.valueName)
     assert(result.warnings.size == 0)
     
-    #save the model for testing purposes
+    # save the model for testing purposes
     output_file_path = model_output_path(test_name)
     model.save(output_file_path,true)
   end
   
   def test_good_four_pipe_induction
-    #this measure tests a curve applied to all fans
+    # this tests good inputs for four-pipe induction terminals
     test_name = "test_good_four_pipe_induction"
     puts "TEST:" + test_name
     
@@ -125,13 +125,13 @@ class AssignZonesToAirLoopFromCSV_Test < MiniTest::Unit::TestCase
     assert_equal("Success", result.value.valueName)
     assert(result.warnings.size == 0)
     
-    #save the model for testing purposes
+    # save the model for testing purposes
     output_file_path = model_output_path(test_name)
     model.save(output_file_path,true)
   end
   
   def test_mislabeled_air_loop
-    #this measure tests a curve applied to all fans
+    # this tests a mislabeled air loop in input file
     test_name = "test_mislabeled_air_loop"
     puts "TEST:" + test_name
     
@@ -170,13 +170,13 @@ class AssignZonesToAirLoopFromCSV_Test < MiniTest::Unit::TestCase
     assert_equal("Fail", result.value.valueName)
     assert(result.warnings.size == 0)
     
-    #save the model for testing purposes
+    # save the model for testing purposes
     output_file_path = model_output_path(test_name)
     model.save(output_file_path,true)
   end
   
   def test_missing_air_loop
-    #this measure tests a curve applied to all fans
+    #  this tests a missing air loop
     test_name = "test_missing_air_loop"
     puts "TEST:" + test_name
     
@@ -215,13 +215,13 @@ class AssignZonesToAirLoopFromCSV_Test < MiniTest::Unit::TestCase
     assert_equal("Success", result.value.valueName)
     assert(result.warnings.size == 1)
     
-    #save the model for testing purposes
+    # save the model for testing purposes
     output_file_path = model_output_path(test_name)
     model.save(output_file_path,true)
   end
   
   def test_mislabeled_zone
-    #this measure tests a curve applied to all fans
+    # this tests a mislabeled zone
     test_name = "test_mislabeled_zone"
     puts "TEST:" + test_name
     
@@ -260,7 +260,7 @@ class AssignZonesToAirLoopFromCSV_Test < MiniTest::Unit::TestCase
     assert_equal("Fail", result.value.valueName)
     assert(result.warnings.size == 0)
     
-    #save the model for testing purposes
+    # save the model for testing purposes
     output_file_path = model_output_path(test_name)
     model.save(output_file_path,true)
   end

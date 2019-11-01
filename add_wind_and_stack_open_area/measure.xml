@@ -2,8 +2,8 @@
   <schema_version>3.0</schema_version>
   <name>add_wind_and_stack_open_area</name>
   <uid>8055497a-0d38-48eb-a643-76383fa54664</uid>
-  <version_id>c78ea5a9-378b-41e0-8011-971b490bc0fc</version_id>
-  <version_modified>20180312T210246Z</version_modified>
+  <version_id>5aab5130-090d-4664-9bde-e07b45a26af1</version_id>
+  <version_modified>20190927T175612Z</version_modified>
   <xml_checksum>76B1868C</xml_checksum>
   <class_name>AddWindAndStackOpenArea</class_name>
   <display_name>Add Wind and Stack Open Area</display_name>
@@ -43,6 +43,21 @@
       <default_value>10</default_value>
     </argument>
     <argument>
+      <name>min_indoor_temp_schedule</name>
+      <display_name>Minimum Indoor Temperature Schedule</display_name>
+      <description>The indoor temperature below which ventilation is shutoff. If specified, this will be used instead of the Minimum Indoor Temperature field above.</description>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value></default_value>
+      <choices>
+        <choice>
+          <value></value>
+          <display_name></display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
       <name>max_indoor_temp</name>
       <display_name>Maximum Indoor Temperature (degC)</display_name>
       <description>The indoor temperature above which ventilation is shutoff.</description>
@@ -52,14 +67,43 @@
       <default_value>60</default_value>
     </argument>
     <argument>
+      <name>max_indoor_temp_schedule</name>
+      <display_name>Maximum Indoor Temperature Schedule</display_name>
+      <description>The indoor temperature above which ventilation is shutoff. If specified, this will be used instead of the Maximum Indoor Temperature field above.</description>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value></default_value>
+      <choices>
+        <choice>
+          <value></value>
+          <display_name></display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
       <name>delta_temp</name>
       <display_name>Maximum Indoor-Outdoor Temperature Difference (degC)</display_name>
-      <description>This is the temperature difference between the indoor and outdoor air dry-bulb
-temperatures below which ventilation is shutoff.  For example, a delta temperature of 2 degC means ventilation is available if the outside air temperature is at least 2 degC cooler than the zone air temperature. Values can be negative.</description>
+      <description>This is the temperature difference between the indoor and outdoor air dry-bulb temperatures below which ventilation is shutoff.  For example, a delta temperature of 2 degC means ventilation is available if the outside air temperature is at least 2 degC cooler than the zone air temperature. Values can be negative.</description>
       <type>Double</type>
       <required>true</required>
       <model_dependent>false</model_dependent>
       <default_value>0</default_value>
+    </argument>
+    <argument>
+      <name>delta_temp_schedule</name>
+      <display_name>Maximum Indoor-Outdoor Temperature Difference Schedule</display_name>
+      <description>This is the temperature difference between the indoor and outdoor air dry-bulb temperatures below which ventilation is shutoff. If specified, this will be used instead of the Maximum Indoor-Outdoor Temperature Difference field above.</description>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value></default_value>
+      <choices>
+        <choice>
+          <value></value>
+          <display_name></display_name>
+        </choice>
+      </choices>
     </argument>
     <argument>
       <name>min_outdoor_temp</name>
@@ -71,6 +115,21 @@ temperatures below which ventilation is shutoff.  For example, a delta temperatu
       <default_value>18.3333</default_value>
     </argument>
     <argument>
+      <name>min_outdoor_temp_schedule</name>
+      <display_name>Minimum Outdoor Temperature Schedule</display_name>
+      <description>The outdoor temperature below which ventilation is shut off. If specified, this will be used instead of the Minimum Outdoor Temperature field above.</description>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value></default_value>
+      <choices>
+        <choice>
+          <value></value>
+          <display_name></display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
       <name>max_outdoor_temp</name>
       <display_name>Maximum Outdoor Temperature (degC)</display_name>
       <description>The outdoor temperature above which ventilation is shut off.</description>
@@ -78,6 +137,21 @@ temperatures below which ventilation is shutoff.  For example, a delta temperatu
       <required>true</required>
       <model_dependent>false</model_dependent>
       <default_value>25.5556</default_value>
+    </argument>
+    <argument>
+      <name>max_outdoor_temp_schedule</name>
+      <display_name>Maximum Outdoor Temperature Schedule</display_name>
+      <description>The outdoor temperature above which ventilation is shut off. If specified, this will be used instead of the Maximum Outdoor Temperature field above.</description>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value></default_value>
+      <choices>
+        <choice>
+          <value></value>
+          <display_name></display_name>
+        </choice>
+      </choices>
     </argument>
     <argument>
       <name>max_wind_speed</name>
@@ -118,27 +192,33 @@ temperatures below which ventilation is shutoff.  For example, a delta temperatu
   </attributes>
   <files>
     <file>
-      <filename>AddWindAndStackOpenArea_Test.rb</filename>
-      <filetype>rb</filetype>
-      <usage_type>test</usage_type>
-      <checksum>EB848F3E</checksum>
+      <filename>README.md</filename>
+      <filetype>md</filetype>
+      <usage_type>readme</usage_type>
+      <checksum>61BF8359</checksum>
     </file>
     <file>
       <filename>Office.osm</filename>
       <filetype>osm</filetype>
       <usage_type>test</usage_type>
-      <checksum>6B38526A</checksum>
+      <checksum>248154DC</checksum>
     </file>
     <file>
       <version>
         <software_program>OpenStudio</software_program>
-        <identifier>1.6.0</identifier>
-        <min_compatible>1.8.0</min_compatible>
+        <identifier>2.7</identifier>
+        <min_compatible>2.7</min_compatible>
       </version>
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>A919D115</checksum>
+      <checksum>E351D692</checksum>
+    </file>
+    <file>
+      <filename>AddWindAndStackOpenArea_Test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>E44F3465</checksum>
     </file>
   </files>
 </measure>
