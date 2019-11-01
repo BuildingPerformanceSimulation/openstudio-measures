@@ -1,6 +1,5 @@
 <measure>
   <schema_version>3.0</schema_version>
-  <error>wrong number of arguments (1 for 0)</error>
   <name>meter_custom</name>
   <uid>4b323dbc-652b-447f-a883-fbdc9f2e651b</uid>
   <version_id>ce9301c7-9611-4279-90d8-77442dcddb86</version_id>
