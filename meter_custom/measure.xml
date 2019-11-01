@@ -1,10 +1,11 @@
 <measure>
   <schema_version>3.0</schema_version>
+  <error>wrong number of arguments (1 for 0)</error>
   <name>meter_custom</name>
   <uid>4b323dbc-652b-447f-a883-fbdc9f2e651b</uid>
-  <version_id>66e38121-0122-49f6-90c2-f937a5ca495b</version_id>
-  <version_modified>20180314T162710Z</version_modified>
-  <xml_checksum>7D30B605</xml_checksum>
+  <version_id>ce9301c7-9611-4279-90d8-77442dcddb86</version_id>
+  <version_modified>20191101T001436Z</version_modified>
+  <xml_checksum>0519EBDC</xml_checksum>
   <class_name>MeterCustom</class_name>
   <display_name>Custom Meter</display_name>
   <description>This measure creates a Custom Meter to combine output variables and meters from a user-defined .csv file.  This is helpful for combining energy use by floor, by space type, or for specific zones. You can easily create this grouping by generating the SpaceTypeReport, then filtering and copying the zones you want to group together. An example .csv file is included in the resources folder for this measure. The measure optionally outputs the custom meter.</description>
@@ -136,48 +137,8 @@
   </tags>
   <attributes>
     <attribute>
-      <name>Intended Software Tool</name>
-      <value>OpenStudio Application</value>
-      <datatype>string</datatype>
-    </attribute>
-    <attribute>
-      <name>Intended Software Tool</name>
-      <value>Parametric Analysis Tool</value>
-      <datatype>string</datatype>
-    </attribute>
-    <attribute>
-      <name>Intended Use Case</name>
-      <value>Automatic Report Generation</value>
-      <datatype>string</datatype>
-    </attribute>
-    <attribute>
-      <name>Intended Software Tool</name>
-      <value>OpenStudio Application</value>
-      <datatype>string</datatype>
-    </attribute>
-    <attribute>
-      <name>Intended Software Tool</name>
-      <value>Parametric Analysis Tool</value>
-      <datatype>string</datatype>
-    </attribute>
-    <attribute>
-      <name>Intended Use Case</name>
-      <value>Model Articulation</value>
-      <datatype>string</datatype>
-    </attribute>
-    <attribute>
-      <name>Intended Use Case</name>
-      <value>Automatic Report Generation</value>
-      <datatype>string</datatype>
-    </attribute>
-    <attribute>
       <name>Measure Type</name>
-      <value>EnergyPlusMeasure</value>
-      <datatype>string</datatype>
-    </attribute>
-    <attribute>
-      <name>Intended Software Tool</name>
-      <value>OpenStudio Application</value>
+      <value>ModelMeasure</value>
       <datatype>string</datatype>
     </attribute>
     <attribute>
@@ -193,38 +154,37 @@
     <attribute>
       <name>Intended Use Case</name>
       <value>Automatic Report Generation</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>OpenStudio Application</value>
       <datatype>string</datatype>
     </attribute>
   </attributes>
   <files>
     <file>
-      <filename>example.json</filename>
-      <filetype>json</filetype>
-      <usage_type>test</usage_type>
-      <checksum>D88DBC57</checksum>
-    </file>
-    <file>
       <filename>meter_custom_test.rb</filename>
       <filetype>rb</filetype>
       <usage_type>test</usage_type>
-      <checksum>8653F6C0</checksum>
+      <checksum>CEAFEE08</checksum>
     </file>
     <file>
-      <filename>apartment_only_lighting.csv</filename>
+      <filename>example_file.csv</filename>
       <filetype>csv</filetype>
-      <usage_type>resource</usage_type>
+      <usage_type>test</usage_type>
       <checksum>0B8411A9</checksum>
     </file>
     <file>
       <version>
         <software_program>OpenStudio</software_program>
-        <identifier>1.4.2</identifier>
-        <min_compatible>1.4.2</min_compatible>
+        <identifier>2.0.0</identifier>
+        <min_compatible>2.0.0</min_compatible>
       </version>
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>28AC6EAC</checksum>
+      <checksum>1F530F39</checksum>
     </file>
   </files>
 </measure>
