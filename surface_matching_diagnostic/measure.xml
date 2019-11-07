@@ -2,8 +2,8 @@
   <schema_version>3.0</schema_version>
   <name>surface_matching_diagnostic</name>
   <uid>ffb0d487-eb1c-4ca4-b008-4fbb7bf511b2</uid>
-  <version_id>77b0ba43-7b1a-40e5-a299-48d5e1d77297</version_id>
-  <version_modified>20171028T162613Z</version_modified>
+  <version_id>029ef6f6-a9e1-43fb-b829-e0d52a24389d</version_id>
+  <version_modified>20191107T010941Z</version_modified>
   <xml_checksum>4AA895E2</xml_checksum>
   <class_name>SurfaceMatchingDiagnostic</class_name>
   <display_name>Surface Matching Diagnostic</display_name>
@@ -53,6 +53,24 @@
       <required>true</required>
       <model_dependent>false</model_dependent>
       <default_value>true</default_value>
+      <choices>
+        <choice>
+          <value>true</value>
+          <display_name>true</display_name>
+        </choice>
+        <choice>
+          <value>false</value>
+          <display_name>false</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>remove_adiabatic</name>
+      <display_name>Make Adiabatic surfaces Outdoor prior to intersect and match</display_name>
+      <type>Boolean</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>false</default_value>
       <choices>
         <choice>
           <value>true</value>
@@ -120,33 +138,33 @@
   </attributes>
   <files>
     <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>2.0.0</identifier>
+        <min_compatible>2.0.0</min_compatible>
+      </version>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>E56B3F2A</checksum>
+    </file>
+    <file>
       <filename>SurfaceMatching_test.osm</filename>
       <filetype>osm</filetype>
       <usage_type>test</usage_type>
       <checksum>502CE1B3</checksum>
     </file>
     <file>
+      <filename>SurfaceMatching_Test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>6CF8D01B</checksum>
+    </file>
+    <file>
       <filename>temp_test.osm</filename>
       <filetype>osm</filetype>
       <usage_type>test</usage_type>
       <checksum>A329C342</checksum>
-    </file>
-    <file>
-      <filename>SurfaceMatching_Test.rb</filename>
-      <filetype>rb</filetype>
-      <usage_type>test</usage_type>
-      <checksum>8359EE53</checksum>
-    </file>
-    <file>
-      <version>
-        <software_program>OpenStudio</software_program>
-        <identifier>1.3.1</identifier>
-        <min_compatible>1.3.1</min_compatible>
-      </version>
-      <filename>measure.rb</filename>
-      <filetype>rb</filetype>
-      <usage_type>script</usage_type>
-      <checksum>C4117052</checksum>
     </file>
   </files>
 </measure>

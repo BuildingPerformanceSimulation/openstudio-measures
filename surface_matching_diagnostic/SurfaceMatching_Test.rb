@@ -26,7 +26,7 @@ class SurfaceMatchingDiagnostic_Test < MiniTest::Unit::TestCase
 
     # get arguments and test that they are what we are expecting
     arguments = measure.arguments(model)
-    assert_equal(6, arguments.size)
+    assert_equal(5, arguments.size)
 
     # set argument values to good values and run the measure on model with spaces
     argument_map = OpenStudio::Ruleset::OSArgumentMap.new
@@ -44,10 +44,6 @@ class SurfaceMatchingDiagnostic_Test < MiniTest::Unit::TestCase
     assert(remove_duplicate_surfaces.setValue(true))
     argument_map["remove_duplicate_surfaces"] = remove_duplicate_surfaces
 
-    remove_adiabatic = arguments[count += 1].clone
-    assert(remove_adiabatic.setValue(true))
-    argument_map["remove_adiabatic"] = remove_adiabatic
-    
     intersect_surfaces = arguments[count += 1].clone
     assert(intersect_surfaces.setValue(true))
     argument_map["intersect_surfaces"] = intersect_surfaces
@@ -86,7 +82,7 @@ class SurfaceMatchingDiagnostic_Test < MiniTest::Unit::TestCase
 
     # get arguments and test that they are what we are expecting
     arguments = measure.arguments(model)
-    assert_equal(6, arguments.size)
+    assert_equal(5, arguments.size)
 
     # set argument values to good values and run the measure on model with spaces
     argument_map = OpenStudio::Ruleset::OSArgumentMap.new
@@ -103,10 +99,6 @@ class SurfaceMatchingDiagnostic_Test < MiniTest::Unit::TestCase
     remove_duplicate_surfaces = arguments[count += 1].clone
     assert(remove_duplicate_surfaces.setValue(true))
     argument_map["remove_duplicate_surfaces"] = remove_duplicate_surfaces
-
-    remove_adiabatic = arguments[count += 1].clone
-    assert(remove_adiabatic.setValue(true))
-    argument_map["remove_adiabatic"] = remove_adiabatic
 
     intersect_surfaces = arguments[count += 1].clone
     assert(intersect_surfaces.setValue(true))
