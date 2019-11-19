@@ -78,7 +78,7 @@ class AddWindAndStackOpenArea < OpenStudio::Measure::EnergyPlusMeasure
 
   def get_window_boundary_condition(workspace, window)
     surface_name = window.getString(3).to_s
-    surface = workspace.getObjectsByTypeAndName('BuildingSurface:Detailed'.to_IddObjectType, surface_name)[0]
+    surface = workspace.getObjectByTypeAndName('BuildingSurface:Detailed'.to_IddObjectType, surface_name).get
     boundary_condition = surface.getString(4).to_s
     return boundary_condition
   end
@@ -456,14 +456,15 @@ class AddWindAndStackOpenArea < OpenStudio::Measure::EnergyPlusMeasure
       return false
     end
 
-    idf_objects_to_add = []
-
     # loop through fenestrations finding exterior windows
+    idf_objects_to_add = []
     fenestrations = workspace.getObjectsByType('FenestrationSurface:Detailed'.to_IddObjectType)
+    runner.registerInitialCondition("The model has #{fenestrations.size} fenestration objects.")
     fenestrations.each do |w|
       #(0) is name, (1) is surface type, (2) is construction name, (3) is building surface name, (4) is outside boundary condition object
       next unless w.getString(1).to_s == 'Window'
-      next unless get_window_boundary_condition(workspace, w) == 'Outdoors'
+      boundary_condition = get_window_boundary_condition(workspace, w)
+      next unless boundary_condition == 'Outdoors'
 
       # if construction name given, next if window doesn't have that construction
       unless construction == ''
