@@ -85,7 +85,7 @@ class AddWindAndStackOpenArea < OpenStudio::Measure::EnergyPlusMeasure
 
   def get_window_zone_name(workspace, window)
     surface_name = window.getString(3).to_s
-    surface = workspace.getObjectsByTypeAndName('BuildingSurface:Detailed'.to_IddObjectType, surface_name)[0]
+    surface = workspace.getObjectByTypeAndName('BuildingSurface:Detailed'.to_IddObjectType, surface_name).get
     zone_name = surface.getString(3).to_s
     return zone_name
   end
@@ -147,7 +147,7 @@ class AddWindAndStackOpenArea < OpenStudio::Measure::EnergyPlusMeasure
 
   def get_window_effective_angle(workspace, window)
     surface_name = window.getString(3).to_s
-    surface = workspace.getObjectsByTypeAndName('BuildingSurface:Detailed'.to_IddObjectType, surface_name)[0]
+    surface = workspace.getObjectByTypeAndName('BuildingSurface:Detailed'.to_IddObjectType, surface_name).get
     # get x,y,z values of first three vertices from surface object
     x1 = surface.getDouble(10).get
     y1 = surface.getDouble(11).get
@@ -164,7 +164,7 @@ class AddWindAndStackOpenArea < OpenStudio::Measure::EnergyPlusMeasure
 
     # get zone direction of relative north
     zone_name = surface.getString(3).to_s
-    zone = workspace.getObjectsByTypeAndName('Zone'.to_IddObjectType, zone_name)[0]
+    zone = workspace.getObjectByTypeAndName('Zone'.to_IddObjectType, zone_name).get
     relative_north = 0
     unless zone.getDouble(1).empty?
       relative_north = zone.getDouble(1).get

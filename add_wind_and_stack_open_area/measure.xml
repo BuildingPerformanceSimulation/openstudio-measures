@@ -2,8 +2,8 @@
   <schema_version>3.0</schema_version>
   <name>add_wind_and_stack_open_area</name>
   <uid>8055497a-0d38-48eb-a643-76383fa54664</uid>
-  <version_id>750c0b82-13fe-4229-a9da-d3f45a516c09</version_id>
-  <version_modified>20191119T021044Z</version_modified>
+  <version_id>a2536a79-5704-4811-8500-61029e6d4db0</version_id>
+  <version_modified>20191119T163807Z</version_modified>
   <xml_checksum>76B1868C</xml_checksum>
   <class_name>AddWindAndStackOpenArea</class_name>
   <display_name>Add Wind and Stack Open Area</display_name>
@@ -218,7 +218,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>FCCAEFCB</checksum>
+      <checksum>09939CAE</checksum>
     </file>
   </files>
 </measure>
