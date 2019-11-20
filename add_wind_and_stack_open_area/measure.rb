@@ -202,6 +202,8 @@ class AddWindAndStackOpenArea < OpenStudio::Measure::EnergyPlusMeasure
 
     # make choice argument for fractional schedule
     sch_choices_fractional = OpenStudio::StringVector.new
+    # make default option
+    sch_choices_fractional << 'Default 0.5 Open Fractional Schedule'
     sch_compacts = workspace.getObjectsByType('Schedule:Compact'.to_IddObjectType)
     sch_constants = workspace.getObjectsByType('Schedule:Constant'.to_IddObjectType)
     sch_years = workspace.getObjectsByType('Schedule:Year'.to_IddObjectType)
@@ -229,78 +231,79 @@ class AddWindAndStackOpenArea < OpenStudio::Measure::EnergyPlusMeasure
 
     # make an argument for open area fraction
     open_area_fraction_schedule = OpenStudio::Ruleset::OSArgument::makeChoiceArgument('open_area_fraction_schedule', sch_choices_fractional, true)
-    open_area_fraction_schedule.setDisplayName('Open Area Fraction Schedule')
-    open_area_fraction_schedule.setDescription('A typical operable window does not open fully.  The actual opening area in a zone is the product of the area of operable windows and the open area fraction schedule.')
+    open_area_fraction_schedule.setDisplayName('Open Area Fraction Schedule (must have fractional schedule type limits)')
+    open_area_fraction_schedule.setDescription('A typical operable window does not open fully. The actual opening area in a zone is the product of the area of operable windows and the open area fraction schedule. Default 50% open.')
+    open_area_fraction_schedule.setDefaultValue('Default 0.5 Open Fractional Schedule')
     args << open_area_fraction_schedule
 
     # make an argument for min indoor temp
     min_indoor_temp = OpenStudio::Ruleset::OSArgument::makeDoubleArgument('min_indoor_temp', true)
     min_indoor_temp.setDisplayName('Minimum Indoor Temperature (degC)')
     min_indoor_temp.setDescription('The indoor temperature below which ventilation is shutoff.')
-    min_indoor_temp.setDefaultValue(10.0)
+    min_indoor_temp.setDefaultValue(21.67)
     args << min_indoor_temp
 
     # make choice argument for temperature schedule
-    sch_choices_tempature = OpenStudio::StringVector.new
-    sch_choices_tempature << ''
+    sch_choices_temperature = OpenStudio::StringVector.new
+    sch_choices_temperature << 'NA'
     sch_compacts = workspace.getObjectsByType('Schedule:Compact'.to_IddObjectType)
     sch_constants = workspace.getObjectsByType('Schedule:Constant'.to_IddObjectType)
     sch_years = workspace.getObjectsByType('Schedule:Year'.to_IddObjectType)
     sch_files = workspace.getObjectsByType('Schedule:File'.to_IddObjectType)
     sch_compacts.each do |sch|
       if sch.getString(1).to_s.downcase == 'temperature'
-        sch_choices_tempature << sch.getString(0).to_s
+        sch_choices_temperature << sch.getString(0).to_s
       end
     end
     sch_constants.each do |sch|
       if sch.getString(1).to_s.downcase == 'temperature'
-        sch_choices_tempature << sch.getString(0).to_s
+        sch_choices_temperature << sch.getString(0).to_s
       end
     end
     sch_years.each do |sch|
       if sch.getString(1).to_s.downcase == 'temperature'
-        sch_choices_tempature << sch.getString(0).to_s
+        sch_choices_temperature << sch.getString(0).to_s
       end
     end
     sch_files.each do |sch|
       if sch.getString(1).to_s.downcase == 'temperature'
-        sch_choices_tempature << sch.getString(0).to_s
+        sch_choices_temperature << sch.getString(0).to_s
       end
     end
 
     # make an argument for minimum indoor temperature schedule
-    min_indoor_temp_schedule = OpenStudio::Ruleset::OSArgument::makeChoiceArgument('min_indoor_temp_schedule', sch_choices_tempature, true)
+    min_indoor_temp_schedule = OpenStudio::Ruleset::OSArgument::makeChoiceArgument('min_indoor_temp_schedule', sch_choices_temperature, true)
     min_indoor_temp_schedule.setDisplayName('Minimum Indoor Temperature Schedule')
     min_indoor_temp_schedule.setDescription('The indoor temperature below which ventilation is shutoff. If specified, this will be used instead of the Minimum Indoor Temperature field above.')
-    min_indoor_temp_schedule.setDefaultValue('')
+    min_indoor_temp_schedule.setDefaultValue('NA')
     args << min_indoor_temp_schedule
 
     # make an argument for maximum indoor temperature
     max_indoor_temp = OpenStudio::Ruleset::OSArgument::makeDoubleArgument('max_indoor_temp', true)
     max_indoor_temp.setDisplayName('Maximum Indoor Temperature (degC)')
     max_indoor_temp.setDescription('The indoor temperature above which ventilation is shutoff.')
-    max_indoor_temp.setDefaultValue(60.0)
+    max_indoor_temp.setDefaultValue(40.0)
     args << max_indoor_temp
 
     # make an argument for maximum indoor temperature schedule
-    max_indoor_temp_schedule = OpenStudio::Ruleset::OSArgument::makeChoiceArgument('max_indoor_temp_schedule', sch_choices_tempature, true)
+    max_indoor_temp_schedule = OpenStudio::Ruleset::OSArgument::makeChoiceArgument('max_indoor_temp_schedule', sch_choices_temperature, true)
     max_indoor_temp_schedule.setDisplayName('Maximum Indoor Temperature Schedule')
     max_indoor_temp_schedule.setDescription('The indoor temperature above which ventilation is shutoff. If specified, this will be used instead of the Maximum Indoor Temperature field above.')
-    max_indoor_temp_schedule.setDefaultValue('')
+    max_indoor_temp_schedule.setDefaultValue('NA')
     args << max_indoor_temp_schedule
 
     # make an argument for delta temperature
     delta_temp = OpenStudio::Ruleset::OSArgument::makeDoubleArgument('delta_temp', true)
     delta_temp.setDisplayName('Maximum Indoor-Outdoor Temperature Difference (degC)')
-    delta_temp.setDescription('This is the temperature difference between the indoor and outdoor air dry-bulb temperatures below which ventilation is shutoff.  For example, a delta temperature of 2 degC means ventilation is available if the outside air temperature is at least 2 degC cooler than the zone air temperature. Values can be negative.')
-    delta_temp.setDefaultValue(0.0)
+    delta_temp.setDescription('This is the temperature difference between the indoor and outdoor air dry-bulb temperatures below which ventilation is shutoff.  For example, a delta temperature of 3 degC means ventilation is available if the outside air temperature is at least 3 degC cooler than the zone air temperature. Values can be negative.')
+    delta_temp.setDefaultValue(3.0)
     args << delta_temp
 
     # make an argument for delta temperature schedule
-    delta_temp_schedule = OpenStudio::Ruleset::OSArgument::makeChoiceArgument('delta_temp_schedule', sch_choices_tempature, true)
+    delta_temp_schedule = OpenStudio::Ruleset::OSArgument::makeChoiceArgument('delta_temp_schedule', sch_choices_temperature, true)
     delta_temp_schedule.setDisplayName('Maximum Indoor-Outdoor Temperature Difference Schedule')
     delta_temp_schedule.setDescription('This is the temperature difference between the indoor and outdoor air dry-bulb temperatures below which ventilation is shutoff. If specified, this will be used instead of the Maximum Indoor-Outdoor Temperature Difference field above.')
-    delta_temp_schedule.setDefaultValue('')
+    delta_temp_schedule.setDefaultValue('NA')
     args << delta_temp_schedule
 
     # make an argument for minimum outdoor temperature
@@ -311,10 +314,10 @@ class AddWindAndStackOpenArea < OpenStudio::Measure::EnergyPlusMeasure
     args << min_outdoor_temp
 
     # make an argument for minimum outdoor temperature schedule
-    min_outdoor_temp_schedule = OpenStudio::Ruleset::OSArgument::makeChoiceArgument('min_outdoor_temp_schedule', sch_choices_tempature, true)
+    min_outdoor_temp_schedule = OpenStudio::Ruleset::OSArgument::makeChoiceArgument('min_outdoor_temp_schedule', sch_choices_temperature, true)
     min_outdoor_temp_schedule.setDisplayName('Minimum Outdoor Temperature Schedule')
     min_outdoor_temp_schedule.setDescription('The outdoor temperature below which ventilation is shut off. If specified, this will be used instead of the Minimum Outdoor Temperature field above.')
-    min_outdoor_temp_schedule.setDefaultValue('')
+    min_outdoor_temp_schedule.setDefaultValue('NA')
     args << min_outdoor_temp_schedule
 
     # make an argument for maximum outdoor temperature
@@ -325,10 +328,10 @@ class AddWindAndStackOpenArea < OpenStudio::Measure::EnergyPlusMeasure
     args << max_outdoor_temp
 
     # make an argument for maximum outdoor temperature schedule
-    max_outdoor_temp_schedule = OpenStudio::Ruleset::OSArgument::makeChoiceArgument('max_outdoor_temp_schedule', sch_choices_tempature, true)
+    max_outdoor_temp_schedule = OpenStudio::Ruleset::OSArgument::makeChoiceArgument('max_outdoor_temp_schedule', sch_choices_temperature, true)
     max_outdoor_temp_schedule.setDisplayName('Maximum Outdoor Temperature Schedule')
     max_outdoor_temp_schedule.setDescription('The outdoor temperature above which ventilation is shut off. If specified, this will be used instead of the Maximum Outdoor Temperature field above.')
-    max_outdoor_temp_schedule.setDefaultValue('')
+    max_outdoor_temp_schedule.setDefaultValue('NA')
     args << max_outdoor_temp_schedule
 
     # make an argument for maximum wind speed
@@ -349,15 +352,15 @@ class AddWindAndStackOpenArea < OpenStudio::Measure::EnergyPlusMeasure
     construction = runner.getStringArgumentValue('construction', user_arguments)
     open_area_fraction_schedule = runner.getStringArgumentValue('open_area_fraction_schedule', user_arguments)
     min_indoor_temp = runner.getDoubleArgumentValue('min_indoor_temp', user_arguments)
-    min_indoor_temp_schedule = runner.getOptionalStringArgumentValue('min_indoor_temp_schedule', user_arguments)
+    min_indoor_temp_schedule = runner.getStringArgumentValue('min_indoor_temp_schedule', user_arguments)
     max_indoor_temp = runner.getDoubleArgumentValue('max_indoor_temp', user_arguments)
-    max_indoor_temp_schedule = runner.getOptionalStringArgumentValue('max_indoor_temp_schedule', user_arguments)
+    max_indoor_temp_schedule = runner.getStringArgumentValue('max_indoor_temp_schedule', user_arguments)
     delta_temp = runner.getDoubleArgumentValue('delta_temp', user_arguments)
-    delta_temp_schedule = runner.getOptionalStringArgumentValue('delta_temp_schedule', user_arguments)
+    delta_temp_schedule = runner.getStringArgumentValue('delta_temp_schedule', user_arguments)
     min_outdoor_temp = runner.getDoubleArgumentValue('min_outdoor_temp', user_arguments)
-    min_outdoor_temp_schedule = runner.getOptionalStringArgumentValue('min_outdoor_temp_schedule', user_arguments)
+    min_outdoor_temp_schedule = runner.getStringArgumentValue('min_outdoor_temp_schedule', user_arguments)
     max_outdoor_temp = runner.getDoubleArgumentValue('max_outdoor_temp', user_arguments)
-    max_outdoor_temp_schedule = runner.getOptionalStringArgumentValue('max_outdoor_temp_schedule', user_arguments)
+    max_outdoor_temp_schedule = runner.getStringArgumentValue('max_outdoor_temp_schedule', user_arguments)
     max_wind_speed = runner.getDoubleArgumentValue('max_wind_speed', user_arguments)
 
     # check value for reasonableness
@@ -370,12 +373,12 @@ class AddWindAndStackOpenArea < OpenStudio::Measure::EnergyPlusMeasure
     end
 
     # set idf code for minimum indoor temperature
-    if min_indoor_temp_schedule.is_initialized
-      min_indoor_temp_idf = ",                        !- Minimum Indoor Temperature {C}
-    #{min_indoor_temp_schedule},                        !- Minimum Indoor Temperature Schedule Name"
-    else
+    if min_indoor_temp_schedule == 'NA'
       min_indoor_temp_idf = "#{min_indoor_temp},      !- Minimum Indoor Temperature {C}
     ,                        !- Minimum Indoor Temperature Schedule Name"
+    else
+      min_indoor_temp_idf = ",                        !- Minimum Indoor Temperature {C}
+    #{min_indoor_temp_schedule},                        !- Minimum Indoor Temperature Schedule Name"
     end
 
     # check value for reasonableness
@@ -388,12 +391,12 @@ class AddWindAndStackOpenArea < OpenStudio::Measure::EnergyPlusMeasure
     end
 
     # set idf code for maximum indoor temperature
-    if max_indoor_temp_schedule.is_initialized
-      max_indoor_temp_idf = ",                        !- Maximum Indoor Temperature {C}
-    #{max_indoor_temp_schedule},                        !- Maximum Indoor Temperature Schedule Name"
-    else
+    if max_indoor_temp_schedule == 'NA'
       max_indoor_temp_idf = "#{max_indoor_temp},      !- Maximum Indoor Temperature {C}
     ,                        !- Maximum Indoor Temperature Schedule Name"
+    else
+      max_indoor_temp_idf = ",                        !- Maximum Indoor Temperature {C}
+    #{max_indoor_temp_schedule},                        !- Maximum Indoor Temperature Schedule Name"
     end
 
     # check value for reasonableness
@@ -406,12 +409,12 @@ class AddWindAndStackOpenArea < OpenStudio::Measure::EnergyPlusMeasure
     end
 
     # set idf code for delta temperature
-    if delta_temp_schedule.is_initialized
-      delta_temp_idf = ",                        !- Delta Temperature {deltaC}
-    #{delta_temp_schedule},                        !- Delta Temperature Schedule Name"
-    else
+    if delta_temp_schedule == 'NA'
       delta_temp_idf = "#{delta_temp},      !- Delta Temperature {deltaC}
     ,                        !- Delta Temperature Schedule Name"
+    else
+      delta_temp_idf = ",                        !- Delta Temperature {deltaC}
+    #{delta_temp_schedule},                        !- Delta Temperature Schedule Name"
     end
 
     # check value for reasonableness
@@ -424,12 +427,12 @@ class AddWindAndStackOpenArea < OpenStudio::Measure::EnergyPlusMeasure
     end
 
     # set idf code for minimum outdoor temperature
-    if min_outdoor_temp_schedule.is_initialized
-      min_outdoor_temp_idf = ",                        !- Minimum Outdoor Temperature {C}
-    #{min_outdoor_temp_schedule},                        !- Minimum Outdoor Temperature Schedule Name"
-    else
+    if min_outdoor_temp_schedule == 'NA'
       min_outdoor_temp_idf = "#{min_outdoor_temp},      !- Minimum Outdoor Temperature {C}
     ,                        !- Minimum Outdoor Temperature Schedule Name"
+    else
+      min_outdoor_temp_idf = ",                        !- Minimum Outdoor Temperature {C}
+    #{min_outdoor_temp_schedule},                        !- Minimum Outdoor Temperature Schedule Name"
     end
 
     # check value for reasonableness
@@ -442,18 +445,35 @@ class AddWindAndStackOpenArea < OpenStudio::Measure::EnergyPlusMeasure
     end
 
     # set idf code for maximum outdoor temperature
-    if max_outdoor_temp_schedule.is_initialized
-      max_outdoor_temp_idf = ",                        !- Maximum Outdoor Temperature {C}
-    #{max_outdoor_temp_schedule},                        !- Maximum Outdoor Temperature Schedule Name"
-    else
+    if max_outdoor_temp_schedule == 'NA'
       max_outdoor_temp_idf = "#{max_outdoor_temp},      !- Maximum Outdoor Temperature {C}
     ,                        !- Maximum Outdoor Temperature Schedule Name"
+    else
+      max_outdoor_temp_idf = ",                        !- Maximum Outdoor Temperature {C}
+    #{max_outdoor_temp_schedule},                        !- Maximum Outdoor Temperature Schedule Name"
     end
 
     # check value for reasonableness
     if max_wind_speed < 0.0
       runner.registerError('Please enter a non-negative value for maximum wind speed.')
       return false
+    end
+
+    # add default schedule if selected
+    if open_area_fraction_schedule == 'Default 0.5 Open Fractional Schedule'
+      unless workspace.getObjectByTypeAndName('Schedule:Compact'.to_IddObjectType, 'Default 0.5 Open Fractional Schedule').is_initialized
+        default_sch_obj = "
+          Schedule:Compact,
+          Default 0.5 Open Fractional Schedule,
+          Fractional,
+          Through: 12/31,
+          For: WinterDesignDay SummerDesignDay,
+          Until: 24:00, 0.0,
+          For: AllOtherDays,
+          Until: 24:00, 0.5;"
+        idf_object = OpenStudio::IdfObject::load(default_sch_obj)
+        workspace.addObject(idf_object.get)
+      end
     end
 
     # loop through fenestrations finding exterior windows
@@ -507,8 +527,8 @@ class AddWindAndStackOpenArea < OpenStudio::Measure::EnergyPlusMeasure
 
     # add all of the strings to workspace to create IDF objects
     idf_objects_to_add.each do |obj|
-      idfObject = OpenStudio::IdfObject::load(obj)
-      workspace.addObject(idfObject.get)
+      idf_object = OpenStudio::IdfObject::load(obj)
+      workspace.addObject(idf_object.get)
     end
 
     # check if any objects added for reasonableness

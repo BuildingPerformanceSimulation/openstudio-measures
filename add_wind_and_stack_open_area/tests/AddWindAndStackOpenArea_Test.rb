@@ -13,7 +13,7 @@ class AddWindAndStackOpenArea_Test < MiniTest::Test
 
   def test_number_of_arguments_and_argument_names
     # this test ensures that the current test is matched to the measure inputs
-    test_name = "test_number_of_arguments_and_argument_names"
+    test_name = 'test_number_of_arguments_and_argument_names'
 
     # create an instance of the measure
     measure = AddWindAndStackOpenArea.new
@@ -24,24 +24,24 @@ class AddWindAndStackOpenArea_Test < MiniTest::Test
     # get arguments and test that they are what we are expecting
     arguments = measure.arguments(workspace)
     assert_equal(13, arguments.size)
-    assert_equal("construction", arguments[0].name)
-    assert_equal("open_area_fraction_schedule", arguments[1].name)
-    assert_equal("min_indoor_temp", arguments[2].name)
-    assert_equal("min_indoor_temp_schedule", arguments[3].name)
-    assert_equal("max_indoor_temp", arguments[4].name)
-    assert_equal("max_indoor_temp_schedule", arguments[5].name)
-    assert_equal("delta_temp", arguments[6].name)
-    assert_equal("delta_temp_schedule", arguments[7].name)
-    assert_equal("min_outdoor_temp", arguments[8].name)
-    assert_equal("min_outdoor_temp_schedule", arguments[9].name)
-    assert_equal("max_outdoor_temp", arguments[10].name)
-    assert_equal("max_outdoor_temp_schedule", arguments[11].name)
-    assert_equal("max_wind_speed", arguments[12].name)
+    assert_equal('construction', arguments[0].name)
+    assert_equal('open_area_fraction_schedule', arguments[1].name)
+    assert_equal('min_indoor_temp', arguments[2].name)
+    assert_equal('min_indoor_temp_schedule', arguments[3].name)
+    assert_equal('max_indoor_temp', arguments[4].name)
+    assert_equal('max_indoor_temp_schedule', arguments[5].name)
+    assert_equal('delta_temp', arguments[6].name)
+    assert_equal('delta_temp_schedule', arguments[7].name)
+    assert_equal('min_outdoor_temp', arguments[8].name)
+    assert_equal('min_outdoor_temp_schedule', arguments[9].name)
+    assert_equal('max_outdoor_temp', arguments[10].name)
+    assert_equal('max_outdoor_temp_schedule', arguments[11].name)
+    assert_equal('max_wind_speed', arguments[12].name)
   end
 
   def test_geometry_fields
     # this tests that the window vertex fields are aligned properly
-    test_name = "test_geometry_fields"
+    test_name = 'test_geometry_fields'
 
     # create an instance of the measure
     measure = AddWindAndStackOpenArea.new
@@ -115,21 +115,36 @@ class AddWindAndStackOpenArea_Test < MiniTest::Test
     assert(min_indoor_temp.setValue(10.0))
     argument_map['min_indoor_temp'] = min_indoor_temp
 
+    min_indoor_temp_schedule = arguments[3].clone
+    argument_map['min_indoor_temp_schedule'] = min_indoor_temp_schedule
+
     max_indoor_temp = arguments[4].clone
     assert(max_indoor_temp.setValue(60.0))
     argument_map['max_indoor_temp'] = max_indoor_temp
+
+    max_indoor_temp_schedule = arguments[5].clone
+    argument_map['max_indoor_temp_schedule'] = max_indoor_temp_schedule
 
     delta_temp = arguments[6].clone
     assert(delta_temp.setValue(0.0))
     argument_map['delta_temp'] = delta_temp
 
+    delta_temp_schedule = arguments[7].clone
+    argument_map['delta_temp_schedule'] = delta_temp_schedule
+
     min_outdoor_temp = arguments[8].clone
     assert(min_outdoor_temp.setValue(18.3333))
     argument_map['min_outdoor_temp'] = min_outdoor_temp
 
+    min_outdoor_temp_schedule = arguments[9].clone
+    argument_map['min_outdoor_temp_schedule'] = min_outdoor_temp_schedule
+
     max_outdoor_temp = arguments[10].clone
     assert(max_outdoor_temp.setValue(25.5556))
     argument_map['max_outdoor_temp'] = max_outdoor_temp
+
+    max_outdoor_temp_schedule = arguments[11].clone
+    argument_map['max_outdoor_temp_schedule'] = max_outdoor_temp_schedule
 
     max_wind_speed = arguments[12].clone
     assert(max_wind_speed.setValue(5.4))
@@ -151,7 +166,7 @@ class AddWindAndStackOpenArea_Test < MiniTest::Test
       FileUtils.mkdir_p("#{File.dirname(__FILE__)}/output")
     end
     output_file_path = workspace_out_path(test_name)
-    workspace.save(output_file_path,true)
+    workspace.save(output_file_path, true)
   end
 
   def test_bad_temps
@@ -192,21 +207,36 @@ class AddWindAndStackOpenArea_Test < MiniTest::Test
     assert(min_indoor_temp.setValue(-110.0))
     argument_map['min_indoor_temp'] = min_indoor_temp
 
+    min_indoor_temp_schedule = arguments[3].clone
+    argument_map['min_indoor_temp_schedule'] = min_indoor_temp_schedule
+
     max_indoor_temp = arguments[4].clone
-    assert(max_indoor_temp.setValue(60.0))
+    assert(max_indoor_temp.setValue(40.0))
     argument_map['max_indoor_temp'] = max_indoor_temp
 
+    max_indoor_temp_schedule = arguments[5].clone
+    argument_map['max_indoor_temp_schedule'] = max_indoor_temp_schedule
+
     delta_temp = arguments[6].clone
-    assert(delta_temp.setValue(0.0))
+    assert(delta_temp.setValue(2.0))
     argument_map['delta_temp'] = delta_temp
+
+    delta_temp_schedule = arguments[7].clone
+    argument_map['delta_temp_schedule'] = delta_temp_schedule
 
     min_outdoor_temp = arguments[8].clone
     assert(min_outdoor_temp.setValue(18.3333))
     argument_map['min_outdoor_temp'] = min_outdoor_temp
 
+    min_outdoor_temp_schedule = arguments[9].clone
+    argument_map['min_outdoor_temp_schedule'] = min_outdoor_temp_schedule
+
     max_outdoor_temp = arguments[10].clone
     assert(max_outdoor_temp.setValue(25.5556))
     argument_map['max_outdoor_temp'] = max_outdoor_temp
+
+    max_outdoor_temp_schedule = arguments[11].clone
+    argument_map['max_outdoor_temp_schedule'] = max_outdoor_temp_schedule
 
     max_wind_speed = arguments[12].clone
     assert(max_wind_speed.setValue(5.4))
@@ -259,24 +289,39 @@ class AddWindAndStackOpenArea_Test < MiniTest::Test
     argument_map['open_area_fraction_schedule'] = open_area_fraction_schedule
 
     min_indoor_temp = arguments[2].clone
-    assert(min_indoor_temp.setValue(10.0))
+    assert(min_indoor_temp.setValue(21.67))
     argument_map['min_indoor_temp'] = min_indoor_temp
 
+    min_indoor_temp_schedule = arguments[3].clone
+    argument_map['min_indoor_temp_schedule'] = min_indoor_temp_schedule
+
     max_indoor_temp = arguments[4].clone
-    assert(max_indoor_temp.setValue(60.0))
+    assert(max_indoor_temp.setValue(40.0))
     argument_map['max_indoor_temp'] = max_indoor_temp
 
+    max_indoor_temp_schedule = arguments[5].clone
+    argument_map['max_indoor_temp_schedule'] = max_indoor_temp_schedule
+
     delta_temp = arguments[6].clone
-    assert(delta_temp.setValue(0.0))
+    assert(delta_temp.setValue(2.0))
     argument_map['delta_temp'] = delta_temp
+
+    delta_temp_schedule = arguments[7].clone
+    argument_map['delta_temp_schedule'] = delta_temp_schedule
 
     min_outdoor_temp = arguments[8].clone
     assert(min_outdoor_temp.setValue(18.3333))
     argument_map['min_outdoor_temp'] = min_outdoor_temp
 
+    min_outdoor_temp_schedule = arguments[9].clone
+    argument_map['min_outdoor_temp_schedule'] = min_outdoor_temp_schedule
+
     max_outdoor_temp = arguments[10].clone
     assert(max_outdoor_temp.setValue(25.5556))
     argument_map['max_outdoor_temp'] = max_outdoor_temp
+
+    max_outdoor_temp_schedule = arguments[11].clone
+    argument_map['max_outdoor_temp_schedule'] = max_outdoor_temp_schedule
 
     max_wind_speed = arguments[12].clone
     assert(max_wind_speed.setValue(5.4))
@@ -329,7 +374,7 @@ class AddWindAndStackOpenArea_Test < MiniTest::Test
     argument_map['open_area_fraction_schedule'] = open_area_fraction_schedule
 
     min_indoor_temp = arguments[2].clone
-    assert(min_indoor_temp.setValue(10.0))
+    assert(min_indoor_temp.setValue(21.67))
     argument_map['min_indoor_temp'] = min_indoor_temp
 
     min_indoor_temp_schedule = arguments[3].clone
@@ -337,7 +382,7 @@ class AddWindAndStackOpenArea_Test < MiniTest::Test
     argument_map['min_indoor_temp_schedule'] = min_indoor_temp_schedule
 
     max_indoor_temp = arguments[4].clone
-    assert(max_indoor_temp.setValue(60.0))
+    assert(max_indoor_temp.setValue(40.0))
     argument_map['max_indoor_temp'] = max_indoor_temp
 
     max_indoor_temp_schedule = arguments[5].clone
@@ -345,8 +390,11 @@ class AddWindAndStackOpenArea_Test < MiniTest::Test
     argument_map['max_indoor_temp_schedule'] = max_indoor_temp_schedule
 
     delta_temp = arguments[6].clone
-    assert(delta_temp.setValue(0.0))
+    assert(delta_temp.setValue(2.0))
     argument_map['delta_temp'] = delta_temp
+
+    delta_temp_schedule = arguments[7].clone
+    argument_map['delta_temp_schedule'] = delta_temp_schedule
 
     min_outdoor_temp = arguments[8].clone
     assert(min_outdoor_temp.setValue(18.3333))
@@ -384,6 +432,97 @@ class AddWindAndStackOpenArea_Test < MiniTest::Test
       FileUtils.mkdir_p("#{File.dirname(__FILE__)}/output")
     end
     output_file_path = workspace_out_path(test_name)
-    workspace.save(output_file_path,true)
+    workspace.save(output_file_path, true)
+  end
+
+  def test_default_open_fraction_sch
+    # this tests good input values with default open fraction schedule
+    test_name = 'test_default_open_fraction_sch'
+
+    # create an instance of the measure
+    measure = AddWindAndStackOpenArea.new
+
+    # create an instance of a runner
+    osw = OpenStudio::WorkflowJSON.new
+    runner = OpenStudio::Measure::OSRunner.new(osw)
+
+    # load the test model
+    translator = OpenStudio::OSVersion::VersionTranslator.new
+    path = OpenStudio::Path.new(File.dirname(__FILE__) + '/Office.osm')
+    model = translator.loadModel(path)
+    assert((not model.empty?))
+    model = model.get
+
+    # forward translate OSM file to IDF file
+    ft = OpenStudio::EnergyPlus::ForwardTranslator.new
+    workspace = ft.translateModel(model)
+
+    # set argument values to good values
+    arguments = measure.arguments(workspace)
+    argument_map = OpenStudio::Measure::OSArgumentMap.new
+
+    construction = arguments[0].clone
+    assert(construction.setValue('U 0.62 SHGC 0.25 Dbl Ref-C-H Clr 6mm/6mm Air 2'))
+    argument_map['construction'] = construction
+
+    open_area_fraction_schedule = arguments[1].clone
+    argument_map['open_area_fraction_schedule'] = open_area_fraction_schedule
+
+    min_indoor_temp = arguments[2].clone
+    assert(min_indoor_temp.setValue(21.67))
+    argument_map['min_indoor_temp'] = min_indoor_temp
+
+    min_indoor_temp_schedule = arguments[3].clone
+    argument_map['min_indoor_temp_schedule'] = min_indoor_temp_schedule
+
+    max_indoor_temp = arguments[4].clone
+    assert(max_indoor_temp.setValue(40.0))
+    argument_map['max_indoor_temp'] = max_indoor_temp
+
+    max_indoor_temp_schedule = arguments[5].clone
+    argument_map['max_indoor_temp_schedule'] = max_indoor_temp_schedule
+
+    delta_temp = arguments[6].clone
+    assert(delta_temp.setValue(2.0))
+    argument_map['delta_temp'] = delta_temp
+
+    delta_temp_schedule = arguments[7].clone
+    argument_map['delta_temp_schedule'] = delta_temp_schedule
+
+    min_outdoor_temp = arguments[8].clone
+    assert(min_outdoor_temp.setValue(18.3333))
+    argument_map['min_outdoor_temp'] = min_outdoor_temp
+
+    min_outdoor_temp_schedule = arguments[9].clone
+    argument_map['min_outdoor_temp_schedule'] = min_outdoor_temp_schedule
+
+    max_outdoor_temp = arguments[10].clone
+    assert(max_outdoor_temp.setValue(25.5556))
+    argument_map['max_outdoor_temp'] = max_outdoor_temp
+
+    max_outdoor_temp_schedule = arguments[11].clone
+    argument_map['max_outdoor_temp_schedule'] = max_outdoor_temp_schedule
+
+    max_wind_speed = arguments[12].clone
+    assert(max_wind_speed.setValue(5.4))
+    argument_map['max_wind_speed'] = max_wind_speed
+
+    # run the measure
+    measure.run(workspace, runner, argument_map)
+    result = runner.result
+
+    # show the output
+    show_output(result)
+
+    # assert that it ran correctly
+    assert_equal('Success', result.value.valueName)
+    assert(result.warnings.size == 0)
+
+    #save the workspace for testing purposes
+    if !File.exist?("#{File.dirname(__FILE__)}/output")
+      FileUtils.mkdir_p("#{File.dirname(__FILE__)}/output")
+    end
+    output_file_path = workspace_out_path(test_name)
+    workspace.save(output_file_path, true)
   end
 end

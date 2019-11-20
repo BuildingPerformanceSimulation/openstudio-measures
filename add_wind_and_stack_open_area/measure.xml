@@ -2,8 +2,8 @@
   <schema_version>3.0</schema_version>
   <name>add_wind_and_stack_open_area</name>
   <uid>8055497a-0d38-48eb-a643-76383fa54664</uid>
-  <version_id>a2536a79-5704-4811-8500-61029e6d4db0</version_id>
-  <version_modified>20191119T163807Z</version_modified>
+  <version_id>0ea2a099-9536-4f15-80a2-76a974ffdfd7</version_id>
+  <version_modified>20191120T223947Z</version_modified>
   <xml_checksum>76B1868C</xml_checksum>
   <class_name>AddWindAndStackOpenArea</class_name>
   <display_name>Add Wind and Stack Open Area</display_name>
@@ -27,11 +27,18 @@
     </argument>
     <argument>
       <name>open_area_fraction_schedule</name>
-      <display_name>Open Area Fraction Schedule</display_name>
-      <description>A typical operable window does not open fully.  The actual opening area in a zone is the product of the area of operable windows and the open area fraction schedule.</description>
+      <display_name>Open Area Fraction Schedule (must have fractional schedule type limits)</display_name>
+      <description>A typical operable window does not open fully. The actual opening area in a zone is the product of the area of operable windows and the open area fraction schedule. Default 50% open.</description>
       <type>Choice</type>
       <required>true</required>
       <model_dependent>false</model_dependent>
+      <default_value>Default 0.5 Open Fractional Schedule</default_value>
+      <choices>
+        <choice>
+          <value>Default 0.5 Open Fractional Schedule</value>
+          <display_name>Default 0.5 Open Fractional Schedule</display_name>
+        </choice>
+      </choices>
     </argument>
     <argument>
       <name>min_indoor_temp</name>
@@ -40,7 +47,7 @@
       <type>Double</type>
       <required>true</required>
       <model_dependent>false</model_dependent>
-      <default_value>10</default_value>
+      <default_value>21.67</default_value>
     </argument>
     <argument>
       <name>min_indoor_temp_schedule</name>
@@ -49,11 +56,11 @@
       <type>Choice</type>
       <required>true</required>
       <model_dependent>false</model_dependent>
-      <default_value></default_value>
+      <default_value>NA</default_value>
       <choices>
         <choice>
-          <value></value>
-          <display_name></display_name>
+          <value>NA</value>
+          <display_name>NA</display_name>
         </choice>
       </choices>
     </argument>
@@ -64,7 +71,7 @@
       <type>Double</type>
       <required>true</required>
       <model_dependent>false</model_dependent>
-      <default_value>60</default_value>
+      <default_value>40</default_value>
     </argument>
     <argument>
       <name>max_indoor_temp_schedule</name>
@@ -73,22 +80,22 @@
       <type>Choice</type>
       <required>true</required>
       <model_dependent>false</model_dependent>
-      <default_value></default_value>
+      <default_value>NA</default_value>
       <choices>
         <choice>
-          <value></value>
-          <display_name></display_name>
+          <value>NA</value>
+          <display_name>NA</display_name>
         </choice>
       </choices>
     </argument>
     <argument>
       <name>delta_temp</name>
       <display_name>Maximum Indoor-Outdoor Temperature Difference (degC)</display_name>
-      <description>This is the temperature difference between the indoor and outdoor air dry-bulb temperatures below which ventilation is shutoff.  For example, a delta temperature of 2 degC means ventilation is available if the outside air temperature is at least 2 degC cooler than the zone air temperature. Values can be negative.</description>
+      <description>This is the temperature difference between the indoor and outdoor air dry-bulb temperatures below which ventilation is shutoff.  For example, a delta temperature of 3 degC means ventilation is available if the outside air temperature is at least 3 degC cooler than the zone air temperature. Values can be negative.</description>
       <type>Double</type>
       <required>true</required>
       <model_dependent>false</model_dependent>
-      <default_value>0</default_value>
+      <default_value>3</default_value>
     </argument>
     <argument>
       <name>delta_temp_schedule</name>
@@ -97,11 +104,11 @@
       <type>Choice</type>
       <required>true</required>
       <model_dependent>false</model_dependent>
-      <default_value></default_value>
+      <default_value>NA</default_value>
       <choices>
         <choice>
-          <value></value>
-          <display_name></display_name>
+          <value>NA</value>
+          <display_name>NA</display_name>
         </choice>
       </choices>
     </argument>
@@ -121,11 +128,11 @@
       <type>Choice</type>
       <required>true</required>
       <model_dependent>false</model_dependent>
-      <default_value></default_value>
+      <default_value>NA</default_value>
       <choices>
         <choice>
-          <value></value>
-          <display_name></display_name>
+          <value>NA</value>
+          <display_name>NA</display_name>
         </choice>
       </choices>
     </argument>
@@ -145,11 +152,11 @@
       <type>Choice</type>
       <required>true</required>
       <model_dependent>false</model_dependent>
-      <default_value></default_value>
+      <default_value>NA</default_value>
       <choices>
         <choice>
-          <value></value>
-          <display_name></display_name>
+          <value>NA</value>
+          <display_name>NA</display_name>
         </choice>
       </choices>
     </argument>
@@ -207,7 +214,7 @@
       <filename>AddWindAndStackOpenArea_Test.rb</filename>
       <filetype>rb</filetype>
       <usage_type>test</usage_type>
-      <checksum>E44F3465</checksum>
+      <checksum>4B25D0BC</checksum>
     </file>
     <file>
       <version>
@@ -218,7 +225,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>09939CAE</checksum>
+      <checksum>4FD33F14</checksum>
     </file>
   </files>
 </measure>
