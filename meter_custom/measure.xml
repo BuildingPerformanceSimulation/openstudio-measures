@@ -1,14 +1,15 @@
+<?xml version="1.0"?>
 <measure>
   <schema_version>3.0</schema_version>
   <name>meter_custom</name>
   <uid>4b323dbc-652b-447f-a883-fbdc9f2e651b</uid>
-  <version_id>ce9301c7-9611-4279-90d8-77442dcddb86</version_id>
-  <version_modified>20191101T001436Z</version_modified>
+  <version_id>aa580ff5-74c1-401f-a8ca-5861f3f1e722</version_id>
+  <version_modified>20210406T194753Z</version_modified>
   <xml_checksum>0519EBDC</xml_checksum>
   <class_name>MeterCustom</class_name>
   <display_name>Meter Custom</display_name>
-  <description>This measure creates a Custom Meter to combine output variables and meters from a user-defined .csv file.  This is helpful for combining energy use by floor, by space type, or for specific zones. You can easily create this grouping by generating the SpaceTypeReport, then filtering and copying the zones you want to group together. An example .csv file is included in the resources folder for this measure. The measure optionally outputs the custom meter.</description>
-  <modeler_description>This measure creates a Meter:Custom object based on a user-defined .csv file and optionally adds an Output:Meter for the custom meter to save the values to the .eio and .mtr files.  Common errors: (1) Using space names instead of thermal zone names as key variables, (2) not specifying the Zone variable, e.g. Lights Electric Energy vs. Zone Lights Electric Energy, (3) Requesting a variable or meter that is not there.  E.g., if a zone has no electric equipment, you cannot request a Zone Electric Equipment Electric Energy variable.</modeler_description>
+  <description>This measure creates a Custom Meter to combine output variables and meters from a user-defined .csv file. This is helpful for combining energy use by floor, by space type, or for specific zones. You can easily create this grouping by generating the SpaceTypeReport, then filtering and copying the zones you want to group together. An example .csv file is included in the resources folder for this measure. The measure optionally outputs the custom meter.  An example file is included in the tests directory of this measure.</description>
+  <modeler_description>This measure creates a Meter:Custom object based on a user-defined .csv file and optionally adds an Output:Meter for the custom meter to save the values to the .eio and .mtr files. Common errors include (1) using space names instead of thermal zone names as key variables, (2) not specifying the Zone variable, e.g. Lights Electric Energy vs. Zone Lights Electric Energy, (3) combining different fuel types on the same meter, and (4) Requesting a variable or meter that is not there, e.g., if a zone has no electric equipment, you cannot request a Zone Electric Equipment Electric Energy variable.</modeler_description>
   <arguments>
     <argument>
       <name>custom_meter_name</name>
@@ -16,7 +17,7 @@
       <type>String</type>
       <required>true</required>
       <model_dependent>false</model_dependent>
-      <default_value>custom meter name</default_value>
+      <default_value>custom_meter_name</default_value>
     </argument>
     <argument>
       <name>fuel_type</name>
@@ -75,10 +76,10 @@
     <argument>
       <name>file_path</name>
       <display_name>Enter the path to the file:</display_name>
-      <description>Example: 'C:\MyProject\custom_meter_assignment.csv'</description>
       <type>String</type>
       <required>true</required>
       <model_dependent>false</model_dependent>
+      <default_value>'C:\MyProject\custom_meter_assignment.csv'</default_value>
     </argument>
     <argument>
       <name>add_output_meter</name>
@@ -129,8 +130,8 @@
       </choices>
     </argument>
   </arguments>
-  <outputs/>
-  <provenances/>
+  <outputs />
+  <provenances />
   <tags>
     <tag>Reporting.QAQC</tag>
   </tags>
@@ -163,16 +164,16 @@
   </attributes>
   <files>
     <file>
-      <filename>meter_custom_test.rb</filename>
-      <filetype>rb</filetype>
-      <usage_type>test</usage_type>
-      <checksum>CEAFEE08</checksum>
-    </file>
-    <file>
       <filename>example_file.csv</filename>
       <filetype>csv</filetype>
       <usage_type>test</usage_type>
       <checksum>0B8411A9</checksum>
+    </file>
+    <file>
+      <filename>meter_custom_test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>3CA40ACE</checksum>
     </file>
     <file>
       <version>
@@ -183,7 +184,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>1F530F39</checksum>
+      <checksum>46C469F2</checksum>
     </file>
   </files>
 </measure>

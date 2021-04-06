@@ -10,8 +10,11 @@ class MeterCustom_Test < Minitest::Test
     # create an instance of the measure
     measure = MeterCustom.new
 
+    # make an empty model
+    model = OpenStudio::Model::Model.new
+
     # get arguments and test that they are what we are expecting
-    arguments = measure.arguments
+    arguments = measure.arguments(model)
     assert_equal(5, arguments.size)
     assert_equal('custom_meter_name', arguments[0].name)
     assert_equal('fuel_type', arguments[1].name)
@@ -34,13 +37,29 @@ class MeterCustom_Test < Minitest::Test
     runner = OpenStudio::Measure::OSRunner.new(OpenStudio::WorkflowJSON.new)
 
     # get arguments
-    arguments = measure.arguments
+    arguments = measure.arguments(model)
+    argument_map = OpenStudio::Ruleset::OSArgumentMap.new
 
-    # set file path argument
-    argument_map = OpenStudio::Measure.convertOSArgumentVectorToMap(arguments)
+    # set arguments
+    custom_meter_name = arguments[0].clone
+    assert(custom_meter_name.setValue('test_name'))
+    argument_map['custom_meter_name'] = custom_meter_name
+
+    fuel_type = arguments[1].clone
+    assert(fuel_type.setValue('Electricity'))
+    argument_map['fuel_type'] = fuel_type
+
     file_path = arguments[2].clone
     assert(file_path.setValue("#{File.dirname(__FILE__)}/example_file.csv"))
     argument_map['file_path'] = file_path
+
+    add_output_meter = arguments[3].clone
+    assert(add_output_meter.setValue(true))
+    argument_map['add_output_meter'] = add_output_meter
+
+    reporting_frequency = arguments[4].clone
+    assert(reporting_frequency.setValue('hourly'))
+    argument_map['reporting_frequency'] = reporting_frequency
 
     # run the measure and show the output
     measure.run(model, runner, argument_map)
@@ -62,10 +81,10 @@ class MeterCustom_Test < Minitest::Test
     runner = OpenStudio::Measure::OSRunner.new(OpenStudio::WorkflowJSON.new)
 
     # get arguments
-    arguments = measure.arguments
+    arguments = measure.arguments(model)
+    argument_map = OpenStudio::Ruleset::OSArgumentMap.new
 
     # set file path argument
-    argument_map = OpenStudio::Measure.convertOSArgumentVectorToMap(arguments)
     file_path = arguments[2].clone
     assert(file_path.setValue("#{File.dirname(__FILE__)}/does_not_exist.csv"))
     argument_map['file_path'] = file_path

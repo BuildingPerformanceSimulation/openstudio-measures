@@ -20,7 +20,7 @@ class MeterCustom < OpenStudio::Measure::ModelMeasure
   end
 
   # define the arguments that the user will input
-  def arguments
+  def arguments(model)
     args = OpenStudio::Measure::OSArgumentVector.new
 
     # make string argument for meter name
@@ -77,7 +77,7 @@ class MeterCustom < OpenStudio::Measure::ModelMeasure
     super(model, runner, user_arguments)
 
     # use the built-in error checking 
-    unless runner.validateUserArguments(arguments, user_arguments)
+    unless runner.validateUserArguments(arguments(model), user_arguments)
       return false
     end
 
