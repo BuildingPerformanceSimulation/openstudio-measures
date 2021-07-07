@@ -3,8 +3,8 @@
   <schema_version>3.0</schema_version>
   <name>export_meterto_csv</name>
   <uid>0d08ca00-7dea-436d-843a-a48a483cbf7c</uid>
-  <version_id>dccbbc01-0de5-40a9-ad5d-76cfbf285087</version_id>
-  <version_modified>20210706T202802Z</version_modified>
+  <version_id>26bfba40-aab4-4bb2-97be-3fdbcb701899</version_id>
+  <version_modified>20210707T164406Z</version_modified>
   <xml_checksum>58A298CD</xml_checksum>
   <class_name>ExportMetertoCSV</class_name>
   <display_name>ExportMetertoCSV</display_name>
@@ -66,12 +66,6 @@
   </attributes>
   <files>
     <file>
-      <filename>measure.rb</filename>
-      <filetype>rb</filetype>
-      <usage_type></usage_type>
-      <checksum>05C7F7F5</checksum>
-    </file>
-    <file>
       <filename>example_model.osm</filename>
       <filetype>osm</filetype>
       <usage_type>test</usage_type>
@@ -90,10 +84,14 @@
       <checksum>8A2DF6D8</checksum>
     </file>
     <file>
-      <filename>report.html.in</filename>
-      <filetype>in</filetype>
-      <usage_type>resource</usage_type>
-      <checksum>3501204C</checksum>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>3.1.0</identifier>
+      </version>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>05C7F7F5</checksum>
     </file>
   </files>
 </measure>
