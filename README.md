@@ -1,5 +1,7 @@
 # openstudio-measures
 
+[![Join the chat at https://gitter.im/BuildingPerformanceSimulation/openstudio-measures](https://badges.gitter.im/BuildingPerformanceSimulation/openstudio-measures.svg)](https://gitter.im/BuildingPerformanceSimulation/openstudio-measures?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ---
 
 A repository for community development and sharing of OpenStudio Measures.
