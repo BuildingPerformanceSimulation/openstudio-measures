@@ -4,11 +4,11 @@ require 'minitest/autorun'
 require_relative '../measure.rb'
 require 'fileutils'
 
-class AddWindAndStackOpenArea_Test < MiniTest::Test
+class AddWindAndStackOpenAreaLegacy_Test < MiniTest::Test
 
-  def model_out_path(test_name)
+  def workspace_out_path(test_name)
     # always generate test output in specially named 'output' directory so result files are not made part of the measure
-    return "#{File.dirname(__FILE__)}/output/#{test_name}.osm"
+    return "#{File.dirname(__FILE__)}/output/#{test_name}.idf"
   end
 
   def test_number_of_arguments_and_argument_names
@@ -16,13 +16,13 @@ class AddWindAndStackOpenArea_Test < MiniTest::Test
     test_name = 'test_number_of_arguments_and_argument_names'
 
     # create an instance of the measure
-    measure = AddWindAndStackOpenArea.new
+    measure = AddWindAndStackOpenAreaLegacy.new
 
-    # make an empty model
-    model = OpenStudio::Model::Model.new
-  
+    #load the example workspace
+    workspace = OpenStudio::Workspace.new
+
     # get arguments and test that they are what we are expecting
-    arguments = measure.arguments(model)
+    arguments = measure.arguments(workspace)
     assert_equal(13, arguments.size)
     assert_equal('construction', arguments[0].name)
     assert_equal('open_area_fraction_schedule', arguments[1].name)
@@ -39,12 +39,12 @@ class AddWindAndStackOpenArea_Test < MiniTest::Test
     assert_equal('max_wind_speed', arguments[12].name)
   end
 
-  def test_good_inputs
-    # this tests good input values
-    test_name = 'test_good_inputs'
+  def test_geometry_fields
+    # this tests that the window vertex fields are aligned properly
+    test_name = 'test_geometry_fields'
 
     # create an instance of the measure
-    measure = AddWindAndStackOpenArea.new
+    measure = AddWindAndStackOpenAreaLegacy.new
 
     # create an instance of a runner
     osw = OpenStudio::WorkflowJSON.new
@@ -57,8 +57,50 @@ class AddWindAndStackOpenArea_Test < MiniTest::Test
     assert((not model.empty?))
     model = model.get
 
+    # forward translate OSM file to IDF file
+    ft = OpenStudio::EnergyPlus::ForwardTranslator.new
+    workspace = ft.translateModel(model)
+
+    fenestrations = workspace.getObjectsByType('FenestrationSurface:Detailed'.to_IddObjectType)
+    fenestrations.each do |w|
+      #(0) is name, (1) is surface type, (2) is construction name, (3) is building surface name, (4) is outside boundary condition object
+      next unless w.getString(1).to_s == 'Window'
+      next unless measure.get_window_boundary_condition(workspace, w) == 'Outdoors'
+      window_name = w.getString(0).to_s
+      next unless window_name == 'Perimeter_bot_ZN_1_Wall_South_Window1'
+      x4 = w.getDouble(18).get
+      y4 = w.getDouble(19).get
+      z4 = w.getDouble(20).get
+      assert(x4 == 36.4773)
+      assert(y4 == 0)
+      assert(z4 == 2.5)
+    end
+  end
+
+  def test_good_inputs
+    # this tests good input values
+    test_name = 'test_good_inputs'
+
+    # create an instance of the measure
+    measure = AddWindAndStackOpenAreaLegacy.new
+
+    # create an instance of a runner
+    osw = OpenStudio::WorkflowJSON.new
+    runner = OpenStudio::Measure::OSRunner.new(osw)
+
+    # load the test model
+    translator = OpenStudio::OSVersion::VersionTranslator.new
+    path = OpenStudio::Path.new(File.dirname(__FILE__) + '/Office.osm')
+    model = translator.loadModel(path)
+    assert((not model.empty?))
+    model = model.get
+
+    # forward translate OSM file to IDF file
+    ft = OpenStudio::EnergyPlus::ForwardTranslator.new
+    workspace = ft.translateModel(model)
+
     # set argument values to good values
-    arguments = measure.arguments(model)
+    arguments = measure.arguments(workspace)
     argument_map = OpenStudio::Measure::OSArgumentMap.new
 
     construction = arguments[0].clone
@@ -109,7 +151,7 @@ class AddWindAndStackOpenArea_Test < MiniTest::Test
     argument_map['max_wind_speed'] = max_wind_speed
 
     # run the measure
-    measure.run(model, runner, argument_map)
+    measure.run(workspace, runner, argument_map)
     result = runner.result
 
     # show the output
@@ -119,12 +161,12 @@ class AddWindAndStackOpenArea_Test < MiniTest::Test
     assert_equal('Success', result.value.valueName)
     assert(result.warnings.size == 0)
 
-    #save the model for testing purposes
+    #save the workspace for testing purposes
     if !File.exist?("#{File.dirname(__FILE__)}/output")
       FileUtils.mkdir_p("#{File.dirname(__FILE__)}/output")
     end
-    output_file_path = model_out_path(test_name)
-    model.save(output_file_path, true)
+    output_file_path = workspace_out_path(test_name)
+    workspace.save(output_file_path, true)
   end
 
   def test_bad_temps
@@ -132,7 +174,7 @@ class AddWindAndStackOpenArea_Test < MiniTest::Test
     test_name = 'test_bad_temps'
 
     # create an instance of the measure
-    measure = AddWindAndStackOpenArea.new
+    measure = AddWindAndStackOpenAreaLegacy.new
 
     # create an instance of a runner
     osw = OpenStudio::WorkflowJSON.new
@@ -145,8 +187,12 @@ class AddWindAndStackOpenArea_Test < MiniTest::Test
     assert((not model.empty?))
     model = model.get
 
+    # forward translate OSM file to IDF file
+    ft = OpenStudio::EnergyPlus::ForwardTranslator.new
+    workspace = ft.translateModel(model)
+
     # set argument values to good values
-    arguments = measure.arguments(model)
+    arguments = measure.arguments(workspace)
     argument_map = OpenStudio::Measure::OSArgumentMap.new
 
     construction = arguments[0].clone
@@ -197,7 +243,7 @@ class AddWindAndStackOpenArea_Test < MiniTest::Test
     argument_map['max_wind_speed'] = max_wind_speed
 
     # run the measure
-    measure.run(model, runner, argument_map)
+    measure.run(workspace, runner, argument_map)
     result = runner.result
 
     # show the output
@@ -213,7 +259,7 @@ class AddWindAndStackOpenArea_Test < MiniTest::Test
     test_name = 'test_bad_construction'
 
     # create an instance of the measure
-    measure = AddWindAndStackOpenArea.new
+    measure = AddWindAndStackOpenAreaLegacy.new
 
     # create an instance of a runner
     osw = OpenStudio::WorkflowJSON.new
@@ -226,8 +272,12 @@ class AddWindAndStackOpenArea_Test < MiniTest::Test
     assert((not model.empty?))
     model = model.get
 
+    # forward translate OSM file to IDF file
+    ft = OpenStudio::EnergyPlus::ForwardTranslator.new
+    workspace = ft.translateModel(model)
+
     # set argument values to good values
-    arguments = measure.arguments(model)
+    arguments = measure.arguments(workspace)
     argument_map = OpenStudio::Measure::OSArgumentMap.new
 
     construction = arguments[0].clone
@@ -278,103 +328,15 @@ class AddWindAndStackOpenArea_Test < MiniTest::Test
     argument_map['max_wind_speed'] = max_wind_speed
 
     # run the measure
-    measure.run(model, runner, argument_map)
+    measure.run(workspace, runner, argument_map)
     result = runner.result
 
     # show the output
     show_output(result)
 
     # assert that it ran correctly
-    assert_equal('NA', result.value.valueName)
+    assert_equal('Fail', result.value.valueName)
     assert(result.warnings.size == 0)
-  end
-
-  def test_no_construction
-    # this tests good input values
-    test_name = 'test_no_construction'
-
-    # create an instance of the measure
-    measure = AddWindAndStackOpenArea.new
-
-    # create an instance of a runner
-    osw = OpenStudio::WorkflowJSON.new
-    runner = OpenStudio::Measure::OSRunner.new(osw)
-
-    # load the test model
-    translator = OpenStudio::OSVersion::VersionTranslator.new
-    path = OpenStudio::Path.new(File.dirname(__FILE__) + '/Office.osm')
-    model = translator.loadModel(path)
-    assert((not model.empty?))
-    model = model.get
-
-    # set argument values to good values
-    arguments = measure.arguments(model)
-    argument_map = OpenStudio::Measure::OSArgumentMap.new
-
-    construction = arguments[0].clone
-    assert(construction.setValue('*All Operable Windows*'))
-    argument_map['construction'] = construction
-
-    open_area_fraction_schedule = arguments[1].clone
-    assert(open_area_fraction_schedule.setValue('Wind Stack Open Area Fraction Schedule'))
-    argument_map['open_area_fraction_schedule'] = open_area_fraction_schedule
-
-    min_indoor_temp = arguments[2].clone
-    assert(min_indoor_temp.setValue(10.0))
-    argument_map['min_indoor_temp'] = min_indoor_temp
-
-    min_indoor_temp_schedule = arguments[3].clone
-    argument_map['min_indoor_temp_schedule'] = min_indoor_temp_schedule
-
-    max_indoor_temp = arguments[4].clone
-    assert(max_indoor_temp.setValue(60.0))
-    argument_map['max_indoor_temp'] = max_indoor_temp
-
-    max_indoor_temp_schedule = arguments[5].clone
-    argument_map['max_indoor_temp_schedule'] = max_indoor_temp_schedule
-
-    delta_temp = arguments[6].clone
-    assert(delta_temp.setValue(0.0))
-    argument_map['delta_temp'] = delta_temp
-
-    delta_temp_schedule = arguments[7].clone
-    argument_map['delta_temp_schedule'] = delta_temp_schedule
-
-    min_outdoor_temp = arguments[8].clone
-    assert(min_outdoor_temp.setValue(18.3333))
-    argument_map['min_outdoor_temp'] = min_outdoor_temp
-
-    min_outdoor_temp_schedule = arguments[9].clone
-    argument_map['min_outdoor_temp_schedule'] = min_outdoor_temp_schedule
-
-    max_outdoor_temp = arguments[10].clone
-    assert(max_outdoor_temp.setValue(25.5556))
-    argument_map['max_outdoor_temp'] = max_outdoor_temp
-
-    max_outdoor_temp_schedule = arguments[11].clone
-    argument_map['max_outdoor_temp_schedule'] = max_outdoor_temp_schedule
-
-    max_wind_speed = arguments[12].clone
-    assert(max_wind_speed.setValue(5.4))
-    argument_map['max_wind_speed'] = max_wind_speed
-
-    # run the measure
-    measure.run(model, runner, argument_map)
-    result = runner.result
-
-    # show the output
-    show_output(result)
-
-    # assert that it ran correctly
-    assert_equal('Success', result.value.valueName)
-    assert(result.warnings.size == 0)
-
-    #save the model for testing purposes
-    if !File.exist?("#{File.dirname(__FILE__)}/output")
-      FileUtils.mkdir_p("#{File.dirname(__FILE__)}/output")
-    end
-    output_file_path = model_out_path(test_name)
-    model.save(output_file_path, true)
   end
 
   def test_good_schedule_inputs
@@ -382,7 +344,7 @@ class AddWindAndStackOpenArea_Test < MiniTest::Test
     test_name = 'test_good_schedule_inputs'
 
     # create an instance of the measure
-    measure = AddWindAndStackOpenArea.new
+    measure = AddWindAndStackOpenAreaLegacy.new
 
     # create an instance of a runner
     osw = OpenStudio::WorkflowJSON.new
@@ -395,8 +357,12 @@ class AddWindAndStackOpenArea_Test < MiniTest::Test
     assert((not model.empty?))
     model = model.get
 
+    # forward translate OSM file to IDF file
+    ft = OpenStudio::EnergyPlus::ForwardTranslator.new
+    workspace = ft.translateModel(model)
+
     # set argument values to good values
-    arguments = measure.arguments(model)
+    arguments = measure.arguments(workspace)
     argument_map = OpenStudio::Measure::OSArgumentMap.new
 
     construction = arguments[0].clone
@@ -451,7 +417,7 @@ class AddWindAndStackOpenArea_Test < MiniTest::Test
     argument_map['max_wind_speed'] = max_wind_speed
 
     # run the measure
-    measure.run(model, runner, argument_map)
+    measure.run(workspace, runner, argument_map)
     result = runner.result
 
     # show the output
@@ -461,12 +427,12 @@ class AddWindAndStackOpenArea_Test < MiniTest::Test
     assert_equal('Success', result.value.valueName)
     assert(result.warnings.size == 0)
 
-    #save the model for testing purposes
+    #save the workspace for testing purposes
     if !File.exist?("#{File.dirname(__FILE__)}/output")
       FileUtils.mkdir_p("#{File.dirname(__FILE__)}/output")
     end
-    output_file_path = model_out_path(test_name)
-    model .save(output_file_path, true)
+    output_file_path = workspace_out_path(test_name)
+    workspace.save(output_file_path, true)
   end
 
   def test_default_open_fraction_sch
@@ -474,7 +440,7 @@ class AddWindAndStackOpenArea_Test < MiniTest::Test
     test_name = 'test_default_open_fraction_sch'
 
     # create an instance of the measure
-    measure = AddWindAndStackOpenArea.new
+    measure = AddWindAndStackOpenAreaLegacy.new
 
     # create an instance of a runner
     osw = OpenStudio::WorkflowJSON.new
@@ -487,8 +453,12 @@ class AddWindAndStackOpenArea_Test < MiniTest::Test
     assert((not model.empty?))
     model = model.get
 
+    # forward translate OSM file to IDF file
+    ft = OpenStudio::EnergyPlus::ForwardTranslator.new
+    workspace = ft.translateModel(model)
+
     # set argument values to good values
-    arguments = measure.arguments(model)
+    arguments = measure.arguments(workspace)
     argument_map = OpenStudio::Measure::OSArgumentMap.new
 
     construction = arguments[0].clone
@@ -538,7 +508,7 @@ class AddWindAndStackOpenArea_Test < MiniTest::Test
     argument_map['max_wind_speed'] = max_wind_speed
 
     # run the measure
-    measure.run(model, runner, argument_map)
+    measure.run(workspace, runner, argument_map)
     result = runner.result
 
     # show the output
@@ -548,11 +518,11 @@ class AddWindAndStackOpenArea_Test < MiniTest::Test
     assert_equal('Success', result.value.valueName)
     assert(result.warnings.size == 0)
 
-    #save the model for testing purposes
+    #save the workspace for testing purposes
     if !File.exist?("#{File.dirname(__FILE__)}/output")
       FileUtils.mkdir_p("#{File.dirname(__FILE__)}/output")
     end
-    output_file_path = model_out_path(test_name)
-    model.save(output_file_path, true)
+    output_file_path = workspace_out_path(test_name)
+    workspace.save(output_file_path, true)
   end
 end

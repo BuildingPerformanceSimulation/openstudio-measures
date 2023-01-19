@@ -546,7 +546,7 @@ OS:Surface,
 OS:SubSurface,
   {75202547-e5ac-4201-a7af-a7427cfc88fc}, !- Handle
   Perimeter_mid_ZN_3_Wall_North_Window,   !- Name
-  OperableWindow,                            !- Sub Surface Type
+  FixedWindow,                            !- Sub Surface Type
   ,                                       !- Construction Name
   {0f1914d6-ade6-41b4-8464-a6e8d7b35a54}, !- Surface Name
   ,                                       !- Outside Boundary Condition Object
@@ -676,7 +676,7 @@ OS:Space,
 OS:SubSurface,
   {e89db012-ad3d-4ba3-8e60-2b6f83de9677}, !- Handle
   Perimeter_bot_ZN_3_Wall_North_Window,   !- Name
-  OperableWindow,                            !- Sub Surface Type
+  FixedWindow,                            !- Sub Surface Type
   {81bd4367-7846-4969-a74e-001a5369f448}, !- Construction Name
   {a6970fb2-9438-492c-b381-0e01c4325c0f}, !- Surface Name
   ,                                       !- Outside Boundary Condition Object
@@ -1032,7 +1032,7 @@ OS:Surface,
 OS:SubSurface,
   {2ffc08d9-3d87-472d-9fb8-4d03d298cea2}, !- Handle
   Perimeter_top_ZN_3_Wall_North_Window,   !- Name
-  OperableWindow,                            !- Sub Surface Type
+  FixedWindow,                            !- Sub Surface Type
   {81bd4367-7846-4969-a74e-001a5369f448}, !- Construction Name
   {22589ad2-e202-40f0-8ea4-3a1465dc671e}, !- Surface Name
   ,                                       !- Outside Boundary Condition Object
@@ -1049,7 +1049,7 @@ OS:SubSurface,
 OS:SubSurface,
   {e6edd52a-4576-4cd3-90f0-827b1afbf872}, !- Handle
   Perimeter_bot_ZN_1_Wall_South_Window1,  !- Name
-  OperableWindow,                            !- Sub Surface Type
+  FixedWindow,                            !- Sub Surface Type
   {81bd4367-7846-4969-a74e-001a5369f448}, !- Construction Name
   {a6919b0b-58df-46c6-8fe2-a963546c6f00}, !- Surface Name
   ,                                       !- Outside Boundary Condition Object
@@ -1461,7 +1461,7 @@ OS:Surface,
 OS:SubSurface,
   {00eefaa5-e51f-4970-8962-9e09fa14f337}, !- Handle
   Perimeter_top_ZN_2_Wall_East_Window,    !- Name
-  OperableWindow,                            !- Sub Surface Type
+  FixedWindow,                            !- Sub Surface Type
   ,                                       !- Construction Name
   {58bb2539-a045-44d3-bfe6-0813d89f521a}, !- Surface Name
   ,                                       !- Outside Boundary Condition Object
@@ -1614,7 +1614,7 @@ OS:Surface,
 OS:SubSurface,
   {9f283888-d211-4b3c-8f35-77e42197d220}, !- Handle
   Perimeter_mid_ZN_1_Wall_South_Window,   !- Name
-  OperableWindow,                            !- Sub Surface Type
+  FixedWindow,                            !- Sub Surface Type
   ,                                       !- Construction Name
   {cc5dd4e1-0641-45fa-b38f-7695a96b4b40}, !- Surface Name
   ,                                       !- Outside Boundary Condition Object
@@ -2352,7 +2352,7 @@ OS:Surface,
 OS:SubSurface,
   {653a73e1-2713-4171-a291-8f2a76d32df9}, !- Handle
   Perimeter_top_ZN_1_Wall_South_Window,   !- Name
-  OperableWindow,                            !- Sub Surface Type
+  FixedWindow,                            !- Sub Surface Type
   {81bd4367-7846-4969-a74e-001a5369f448}, !- Construction Name
   {4dd079cc-3c4c-49b7-8eeb-039223867855}, !- Surface Name
   ,                                       !- Outside Boundary Condition Object
@@ -2517,7 +2517,7 @@ OS:Surface,
 OS:SubSurface,
   {37760421-293e-4754-8028-4b540f335473}, !- Handle
   Perimeter_top_ZN_4_Wall_West_Window,    !- Name
-  OperableWindow,                            !- Sub Surface Type
+  FixedWindow,                            !- Sub Surface Type
   {81bd4367-7846-4969-a74e-001a5369f448}, !- Construction Name
   {89cd241e-4345-48f8-b4f3-b90e490a2fd3}, !- Surface Name
   ,                                       !- Outside Boundary Condition Object
@@ -2551,7 +2551,7 @@ OS:Surface,
 OS:SubSurface,
   {72e33bf8-9116-47b0-86bf-f86191145cb4}, !- Handle
   Perimeter_bot_ZN_2_Wall_East_Window,    !- Name
-  OperableWindow,                            !- Sub Surface Type
+  FixedWindow,                            !- Sub Surface Type
   {81bd4367-7846-4969-a74e-001a5369f448}, !- Construction Name
   {92390dde-10ab-4bbb-8134-e4b47023b18b}, !- Surface Name
   ,                                       !- Outside Boundary Condition Object
@@ -2908,7 +2908,7 @@ OS:Surface,
 OS:SubSurface,
   {64a5623d-c204-46f9-9047-4ef95bd4b60d}, !- Handle
   Perimeter_bot_ZN_4_Wall_West_Window,    !- Name
-  OperableWindow,                            !- Sub Surface Type
+  FixedWindow,                            !- Sub Surface Type
   {81bd4367-7846-4969-a74e-001a5369f448}, !- Construction Name
   {3ca4f15a-47d9-4a55-88ea-98e1de03d901}, !- Surface Name
   ,                                       !- Outside Boundary Condition Object
