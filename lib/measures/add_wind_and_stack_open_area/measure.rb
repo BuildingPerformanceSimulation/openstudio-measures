@@ -7,12 +7,12 @@ class AddWindAndStackOpenArea < OpenStudio::Measure::ModelMeasure
 
   # human readable description
   def description
-    return "This measure models natural ventilation to thermal zones with operable windows.  It is not intended to model natural ventilation that relies on interzone, stack driven air transfer."
+    return "This measure models natural ventilation to thermal zones with operable casement type windows.  It is not intended to model natural ventilation that relies on interzone, stack driven air transfer."
   end
 
   # human readable description of modeling approach
   def modeler_description
-    return "This measure adds ZoneVentilation:WindandStackOpenArea objects to a zone for each window of a specified operable window construction.  The user can specify values for minimum and maximum zone and outdoor air temperatures and wind speed that set limits on when the ventilation is active. The airflow rate is the quadrature sum of wind driven and stack effect driven air flow.  Airflow driven by wind is a function of opening effectiveness, area, scheduled open area fraction, and wind speed.  Airflow driven by the stack effect is a function of the discharge coefficient, area, scheduled open area fraction, and height difference to the neutral pressure level.  This measure takes the height difference as half the window height, and as such is only intended to model natural ventilation in single zones where a few large operable windows or doors account for the majority of operable area.  It is not intended to model natural ventilation that relies on interzone, stack driven air transfer where ventilation flow through a opening is unidirectional."
+    return "This measure adds ZoneVentilation:WindandStackOpenArea objects to a zone for each window of a specified operable window construction.  The user can specify values for minimum and maximum zone and outdoor air temperatures and wind speed that set limits on when the ventilation is active. The airflow rate is the quadrature sum of wind driven and stack effect driven air flow.  Airflow driven by wind is a function of opening effectiveness, area, scheduled open area fraction, and wind speed.  Airflow driven by the stack effect is a function of the discharge coefficient, area, scheduled open area fraction, and height difference to the neutral pressure level.  This measure takes the height difference as one quarter the window height, and as such is only intended to model natural ventilation in single zones where a few large operable casement type windows or doors account for the majority of operable area.  It is not intended to model natural ventilation that relies on interzone, stack driven air transfer where ventilation flow through a opening is unidirectional."
   end
 
   # define the arguments that the user will input
@@ -380,10 +380,10 @@ class AddWindAndStackOpenArea < OpenStudio::Measure::ModelMeasure
       end
       sub_surface_zone = sub_surface_space.thermalZone.get
      
-      # calculate the height_difference at one half the window height
+      # calculate the height_difference at one quarter the window height. Assuming a casement type window or any type of door with the neutral pressure level (NPL) assumed to be 1/2 the window height and the midpoint of the lower opening (MP) being one half of the height between the bottom of the window and the NPL.
       z_values = []
       sub_surface.vertices.each { |v| z_values << v.z }
-      height_difference = (z_values.max - z_values.min) / 2.0
+      height_difference = (z_values.max - z_values.min) / 4.0
 
       # determine outward normal angle
       absolute_azimuth = OpenStudio.convert(sub_surface.azimuth, 'rad', 'deg').get + sub_surface.surface.get.space.get.directionofRelativeNorth + model.getBuilding.northAxis
