@@ -3,13 +3,13 @@
   <schema_version>3.0</schema_version>
   <name>add_wind_and_stack_open_area</name>
   <uid>c1290ecc-ef5b-4c64-8df5-367cc1129841</uid>
-  <version_id>3e05bc69-1a03-44f3-b594-39d2e614b0bd</version_id>
-  <version_modified>20230307T155649Z</version_modified>
+  <version_id>9753d948-7c88-4a0f-9055-e61f5145ada2</version_id>
+  <version_modified>20230307T161651Z</version_modified>
   <xml_checksum>E95EC1B5</xml_checksum>
   <class_name>AddWindAndStackOpenArea</class_name>
   <display_name>Add Wind and Stack Open Area</display_name>
-  <description>This measure models natural ventilation to thermal zones with operable windows.  It is not intended to model natural ventilation that relies on interzone, stack driven air transfer.</description>
-  <modeler_description>This measure adds ZoneVentilation:WindandStackOpenArea objects to a zone for each window of a specified operable window construction.  The user can specify values for minimum and maximum zone and outdoor air temperatures and wind speed that set limits on when the ventilation is active. The airflow rate is the quadrature sum of wind driven and stack effect driven air flow.  Airflow driven by wind is a function of opening effectiveness, area, scheduled open area fraction, and wind speed.  Airflow driven by the stack effect is a function of the discharge coefficient, area, scheduled open area fraction, and height difference to the neutral pressure level.  This measure takes the height difference as half the window height, and as such is only intended to model natural ventilation in single zones where a few large operable windows or doors account for the majority of operable area.  It is not intended to model natural ventilation that relies on interzone, stack driven air transfer where ventilation flow through a opening is unidirectional.</modeler_description>
+  <description>This measure models natural ventilation to thermal zones with operable casement type windows.  It is not intended to model natural ventilation that relies on interzone, stack driven air transfer.</description>
+  <modeler_description>This measure adds ZoneVentilation:WindandStackOpenArea objects to a zone for each window of a specified operable window construction. The user can specify values for minimum and maximum zone and outdoor air temperatures and wind speed that set limits on when the ventilation is active. The airflow rate is the quadrature sum of wind driven and stack effect driven air flow. Airflow driven by wind is a function of opening effectiveness, area, scheduled open area fraction, and wind speed. Airflow driven by the stack effect is a function of the discharge coefficient, area, scheduled open area fraction, and height difference to the neutral pressure level. This measure takes the height difference as one quarter the window height, and as such is only intended to model natural ventilation in single zones where a few large operable casement type windows or doors account for the majority of operable area. It is not intended to model natural ventilation that relies on interzone, stack driven air transfer where ventilation flow through a opening is unidirectional.</modeler_description>
   <arguments>
     <argument>
       <name>construction</name>
@@ -17,10 +17,10 @@
       <type>Choice</type>
       <required>false</required>
       <model_dependent>false</model_dependent>
-      <default_value>{ca5699a6-e5e0-43ac-9a98-e280be422529}</default_value>
+      <default_value>{98d19d88-d434-453e-aed1-d19046d19019}</default_value>
       <choices>
         <choice>
-          <value>{ca5699a6-e5e0-43ac-9a98-e280be422529}</value>
+          <value>{98d19d88-d434-453e-aed1-d19046d19019}</value>
           <display_name>*All Operable Windows*</display_name>
         </choice>
       </choices>
@@ -32,10 +32,10 @@
       <type>Choice</type>
       <required>false</required>
       <model_dependent>false</model_dependent>
-      <default_value>{ca5699a6-e5e0-43ac-9a98-e280be422529}</default_value>
+      <default_value>{98d19d88-d434-453e-aed1-d19046d19019}</default_value>
       <choices>
         <choice>
-          <value>{ca5699a6-e5e0-43ac-9a98-e280be422529}</value>
+          <value>{98d19d88-d434-453e-aed1-d19046d19019}</value>
           <display_name>Default 0.5 Open Fractional Schedule</display_name>
         </choice>
       </choices>
@@ -56,10 +56,10 @@
       <type>Choice</type>
       <required>true</required>
       <model_dependent>false</model_dependent>
-      <default_value>{ca5699a6-e5e0-43ac-9a98-e280be422529}</default_value>
+      <default_value>{98d19d88-d434-453e-aed1-d19046d19019}</default_value>
       <choices>
         <choice>
-          <value>{ca5699a6-e5e0-43ac-9a98-e280be422529}</value>
+          <value>{98d19d88-d434-453e-aed1-d19046d19019}</value>
           <display_name>NA</display_name>
         </choice>
       </choices>
@@ -80,10 +80,10 @@
       <type>Choice</type>
       <required>true</required>
       <model_dependent>false</model_dependent>
-      <default_value>{ca5699a6-e5e0-43ac-9a98-e280be422529}</default_value>
+      <default_value>{98d19d88-d434-453e-aed1-d19046d19019}</default_value>
       <choices>
         <choice>
-          <value>{ca5699a6-e5e0-43ac-9a98-e280be422529}</value>
+          <value>{98d19d88-d434-453e-aed1-d19046d19019}</value>
           <display_name>NA</display_name>
         </choice>
       </choices>
@@ -104,10 +104,10 @@
       <type>Choice</type>
       <required>true</required>
       <model_dependent>false</model_dependent>
-      <default_value>{ca5699a6-e5e0-43ac-9a98-e280be422529}</default_value>
+      <default_value>{98d19d88-d434-453e-aed1-d19046d19019}</default_value>
       <choices>
         <choice>
-          <value>{ca5699a6-e5e0-43ac-9a98-e280be422529}</value>
+          <value>{98d19d88-d434-453e-aed1-d19046d19019}</value>
           <display_name>NA</display_name>
         </choice>
       </choices>
@@ -128,10 +128,10 @@
       <type>Choice</type>
       <required>true</required>
       <model_dependent>false</model_dependent>
-      <default_value>{ca5699a6-e5e0-43ac-9a98-e280be422529}</default_value>
+      <default_value>{98d19d88-d434-453e-aed1-d19046d19019}</default_value>
       <choices>
         <choice>
-          <value>{ca5699a6-e5e0-43ac-9a98-e280be422529}</value>
+          <value>{98d19d88-d434-453e-aed1-d19046d19019}</value>
           <display_name>NA</display_name>
         </choice>
       </choices>
@@ -152,10 +152,10 @@
       <type>Choice</type>
       <required>true</required>
       <model_dependent>false</model_dependent>
-      <default_value>{ca5699a6-e5e0-43ac-9a98-e280be422529}</default_value>
+      <default_value>{98d19d88-d434-453e-aed1-d19046d19019}</default_value>
       <choices>
         <choice>
-          <value>{ca5699a6-e5e0-43ac-9a98-e280be422529}</value>
+          <value>{98d19d88-d434-453e-aed1-d19046d19019}</value>
           <display_name>NA</display_name>
         </choice>
       </choices>
@@ -204,17 +204,6 @@
   </attributes>
   <files>
     <file>
-      <version>
-        <software_program>OpenStudio</software_program>
-        <identifier>3.0</identifier>
-        <min_compatible>3.0</min_compatible>
-      </version>
-      <filename>measure.rb</filename>
-      <filetype>rb</filetype>
-      <usage_type>script</usage_type>
-      <checksum>79AA44B0</checksum>
-    </file>
-    <file>
       <filename>LICENSE.md</filename>
       <filetype>md</filetype>
       <usage_type>license</usage_type>
@@ -233,10 +222,21 @@
       <checksum>20DC1946</checksum>
     </file>
     <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>3.0</identifier>
+        <min_compatible>3.0</min_compatible>
+      </version>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>3C9A27A8</checksum>
+    </file>
+    <file>
       <filename>README.md</filename>
       <filetype>md</filetype>
       <usage_type>readme</usage_type>
-      <checksum>5F81D4A3</checksum>
+      <checksum>4E4704D8</checksum>
     </file>
   </files>
 </measure>
