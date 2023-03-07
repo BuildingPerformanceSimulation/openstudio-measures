@@ -10,9 +10,13 @@ A key variable in the natural ventilation calculation is the height difference b
 # Relevant Unmet Hours Threads:
 https://unmethours.com/question/21804/why-is-average-window-height-in-m2/
 https://unmethours.com/question/25647/no-change-in-zone-temperature-beforeafter-wind-and-stack-open-area-measure/
+https://unmethours.com/question/76215/error-when-using-add-wind-and-stack-open-area-measure/
+
+# Video Tutorial
+https://www.youtube.com/watch?v=EhnTRVamENA
 
 # Github Repository
-https://github.com/UnmetHours/openstudio-measures/tree/master/add_wind_and_stack_open_area
+https://github.com/BuildingPerformanceSimulation/openstudio-measures/tree/master/lib/measures/add_wind_and_stack_open_area
 
 # Measure Updates March 12th, 2018 by Matthew Dahlhausen
 - Changed inputs to have user selected a open area fraction schedule
@@ -21,3 +25,6 @@ https://github.com/UnmetHours/openstudio-measures/tree/master/add_wind_and_stack
 - Measure now calculates operable area based on window geometry
 - Measure now calculates effective angle based on the surface normal of a given window
 - Measure now calculates height difference to neutral pressure level as half window height
+
+# Measure Updates January 19th, 2023 by Matthew Dahlhausen
+- Splits the measure into two versions.  add_wind_and_stack_open_area is now an OpenStudio measure, and the EnergyPlus version changed to add_wind_and_stack_open_area_legacy
