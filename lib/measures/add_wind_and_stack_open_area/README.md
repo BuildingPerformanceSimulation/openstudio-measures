@@ -28,3 +28,6 @@ https://github.com/BuildingPerformanceSimulation/openstudio-measures/tree/master
 
 # Measure Updates January 19th, 2023 by Matthew Dahlhausen
 - Splits the measure into two versions.  add_wind_and_stack_open_area is now an OpenStudio measure, and the EnergyPlus version changed to add_wind_and_stack_open_area_legacy
+
+# Measure Updates March 7th, 2023 by Matthew Dahlhausen
+- Corrected height difference calculation from 1/2 window height to 1/4 window height (half the neutral pressure level).

@@ -3,13 +3,13 @@
   <schema_version>3.0</schema_version>
   <name>add_wind_and_stack_open_area_legacy</name>
   <uid>39cf10cd-cc6f-4b0e-9913-f77d8aa30f3c</uid>
-  <version_id>7feb854d-d921-4c43-af92-55ac4c9b5786</version_id>
-  <version_modified>20230307T155638Z</version_modified>
+  <version_id>dde5a6f8-2bf6-465f-a759-512190951c8f</version_id>
+  <version_modified>20230307T161645Z</version_modified>
   <xml_checksum>6716C5EC</xml_checksum>
   <class_name>AddWindAndStackOpenAreaLegacy</class_name>
   <display_name>Add Wind and Stack Open Area Legacy</display_name>
-  <description>This measure models natural ventilation to thermal zones with operable windows.  It is not intended to model natural ventilation that relies on interzone, stack driven air transfer.</description>
-  <modeler_description>This measure adds ZoneVentilation:WindandStackOpenArea objects to a zone for each window of a specified operable window construction.  The user can specify values for minimum and maximum zone and outdoor air temperatures and wind speed that set limits on when the ventilation is active. The airflow rate is the quadrature sum of wind driven and stack effect driven air flow.  Airflow driven by wind is a function of opening effectiveness, area, scheduled open area fraction, and wind speed.  Airflow driven by the stack effect is a function of the discharge coefficient, area, scheduled open area fraction, and height difference to the neutral pressure level.  This measure takes the height difference as half the window height, and as such is only intended to model natural ventilation in single zones where a few large operable windows or doors account for the majority of operable area.  It is not intended to model natural ventilation that relies on interzone, stack driven air transfer where ventilation flow through a opening is unidirectional.</modeler_description>
+  <description>This measure models natural ventilation to thermal zones with operable casement type windows.  It is not intended to model natural ventilation that relies on interzone, stack driven air transfer.</description>
+  <modeler_description>This measure adds ZoneVentilation:WindandStackOpenArea objects to a zone for each window of a specified operable window construction. The user can specify values for minimum and maximum zone and outdoor air temperatures and wind speed that set limits on when the ventilation is active. The airflow rate is the quadrature sum of wind driven and stack effect driven air flow. Airflow driven by wind is a function of opening effectiveness, area, scheduled open area fraction, and wind speed. Airflow driven by the stack effect is a function of the discharge coefficient, area, scheduled open area fraction, and height difference to the neutral pressure level. This measure takes the height difference as one quarter the window height, and as such is only intended to model natural ventilation in single zones where a few large operable casement type windows or doors account for the majority of operable area. It is not intended to model natural ventilation that relies on interzone, stack driven air transfer where ventilation flow through a opening is unidirectional.</modeler_description>
   <arguments>
     <argument>
       <name>construction</name>
@@ -221,13 +221,13 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>4B016109</checksum>
+      <checksum>4DACFD4F</checksum>
     </file>
     <file>
       <filename>README.md</filename>
       <filetype>md</filetype>
       <usage_type>readme</usage_type>
-      <checksum>5F81D4A3</checksum>
+      <checksum>4E4704D8</checksum>
     </file>
   </files>
 </measure>
