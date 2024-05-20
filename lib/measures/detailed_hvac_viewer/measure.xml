@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>detailed_hvac_viewer</name>
   <uid>416a484f-bd28-4db8-8926-7d70740390eb</uid>
-  <version_id>e516cae3-f0b4-484c-8b8f-964a2e0cc739</version_id>
-  <version_modified>2024-05-20T19:04:32Z</version_modified>
+  <version_id>aa0d8edc-1ec3-4af9-9e3f-a37bb8f01a5f</version_id>
+  <version_modified>2024-05-20T19:13:27Z</version_modified>
   <xml_checksum>C068F366</xml_checksum>
   <class_name>DetailedHVACViewer</class_name>
   <display_name>Detailed HVAC Viewer</display_name>
@@ -490,7 +490,7 @@ Developed as part of HackSimBuild 2024 by Matthew Dahlhausen and Ken Takahashi</
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>A1217DB6</checksum>
+      <checksum>2288BACC</checksum>
     </file>
     <file>
       <filename>README.md</filename>
