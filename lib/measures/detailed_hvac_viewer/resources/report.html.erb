@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="utf-8">
+<title>HVAC Detailed Viewer</title>
+<link href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap.min.css" rel="stylesheet">
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+<script src="https://d3js.org/d3.v7.min.js"></script>
+<style type="text/css">
+	body {
+		display: flex;
+		flex-direction: column;						 
+		justify-content: center;
+		align-items: center;
+		height: 100vh;
+		margin: 0;
+		background-color: #f0f0f0;
+	}
+
+	.grid-container {
+		display: grid;
+		gap: 0px;  /* Reduced spacing between the grid items */
+	}
+
+	.grid-item {
+		position: relative;
+		width: 100px; /* Fixed size */
+		height: 100px; /* Fixed size */
+		background-color: #ccc;
+		transition: background-color 0.3s;
+	}
+
+	.grid-icon {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;  /* Make the icon fill the cell horizontally */
+		height: 100%; /* Make the icon fill the cell vertically */
+		object-fit: contain; /* Maintain aspect ratio while filling the cell */
+	}
+	.slice text {
+        font-size: 10pt;
+        font-family: Arial;
+    }
+	.line {
+      fill: none;
+      stroke: steelblue;
+      stroke-width: 2px;
+    }
+	#plot {
+		margin-top: 20px;
+	}
+</style>
+</head>
+<body>
+<div class="grid-container" id="grid-container">
+	<!-- Generate cells for the grid -->
+</div>
+
+<div id='plot'></div>
+
+<!-- Define the iconHash in a script tag. Need to automate from hvac_data-->
+<script id="gridData" type="application/json">
+	{
+		"columns": 11,
+		"rows": 3,
+		"iconHash": {
+			"2-5": "dxcoolingcoil_2stage_humidity.png",
+			"2-7": "heat_coil.png",
+			"2-9": "fan_variable.png",
+			"2-4": "h_node.png",
+			"2-6": "h_node.png",
+			"2-8": "h_node.png",
+			"2-2": "OAMixer_left.png",
+			"2-3": "OAMixer_right.png",
+			"1-2": "down_node.png",
+			"1-3": "down_node.png",
+			"2-1": "right_down.png",
+			"2-10": "h_line.png",
+			"2-11": "left_down.png",
+			"3-1": "v_node.png",
+			"3-11": "v_node.png"
+		},
+		"positionNodeHash": {
+			"1-2": "5 Zone PVAV Outdoor Air Node",
+			"1-3": "5 Zone PVAV Relief Air Node",
+			"2-4": "5 Zone PVAV Mixed Air Node",
+			"2-6": "5 Zone PVAV 2spd DX Clg Coil 354kBtu/hr 9.8EER Outlet Air Node",
+			"2-8": "5 Zone PVAV Main Gas Htg Coil Outlet Air Node",
+			"3-1": "5 Zone PVAV Supply Inlet Node",
+			"3-11": "5 Zone PVAV Supply Outlet Node"
+		}
+	}
+</script>
+
+<script>
+var hvac_data = [<%= hvac_data %>];
+
+function getTemperatureValues(hvac_data, airLoopName, nodeName) {
+  for (let i = 0; i < hvac_data[0].length; i++) {
+    let obj = hvac_data[0][i];
+    if (obj.object_name === airLoopName && obj.object_type === "OS_AirLoopHVAC") {
+      for (let j = 0; j < obj.components.length; j++) {
+        let component = obj.components[j];
+        if (component.object_name === nodeName && component.object_type === "OS_Node") {
+          return component.system_node_temperature;
+        }
+      }
+    }
+  }
+  return null; // Return null if no matching node is found
+}
+				 
+function createGridWithIcons() {
+	const gridContainer = document.getElementById('grid-container');
+	const gridDataScript = document.getElementById('gridData');
+	const gridData = JSON.parse(gridDataScript.textContent);
+
+	const columns = gridData.columns;
+	const rows = gridData.rows;
+	const iconHash = gridData.iconHash;
+	const positionNodeHash = gridData.positionNodeHash;													
+
+	// Set grid template columns and rows dynamically
+	gridContainer.style.gridTemplateColumns = `repeat(${columns}, 100px)`;
+	gridContainer.style.gridTemplateRows = `repeat(${rows}, 100px)`;
+
+	for (let i = 0; i < columns * rows; i++) {
+		const row = Math.floor(i / columns) + 1; // 1-indexed row
+		const col = (i % columns) + 1; // 1-indexed column
+		const position = `${row}-${col}`;
+		const gridItem = document.createElement('div');
+		gridItem.className = 'grid-item';
+
+		if (iconHash[position]) {
+			const img = document.createElement('img');
+			img.src = `../../measures/detailed_hvac_viewer/resources/images/${iconHash[position]}`;
+			img.className = 'grid-icon';
+			gridItem.appendChild(img);
+
+			// Add hover effect only if the cell has an icon
+			gridItem.addEventListener('mouseover', () => {
+				gridItem.style.backgroundColor = '#888';
+			});
+			gridItem.addEventListener('mouseout', () => {
+				gridItem.style.backgroundColor = '#ccc';
+			});
+
+			// Add click event listener for relevant nodes
+			if (positionNodeHash[position]) {
+				gridItem.addEventListener('click', () => {
+					const nodeName = positionNodeHash[position];
+					const tempValues = getTemperatureValues(hvac_data, "5 Zone PVAV", nodeName);
+					if (tempValues) {
+						plotTemperatureValues(tempValues);
+					}
+				});
+			}
+		}
+		gridContainer.appendChild(gridItem);
+	}
+}
+
+	// Call the function to create the grid with icons
+	createGridWithIcons();
+
+function plotTemperatureValues(data) {
+    d3.select("#plot").html(""); // Clear any existing plot
+
+    const margin = {top: 20, right: 20, bottom: 30, left: 50};
+    const width = 1000 - margin.left - margin.right;
+    const height = 300 - margin.top - margin.bottom;
+
+    // Define the start and end dates for one year starting on January 1st
+    const startDate = new Date(2023, 0, 1);
+    const endDate = new Date(2024, 0, 1);
+
+    // Create a time scale for the x-axis
+    const x = d3.scaleTime().domain([startDate, endDate]).range([0, width]);
+
+    // Create a linear scale for the y-axis
+    const y = d3.scaleLinear().domain([d3.min(data), d3.max(data)]).range([height, 0]);
+
+    // Define the line function
+    const line = d3.line()
+        .x((d, i) => x(new Date(startDate.getTime() + i * (endDate - startDate) / (data.length - 1))))
+        .y(d => y(d));
+
+    // Create the SVG container
+    const svg = d3.select("#plot").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    // Add the x-axis
+    svg.append("g")
+        .attr("transform", `translate(0,${height})`)
+        .call(d3.axisBottom(x).ticks(d3.timeMonth.every(1)).tickFormat(d3.timeFormat("%b")));
+
+    // Add the y-axis
+    svg.append("g")
+        .call(d3.axisLeft(y));
+
+    // Add the line path
+    svg.append("path")
+        .data([data])
+        .attr("class", "line")
+        .attr("d", line);
+}
+</script>
+
+</body>
+</html>
