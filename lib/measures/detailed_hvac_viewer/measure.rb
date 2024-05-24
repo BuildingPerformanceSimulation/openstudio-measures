@@ -417,10 +417,10 @@ Developed as part of HackSimBuild 2024 by Matthew Dahlhausen and Ken Takahashi"
     # Convert the hash to a JSON string
     hvac_data = JSON.pretty_generate(hvac_data)
 
-    # # Write the JSON string to the file
-    # File.open('hvac_data.json', 'w') do |file|
-    #   file.write(hvac_data)
-    # end
+    # Write the JSON string to the file
+    File.open('hvac_data.json', 'w') do |file|
+      file.write(hvac_data)
+    end
 
 		# Begin HTML writing process
 		web_asset_path = OpenStudio.getSharedResourcesPath() / OpenStudio::Path.new("web_assets")
