@@ -45,7 +45,7 @@
     }
 	.line {
       fill: none;
-      stroke: steelblue;
+
       stroke-width: 2px;
     }
 	#plot {
@@ -54,6 +54,16 @@
 </style>
 </head>
 <body>
+<div>
+  <select id="airLoopDropdown">
+    <option value="5 Zone PVAV">5 Zone PVAV</option>
+    <option value="5 Zone PVAV 1">5 Zone PVAV 1</option>
+    <option value="5 Zone PVAV 2">5 Zone PVAV 2</option>
+  </select>
+  <select id="nodeAttributeDropdown">
+    <!-- Options will be dynamically populated -->
+  </select>
+</div>	  
 <div class="grid-container" id="grid-container">
 	<!-- Generate cells for the grid -->
 </div>
@@ -83,8 +93,8 @@
 			"3-11": "v_node.png"
 		},
 		"positionNodeHash": {
-			"1-2": "5 Zone PVAV Outdoor Air Node",
-			"1-3": "5 Zone PVAV Relief Air Node",
+			"1-3": "5 Zone PVAV Outdoor Air Node",
+			"1-2": "5 Zone PVAV Relief Air Node",
 			"2-4": "5 Zone PVAV Mixed Air Node",
 			"2-6": "5 Zone PVAV 2spd DX Clg Coil 354kBtu/hr 9.8EER Outlet Air Node",
 			"2-8": "5 Zone PVAV Main Gas Htg Coil Outlet Air Node",
@@ -97,14 +107,38 @@
 <script>
 var hvac_data = [<%= hvac_data %>];
 
-function getTemperatureValues(hvac_data, airLoopName, nodeName) {
+const activeNodes = {};
+
+function populateNodeAttributeDropdown() {
+  const dropdown = document.getElementById('nodeAttributeDropdown');
+  const attributes = new Set();
+
+  hvac_data[0].forEach(airLoop => {
+    airLoop.components.forEach(component => {
+      Object.keys(component).forEach(key => {
+        if (key.startsWith('system_node')) {
+          attributes.add(key);
+        }
+      });
+    });
+  });
+
+  attributes.forEach(attribute => {
+    const option = document.createElement('option');
+    option.value = option.textContent = attribute;
+    dropdown.appendChild(option);
+  });
+}
+
+populateNodeAttributeDropdown();
+function getNodeValues(hvac_data, airLoopName, nodeName, selectedKey) {
   for (let i = 0; i < hvac_data[0].length; i++) {
     let obj = hvac_data[0][i];
     if (obj.object_name === airLoopName && obj.object_type === "OS_AirLoopHVAC") {
       for (let j = 0; j < obj.components.length; j++) {
         let component = obj.components[j];
         if (component.object_name === nodeName && component.object_type === "OS_Node") {
-          return component.system_node_temperature;
+          return component[selectedKey];
         }
       }
     }
@@ -141,19 +175,33 @@ function createGridWithIcons() {
 
 			// Add hover effect only if the cell has an icon
 			gridItem.addEventListener('mouseover', () => {
-				gridItem.style.backgroundColor = '#888';
+				if (!activeNodes[position]) {
+					gridItem.style.backgroundColor = '#888';
+				}
 			});
 			gridItem.addEventListener('mouseout', () => {
-				gridItem.style.backgroundColor = '#ccc';
+				if (!activeNodes[position]) {
+					gridItem.style.backgroundColor = '#ccc';
+				}
 			});
 
 			// Add click event listener for relevant nodes
 			if (positionNodeHash[position]) {
 				gridItem.addEventListener('click', () => {
 					const nodeName = positionNodeHash[position];
-					const tempValues = getTemperatureValues(hvac_data, "5 Zone PVAV", nodeName);
-					if (tempValues) {
-						plotTemperatureValues(tempValues);
+					const airLoopName = document.getElementById('airLoopDropdown').value;
+					const attributeName = document.getElementById('nodeAttributeDropdown').value;
+					const NodeValues = getNodeValues(hvac_data, airLoopName, nodeName, attributeName);
+					if (NodeValues) {
+						if (activeNodes[position]) {
+							delete activeNodes[position];
+							gridItem.style.backgroundColor = '#ccc';
+						} else {
+							const color = getRandomColor();
+							activeNodes[position] = { nodeName, NodeValues, color };
+							gridItem.style.backgroundColor = color;
+						}
+						plotNodeValues();
 					}
 				});
 			}
@@ -165,7 +213,7 @@ function createGridWithIcons() {
 	// Call the function to create the grid with icons
 	createGridWithIcons();
 
-function plotTemperatureValues(data) {
+function plotNodeValues(data) {
     d3.select("#plot").html(""); // Clear any existing plot
 
     const margin = {top: 20, right: 20, bottom: 30, left: 50};
@@ -176,15 +224,21 @@ function plotTemperatureValues(data) {
     const startDate = new Date(2023, 0, 1);
     const endDate = new Date(2024, 0, 1);
 
-    // Create a time scale for the x-axis
-    const x = d3.scaleTime().domain([startDate, endDate]).range([0, width]);
+	// Create a time scale for the x-axis
+    const x = d3.scaleTime()
+				.domain([startDate, endDate])
+				.range([0, width]);
 
-    // Create a linear scale for the y-axis
-    const y = d3.scaleLinear().domain([d3.min(data), d3.max(data)]).range([height, 0]);
-
+    const yMax = d3.max(Object.values(activeNodes), d => d3.max(d.NodeValues));
+    const yMin = d3.min(Object.values(activeNodes), d => d3.min(d.NodeValues));
+    
+    const y = d3.scaleLinear()
+                .domain([yMin, yMax])
+                .range([height, 0]);
+				
     // Define the line function
     const line = d3.line()
-        .x((d, i) => x(new Date(startDate.getTime() + i * (endDate - startDate) / (data.length - 1))))
+        .x((d, i) => x(new Date(2023, 0, 1, i + 1)))
         .y(d => y(d));
 
     // Create the SVG container
@@ -199,15 +253,26 @@ function plotTemperatureValues(data) {
         .attr("transform", `translate(0,${height})`)
         .call(d3.axisBottom(x).ticks(d3.timeMonth.every(1)).tickFormat(d3.timeFormat("%b")));
 
-    // Add the y-axis
+					 
     svg.append("g")
-        .call(d3.axisLeft(y));
+		.call(d3.axisLeft(y));
 
-    // Add the line path
-    svg.append("path")
-        .data([data])
-        .attr("class", "line")
-        .attr("d", line);
+	Object.values(activeNodes).forEach(node => {
+		svg.append("path")
+			.data([node.NodeValues])
+			.attr("class", "line")
+			.attr("d", line)
+			.attr("stroke", node.color);
+	});
+}
+
+function getRandomColor() {
+	const letters = '0123456789ABCDEF';
+	let color = '#';
+	for (let i = 0; i < 6; i++) {
+		color += letters[Math.floor(Math.random() * 16)];
+	}
+	return color;
 }
 </script>
 
