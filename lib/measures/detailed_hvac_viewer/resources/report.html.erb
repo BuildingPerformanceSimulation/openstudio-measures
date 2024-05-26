@@ -129,14 +129,14 @@ function populateNodeAttributeDropdown() {
     dropdown.appendChild(option);
   });
 }
-
 populateNodeAttributeDropdown();
+
 function getNodeValues(hvac_data, airLoopName, nodeName, selectedKey) {
   for (let i = 0; i < hvac_data[0].length; i++) {
     let obj = hvac_data[0][i];
     if (obj.object_name === airLoopName && obj.object_type === "OS_AirLoopHVAC") {
-      for (let j = 0; j < obj.components.length; j++) {
-        let component = obj.components[j];
+      for (let j = 0; j < obj.supply_components.length; j++) {
+        let component = obj.supply_components[j];
         if (component.object_name === nodeName && component.object_type === "OS_Node") {
           return component[selectedKey];
         }

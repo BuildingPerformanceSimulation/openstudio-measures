@@ -23,9 +23,7 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
     * System Node Temperature
     * System Node Setpoint Temperature
     * System Node Mass Flow Rate
-    * etc.
-
-Developed as part of HackSimBuild 2024 by Matthew Dahlhausen and Ken Takahashi"
+    * etc."
   end
 
   # define the arguments that the user will input
@@ -46,7 +44,7 @@ Developed as part of HackSimBuild 2024 by Matthew Dahlhausen and Ken Takahashi"
     chs << 'Monthly'
     reporting_frequency = OpenStudio::Measure::OSArgument::makeChoiceArgument('reporting_frequency', chs, true)
     reporting_frequency.setDisplayName("<h3>Select a Reporting Frequency?</h3>")
-    reporting_frequency.setDefaultValue('Timestep')
+    reporting_frequency.setDefaultValue("Timestep")
     args << reporting_frequency
 
     # reporting variables
@@ -239,6 +237,15 @@ Developed as part of HackSimBuild 2024 by Matthew Dahlhausen and Ken Takahashi"
 
     return comp_data
   end
+  
+  def getBoundaryNodes(loop)
+    node_list = {}
+	node_list['supply_inlet'] = loop.supplyInletNode.name.get
+	node_list['supply_outlet'] = loop.supplyOutletNode.name.get
+	node_list['demand_inlet'] = loop.demandInletNode.name.get
+	node_list['demand_outlet'] = loop.demandOutletNode.name.get
+	return node_list
+  end
 
   def addNodeNamestoArray(model_objects, node_names)
     model_objects.each do |model_object|
@@ -324,7 +331,9 @@ Developed as part of HackSimBuild 2024 by Matthew Dahlhausen and Ken Takahashi"
       air_loop_data = {}
       air_loop_data['object_name'] = air_loop.name.to_s
       air_loop_data['object_type'] = air_loop.iddObjectType.valueName.to_s
-      air_loop_data['components'] = []
+	  air_loop_data['isOutdoorAirSystem'] = false
+	  air_loop_data['boundary_nodes'] = [getBoundaryNodes(air_loop)]
+      air_loop_data['supply_components'] = []
       air_loop.supplyComponents.each do |comp|
         if comp.to_StraightComponent.is_initialized
           comp_data = straight_component_data_hash(comp, reporting_frequency, variable_names)
@@ -334,6 +343,7 @@ Developed as part of HackSimBuild 2024 by Matthew Dahlhausen and Ken Takahashi"
 
         # capture outdoor air system properties
         if comp.to_AirLoopHVACOutdoorAirSystem.is_initialized
+		  air_loop_data['isOutdoorAirSystem'] = true
           comp_data['object_name'] = comp.name.to_s
           comp_data['object_type'] = comp.iddObjectType.valueName.to_s
           comp = comp.to_AirLoopHVACOutdoorAirSystem.get
@@ -384,7 +394,8 @@ Developed as part of HackSimBuild 2024 by Matthew Dahlhausen and Ken Takahashi"
       plant_loop_data = {}
       plant_loop_data['object_name'] = plant_loop.name.to_s
       plant_loop_data['object_type'] = plant_loop.iddObjectType.valueName.to_s
-      plant_loop_data['components'] = []
+	  plant_loop_data['boundary_nodes'] = [getBoundaryNodes(plant_loop)]
+      plant_loop_data['supply_components'] = []
       plant_loop.supplyComponents.each do |comp|
         if comp.to_StraightComponent.is_initialized
           comp_data = straight_component_data_hash(comp, reporting_frequency, variable_names)
