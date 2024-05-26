@@ -333,7 +333,7 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
       air_loop_data['object_type'] = air_loop.iddObjectType.valueName.to_s
 	  air_loop_data['isOutdoorAirSystem'] = false
 	  air_loop_data['boundary_nodes'] = [getBoundaryNodes(air_loop)]
-      air_loop_data['supply_components'] = []
+      air_loop_data['components'] = []
       air_loop.supplyComponents.each do |comp|
         if comp.to_StraightComponent.is_initialized
           comp_data = straight_component_data_hash(comp, reporting_frequency, variable_names)
@@ -395,7 +395,7 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
       plant_loop_data['object_name'] = plant_loop.name.to_s
       plant_loop_data['object_type'] = plant_loop.iddObjectType.valueName.to_s
 	  plant_loop_data['boundary_nodes'] = [getBoundaryNodes(plant_loop)]
-      plant_loop_data['supply_components'] = []
+      plant_loop_data['components'] = []
       plant_loop.supplyComponents.each do |comp|
         if comp.to_StraightComponent.is_initialized
           comp_data = straight_component_data_hash(comp, reporting_frequency, variable_names)
