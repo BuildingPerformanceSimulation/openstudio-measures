@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>detailed_hvac_viewer</name>
   <uid>416a484f-bd28-4db8-8926-7d70740390eb</uid>
-  <version_id>001c7f66-aff7-4be1-874e-b7c2208b50d7</version_id>
-  <version_modified>2024-05-27T05:16:47Z</version_modified>
+  <version_id>e9420fc1-03ba-4447-8f21-406039655bbe</version_id>
+  <version_modified>2024-05-27T05:45:22Z</version_modified>
   <xml_checksum>C068F366</xml_checksum>
   <class_name>DetailedHVACViewer</class_name>
   <display_name>Detailed HVAC Viewer</display_name>
@@ -542,7 +542,7 @@
       <filename>images/OS_Coil_Heating_Gas.png</filename>
       <filetype>png</filetype>
       <usage_type>resource</usage_type>
-      <checksum>77F00A9C</checksum>
+      <checksum>95E0B87F</checksum>
     </file>
     <file>
       <filename>images/OS_Fan_VariableVolume.png</filename>
@@ -953,12 +953,6 @@
       <checksum>3249F600</checksum>
     </file>
     <file>
-      <filename>images/furnace.png</filename>
-      <filetype>png</filetype>
-      <usage_type>resource</usage_type>
-      <checksum>95E0B87F</checksum>
-    </file>
-    <file>
       <filename>images/furnace_multi_stage.png</filename>
       <filetype>png</filetype>
       <usage_type>resource</usage_type>
@@ -1023,6 +1017,12 @@
       <filetype>png</filetype>
       <usage_type>resource</usage_type>
       <checksum>F379F583</checksum>
+    </file>
+    <file>
+      <filename>images/heat_coil.png</filename>
+      <filetype>png</filetype>
+      <usage_type>resource</usage_type>
+      <checksum>77F00A9C</checksum>
     </file>
     <file>
       <filename>images/heat_pump3.png</filename>
@@ -1508,7 +1508,7 @@
       <filename>report.html.erb</filename>
       <filetype>erb</filetype>
       <usage_type>resource</usage_type>
-      <checksum>8257FDA3</checksum>
+      <checksum>47D8CA23</checksum>
     </file>
     <file>
       <filename>USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw</filename>

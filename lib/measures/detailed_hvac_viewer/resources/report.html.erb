@@ -56,9 +56,7 @@
 <body>
 <div>
   <select id="airLoopDropdown">
-    <option value="5 Zone PVAV">5 Zone PVAV</option>
-    <option value="5 Zone PVAV 1">5 Zone PVAV 1</option>
-    <option value="5 Zone PVAV 2">5 Zone PVAV 2</option>
+		<!-- Options will be dynamically populated -->
   </select>
   <select id="nodeAttributeDropdown">
     <!-- Options will be dynamically populated -->
@@ -290,7 +288,19 @@ function populateGridData(hvacData, loopName) {
 
     return gridData
 };
-//const gridData = populateGridData(hvac_data, '5 Zone PVAV');
+
+function populateLoopDropdown() {
+  const dropdown = document.getElementById('airLoopDropdown');
+  const attributes = new Set();
+  hvac_data.forEach( loop => attributes.add(loop.loop_name) );
+
+attributes.forEach(attribute => {
+    const option = document.createElement('option');
+    option.value = option.textContent = attribute;
+    dropdown.appendChild(option);
+  });
+}
+populateLoopDropdown();
 
 function populateNodeAttributeDropdown() {
   const dropdown = document.getElementById('nodeAttributeDropdown');
@@ -323,7 +333,8 @@ function getNodeValues(hvac_data, loopName, nodeName, selectedKey) {
 function createGridWithIcons() {
 	const gridContainer = document.getElementById('grid-container');
 	const gridDataScript = document.getElementById('gridData');
-	const gridData = populateGridData(hvac_data, '5 Zone PVAV');
+	const loopName = document.getElementById('airLoopDropdown').value;
+	const gridData = populateGridData(hvac_data, loopName);
 
 	const columns = gridData.columns;
 	const rows = gridData.rows;
@@ -374,9 +385,8 @@ function createGridWithIcons() {
 			if (positionNodeHash[position]) {
 				gridItem.addEventListener('click', () => {
 					const nodeName = positionNodeHash[position];
-					const airLoopName = document.getElementById('airLoopDropdown').value;
 					const attributeName = document.getElementById('nodeAttributeDropdown').value;
-					const NodeValues = getNodeValues(hvac_data, airLoopName, nodeName, attributeName);
+					const NodeValues = getNodeValues(hvac_data, loopName, nodeName, attributeName);
 					if (NodeValues) {
 						if (activeNodes[position]) {
 							delete activeNodes[position];
@@ -395,8 +405,29 @@ function createGridWithIcons() {
 	}
 }
 
-	// Call the function to create the grid with icons
-	createGridWithIcons();
+// Call the function to create the grid with icons
+createGridWithIcons();
+
+function selectLoopEvent() {
+  var dropdown = document.getElementById('loopDropdown');
+
+  // Add change event listener to the dropdown
+  dropdown.addEventListener('change', function() {
+      // Get the selected option value
+      var selectedOption = dropdown.options[dropdown.selectedIndex].value;
+      console.log("Regenerating grid with option value:", selectedOption);
+
+      // Clear the content of the div
+      gridContainer = document.getElementById('grid-container');
+      gridContainer.innerHTML = "";
+
+      // Call function to regenerate the grid
+      createGridWithIcons();
+  });
+}
+
+// Call function to attach event listener when the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', selectLoopEvent);
 
 function plotNodeValues(data) {
     d3.select("#plot").html(""); // Clear any existing plot
