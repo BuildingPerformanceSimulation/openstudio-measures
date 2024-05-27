@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>detailed_hvac_viewer</name>
   <uid>416a484f-bd28-4db8-8926-7d70740390eb</uid>
-  <version_id>e516cae3-f0b4-484c-8b8f-964a2e0cc739</version_id>
-  <version_modified>2024-05-20T19:04:32Z</version_modified>
+  <version_id>e9420fc1-03ba-4447-8f21-406039655bbe</version_id>
+  <version_modified>2024-05-27T05:45:22Z</version_modified>
   <xml_checksum>C068F366</xml_checksum>
   <class_name>DetailedHVACViewer</class_name>
   <display_name>Detailed HVAC Viewer</display_name>
@@ -16,9 +16,7 @@
     * System Node Temperature
     * System Node Setpoint Temperature
     * System Node Mass Flow Rate
-    * etc.
-
-Developed as part of HackSimBuild 2024 by Matthew Dahlhausen and Ken Takahashi</modeler_description>
+    * etc.</modeler_description>
   <arguments>
     <argument>
       <name>include_demand_nodes</name>
@@ -44,7 +42,7 @@ Developed as part of HackSimBuild 2024 by Matthew Dahlhausen and Ken Takahashi</
       <type>Choice</type>
       <required>true</required>
       <model_dependent>false</model_dependent>
-      <default_value>Timestep</default_value>
+      <default_value>Hourly</default_value>
       <choices>
         <choice>
           <value>Detailed</value>
@@ -473,7 +471,7 @@ Developed as part of HackSimBuild 2024 by Matthew Dahlhausen and Ken Takahashi</
       <filename>README.md</filename>
       <filetype>md</filetype>
       <usage_type>readme</usage_type>
-      <checksum>6697ACCA</checksum>
+      <checksum>C4276244</checksum>
     </file>
     <file>
       <filename>README.md.erb</filename>
@@ -490,7 +488,7 @@ Developed as part of HackSimBuild 2024 by Matthew Dahlhausen and Ken Takahashi</
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>A1217DB6</checksum>
+      <checksum>6DD34D66</checksum>
     </file>
     <file>
       <filename>README.md</filename>
@@ -523,16 +521,34 @@ Developed as part of HackSimBuild 2024 by Matthew Dahlhausen and Ken Takahashi</
       <checksum>FC079194</checksum>
     </file>
     <file>
-      <filename>images/OAMixer_left.png</filename>
+      <filename>images/OS_AirLoopHVAC_OutdoorAirSystem_Left.png</filename>
       <filetype>png</filetype>
       <usage_type>resource</usage_type>
       <checksum>44F75E3F</checksum>
     </file>
     <file>
-      <filename>images/OAMixer_right.png</filename>
+      <filename>images/OS_AirLoopHVAC_OutdoorAirSystem_Right.png</filename>
       <filetype>png</filetype>
       <usage_type>resource</usage_type>
       <checksum>00C310F5</checksum>
+    </file>
+    <file>
+      <filename>images/OS_Coil_Cooling_DX_TwoSpeed.png</filename>
+      <filetype>png</filetype>
+      <usage_type>resource</usage_type>
+      <checksum>291533F7</checksum>
+    </file>
+    <file>
+      <filename>images/OS_Coil_Heating_Gas.png</filename>
+      <filetype>png</filetype>
+      <usage_type>resource</usage_type>
+      <checksum>95E0B87F</checksum>
+    </file>
+    <file>
+      <filename>images/OS_Fan_VariableVolume.png</filename>
+      <filetype>png</filetype>
+      <usage_type>resource</usage_type>
+      <checksum>9E4B5D6F</checksum>
     </file>
     <file>
       <filename>images/air_cooled.png</filename>
@@ -835,12 +851,6 @@ Developed as part of HackSimBuild 2024 by Matthew Dahlhausen and Ken Takahashi</
       <checksum>90EDB4DD</checksum>
     </file>
     <file>
-      <filename>images/dxcoolingcoil_2stage_humidity.png</filename>
-      <filetype>png</filetype>
-      <usage_type>resource</usage_type>
-      <checksum>291533F7</checksum>
-    </file>
-    <file>
       <filename>images/dxcoolingcoil_singlespeed.png</filename>
       <filetype>png</filetype>
       <usage_type>resource</usage_type>
@@ -913,12 +923,6 @@ Developed as part of HackSimBuild 2024 by Matthew Dahlhausen and Ken Takahashi</
       <checksum>22BBCE49</checksum>
     </file>
     <file>
-      <filename>images/fan_variable.png</filename>
-      <filetype>png</filetype>
-      <usage_type>resource</usage_type>
-      <checksum>9E4B5D6F</checksum>
-    </file>
-    <file>
       <filename>images/fan_zoneexhaust.png</filename>
       <filetype>png</filetype>
       <usage_type>resource</usage_type>
@@ -947,12 +951,6 @@ Developed as part of HackSimBuild 2024 by Matthew Dahlhausen and Ken Takahashi</
       <filetype>png</filetype>
       <usage_type>resource</usage_type>
       <checksum>3249F600</checksum>
-    </file>
-    <file>
-      <filename>images/furnace.png</filename>
-      <filetype>png</filetype>
-      <usage_type>resource</usage_type>
-      <checksum>95E0B87F</checksum>
     </file>
     <file>
       <filename>images/furnace_multi_stage.png</filename>
@@ -1510,7 +1508,7 @@ Developed as part of HackSimBuild 2024 by Matthew Dahlhausen and Ken Takahashi</
       <filename>report.html.erb</filename>
       <filetype>erb</filetype>
       <usage_type>resource</usage_type>
-      <checksum>36489548</checksum>
+      <checksum>47D8CA23</checksum>
     </file>
     <file>
       <filename>USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw</filename>

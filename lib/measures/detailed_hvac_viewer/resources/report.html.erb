@@ -10,7 +10,7 @@
 <style type="text/css">
 	body {
 		display: flex;
-		flex-direction: column;						 
+		flex-direction: column;
 		justify-content: center;
 		align-items: center;
 		height: 100vh;
@@ -45,7 +45,7 @@
     }
 	.line {
       fill: none;
-      stroke: steelblue;
+
       stroke-width: 2px;
     }
 	#plot {
@@ -54,73 +54,292 @@
 </style>
 </head>
 <body>
+<div>
+  <select id="airLoopDropdown">
+		<!-- Options will be dynamically populated -->
+  </select>
+  <select id="nodeAttributeDropdown">
+    <!-- Options will be dynamically populated -->
+  </select>
+</div>
 <div class="grid-container" id="grid-container">
 	<!-- Generate cells for the grid -->
 </div>
 
 <div id='plot'></div>
 
-<!-- Define the iconHash in a script tag. Need to automate from hvac_data-->
-<script id="gridData" type="application/json">
-	{
-		"columns": 11,
-		"rows": 3,
-		"iconHash": {
-			"2-5": "dxcoolingcoil_2stage_humidity.png",
-			"2-7": "heat_coil.png",
-			"2-9": "fan_variable.png",
-			"2-4": "h_node.png",
-			"2-6": "h_node.png",
-			"2-8": "h_node.png",
-			"2-2": "OAMixer_left.png",
-			"2-3": "OAMixer_right.png",
-			"1-2": "down_node.png",
-			"1-3": "down_node.png",
-			"2-1": "right_down.png",
-			"2-10": "h_line.png",
-			"2-11": "left_down.png",
-			"3-1": "v_node.png",
-			"3-11": "v_node.png"
-		},
-		"positionNodeHash": {
-			"1-2": "5 Zone PVAV Outdoor Air Node",
-			"1-3": "5 Zone PVAV Relief Air Node",
-			"2-4": "5 Zone PVAV Mixed Air Node",
-			"2-6": "5 Zone PVAV 2spd DX Clg Coil 354kBtu/hr 9.8EER Outlet Air Node",
-			"2-8": "5 Zone PVAV Main Gas Htg Coil Outlet Air Node",
-			"3-1": "5 Zone PVAV Supply Inlet Node",
-			"3-11": "5 Zone PVAV Supply Outlet Node"
-		}
-	}
-</script>
-
 <script>
-var hvac_data = [<%= hvac_data %>];
+var hvac_data = <%= hvac_data %>;
 
-function getTemperatureValues(hvac_data, airLoopName, nodeName) {
-  for (let i = 0; i < hvac_data[0].length; i++) {
-    let obj = hvac_data[0][i];
-    if (obj.object_name === airLoopName && obj.object_type === "OS_AirLoopHVAC") {
-      for (let j = 0; j < obj.components.length; j++) {
-        let component = obj.components[j];
-        if (component.object_name === nodeName && component.object_type === "OS_Node") {
-          return component.system_node_temperature;
+const activeNodes = {};
+
+function splitOutdoorAirSystemObjects(objects) {
+    const newObjects = [];
+    var oa_object_name = '';
+
+    objects.forEach(obj => {
+        if (obj.object_type === "OS_AirLoopHVAC_OutdoorAirSystem") {
+          oa_object_name = obj.object_name
+
+            const firstObject = {
+                object_name: obj.object_name + " Left",
+                original_name: obj.object_name,
+                object_type: obj.object_type,
+                image_name: 'OS_AirLoopHVAC_OutdoorAirSystem_Left.png',
+                before_objects: obj.before_objects.filter(name => !name.includes("Outdoor Air Node")),
+                after_objects: [obj.object_name + " Right"].concat(obj.after_objects.filter(name => name.includes("Relief Air Node"))),
+                component_side: obj.component_side
+            };
+
+            const secondObject = {
+                object_name: obj.object_name + " Right",
+                original_name: obj.object_name,
+                object_type: obj.object_type,
+                image_name: 'OS_AirLoopHVAC_OutdoorAirSystem_Right.png',
+                before_objects: [obj.object_name + " Left"].concat(obj.before_objects.filter(name => name.includes("Outdoor Air Node"))),
+                after_objects: obj.after_objects.filter(name => !name.includes("Relief Air Node")),
+                component_side: obj.component_side
+            };
+
+            newObjects.push(firstObject, secondObject);
+        } else {
+            newObjects.push(obj);
         }
-      }
-    }
-  }
-  return null; // Return null if no matching node is found
+    });
+
+    newObjects.forEach(obj => {
+        if (obj.after_objects) {
+            obj.after_objects = obj.after_objects.map(name => {
+                if (name === oa_object_name) {
+                  if (obj.object_name.includes("Outdoor Air Node")) {
+                        return oa_object_name + " Right"
+                    } else {
+                        return oa_object_name + " Left"
+                    }
+                } else {
+                    return name
+                }
+            })
+        };
+
+        if (obj.before_objects) {
+            obj.before_objects = obj.before_objects.map(name => {
+                if (name === oa_object_name) {
+                    if (obj.object_name.includes("Relief Air Node")) {
+                        return oa_object_name + " Left"
+                    } else {
+                        return oa_object_name + " Right"
+                    }
+                } else {
+                    return name
+                }
+            })
+        };
+    });
+
+    return newObjects;
 }
-				 
+
+function assignImage(obj){
+    if (obj.object_type === 'OS_Node') {
+        if (obj.object_name.includes("Relief Air Node") || obj.object_name.includes("Outdoor Air Node")) {
+            return "down_node.png"
+        } else if (obj.object_name.includes("Supply Inlet Node") || obj.object_name.includes(" Supply Outlet Node")) {
+            return "v_node.png"
+        } else {
+            return "h_node.png"
+        }
+    } else if (obj.object_type === 'OS_AirLoopHVAC_OutdoorAirSystem') {
+        if (obj.object_name.includes(" Left")) {
+            return 'OS_AirLoopHVAC_OutdoorAirSystem_Left.png'
+        } else {
+            return 'OS_AirLoopHVAC_OutdoorAirSystem_Right.png'
+        }
+    } else {
+          return obj.object_type + ".png"
+    }
+};
+
+function createGrid(objects) {
+    // Helper function to find the depth of each object
+    function findDepth(obj, objectMap, memo) {
+        if (memo[obj.object_name] !== undefined) {
+            return memo[obj.object_name];
+        }
+        if (!obj.before_objects || obj.before_objects.length === 0) {
+            return memo[obj.object_name] = 0;
+        }
+        let maxDepth = 0;
+        for (let before of obj.before_objects) {
+            maxDepth = Math.max(maxDepth, findDepth(objectMap[before], objectMap, memo) + 1);
+        }
+        return memo[obj.object_name] = maxDepth;
+    }
+
+    // Create a map of objects by their names for easy lookup
+    const objectMap = {};
+    objects.forEach(obj => objectMap[obj.object_name] = obj);
+
+    // Find depth for each object
+    const depthMap = {};
+    objects.forEach(obj => findDepth(obj, objectMap, depthMap));
+
+    // Sort objects by depth
+    objects.sort((a, b) => depthMap[a.object_name] - depthMap[b.object_name]);
+
+    // Initialize the grid
+    const grid = [];
+    let maxDepth = 0;
+    objects.forEach(obj => {
+        maxDepth = Math.max(maxDepth, depthMap[obj.object_name]);
+    });
+
+    for (let i = 0; i <= maxDepth; i++) {
+        grid[i] = [];
+    }
+
+    // get the name of the outdoor air system
+    var oa_object_name = ''
+    objects.forEach(obj => {
+      if (obj.object_type === "OS_AirLoopHVAC_OutdoorAirSystem") {
+        oa_object_name = obj.original_name
+      };
+    });
+
+    // Assign positions on the grid
+    const assignedPositions = new Set();
+    objects.forEach(obj => {
+        let y = 2;
+        // set relief and outdoor air nodes to the same depth as the outdoor air system
+        if (obj.object_name.includes('Relief Air Node')) {
+            depthMap[obj.object_name] = depthMap[oa_object_name + " Left"]
+            y = 1;
+        } else if (obj.object_name.includes('Outdoor Air Node')){
+            depthMap[obj.object_name] = depthMap[oa_object_name + " Right"]
+            y = 1;
+        }
+        let depth = depthMap[obj.object_name];
+
+        // supply inlet and outlet are 1 row below
+        if (obj.object_name.includes('Supply Inlet Node') || obj.object_name.includes('Supply Outlet Node')) {
+          y = 3;
+        }
+
+        // Otherwise, allocate one space
+        while (assignedPositions.has(`${depth},${y}`)) {
+            y++;
+        }
+        grid[depth][y] = obj.object_name;
+        assignedPositions.add(`${depth},${y}`);
+    });
+
+    // Format the result to include x and y positions
+    const result = objects.map(obj => {
+        let depth = depthMap[obj.object_name];
+        let y = grid[depth].indexOf(obj.object_name);
+        return {
+            name: obj.object_name,
+            object_type: obj.object_type,
+            x: depth + 1,
+            y: y,
+            image_name: obj.image_name
+        };
+    });
+
+    return result;
+}
+
+function populateGridData(hvacData, loopName) {
+    selectedLoopData = hvacData.find(hash => hash.loop_name === loopName)
+    supplyComponents = selectedLoopData["components"].filter(hash => hash.component_side === 'supply')
+    // console.log('supplyComponents');
+    // console.log(supplyComponents);
+    // console.log('split object names');
+    supplyComponents = splitOutdoorAirSystemObjects(supplyComponents);
+    // console.log(supplyComponents);
+    supplyComponents.forEach(obj => obj.image_name = assignImage(obj));
+    // console.log('image names');
+    // console.log(supplyComponents);
+    gridPositions = createGrid(supplyComponents);
+    console.log('gridPositions');
+    console.log(gridPositions);
+
+    // populate gridData
+    iconHash = {}
+    positionNodeHash = {}
+    gridPositions.forEach(obj => {
+        iconHash[`${obj.y}-${obj.x}`] = obj.image_name;
+        if (obj.object_type == 'OS_Node') {
+          positionNodeHash[`${obj.y}-${obj.x}`] = obj.name
+        }
+    });
+    gridData = {}
+    gridData["columns"] = Math.max(...gridPositions.map(obj => obj.x));
+    gridData["rows"] = Math.max(...gridPositions.map(obj => obj.y));
+
+    // add angled sections
+    iconHash['2-1'] = "right_down.png"
+    iconHash[`2-${gridData["columns"]}`] = 'left_down.png'
+
+    gridData["iconHash"] = iconHash
+    gridData["positionNodeHash"] = positionNodeHash
+    console.log('gridData');
+    console.log(gridData);
+
+    return gridData
+};
+
+function populateLoopDropdown() {
+  const dropdown = document.getElementById('airLoopDropdown');
+  const attributes = new Set();
+  hvac_data.forEach( loop => attributes.add(loop.loop_name) );
+
+attributes.forEach(attribute => {
+    const option = document.createElement('option');
+    option.value = option.textContent = attribute;
+    dropdown.appendChild(option);
+  });
+}
+populateLoopDropdown();
+
+function populateNodeAttributeDropdown() {
+  const dropdown = document.getElementById('nodeAttributeDropdown');
+  const attributes = new Set();
+
+  hvac_data.forEach(airLoop => {
+    airLoop.components.forEach(component => {
+      Object.keys(component).forEach(key => {
+        if (key.startsWith('system_node')) {
+          attributes.add(key);
+        }
+      });
+    });
+  });
+
+  attributes.forEach(attribute => {
+    const option = document.createElement('option');
+    option.value = option.textContent = attribute;
+    dropdown.appendChild(option);
+  });
+}
+populateNodeAttributeDropdown();
+
+function getNodeValues(hvac_data, loopName, nodeName, selectedKey) {
+  selectedLoopData = hvac_data.find(hash => hash.loop_name === loopName);
+  selectedNode = selectedLoopData.components.find(hash => hash.object_name === nodeName);
+  return selectedNode[selectedKey];
+}
+
 function createGridWithIcons() {
 	const gridContainer = document.getElementById('grid-container');
 	const gridDataScript = document.getElementById('gridData');
-	const gridData = JSON.parse(gridDataScript.textContent);
+	const loopName = document.getElementById('airLoopDropdown').value;
+	const gridData = populateGridData(hvac_data, loopName);
 
 	const columns = gridData.columns;
 	const rows = gridData.rows;
 	const iconHash = gridData.iconHash;
-	const positionNodeHash = gridData.positionNodeHash;													
+	const positionNodeHash = gridData.positionNodeHash;
 
 	// Set grid template columns and rows dynamically
 	gridContainer.style.gridTemplateColumns = `repeat(${columns}, 100px)`;
@@ -135,25 +354,49 @@ function createGridWithIcons() {
 
 		if (iconHash[position]) {
 			const img = document.createElement('img');
+			let alternateDirectoryTried = false;
+			img.onerror = function () {
+				console.log("Image not found in measure directory path; trying an alternate path for tests.");
+				if (!alternateDirectoryTried) {
+					alternateDirectoryTried = true;
+					img.src = `../../../resources/images/${iconHash[position]}`;
+				} else {
+					console.log("Image not found in the alternate path as well.");
+					// Handle the case where the image is not found in both paths
+				}
+			}
 			img.src = `../../measures/detailed_hvac_viewer/resources/images/${iconHash[position]}`;
 			img.className = 'grid-icon';
 			gridItem.appendChild(img);
 
 			// Add hover effect only if the cell has an icon
 			gridItem.addEventListener('mouseover', () => {
-				gridItem.style.backgroundColor = '#888';
+				if (!activeNodes[position]) {
+					gridItem.style.backgroundColor = '#888';
+				}
 			});
 			gridItem.addEventListener('mouseout', () => {
-				gridItem.style.backgroundColor = '#ccc';
+				if (!activeNodes[position]) {
+					gridItem.style.backgroundColor = '#ccc';
+				}
 			});
 
 			// Add click event listener for relevant nodes
 			if (positionNodeHash[position]) {
 				gridItem.addEventListener('click', () => {
 					const nodeName = positionNodeHash[position];
-					const tempValues = getTemperatureValues(hvac_data, "5 Zone PVAV", nodeName);
-					if (tempValues) {
-						plotTemperatureValues(tempValues);
+					const attributeName = document.getElementById('nodeAttributeDropdown').value;
+					const NodeValues = getNodeValues(hvac_data, loopName, nodeName, attributeName);
+					if (NodeValues) {
+						if (activeNodes[position]) {
+							delete activeNodes[position];
+							gridItem.style.backgroundColor = '#ccc';
+						} else {
+							const color = getRandomColor();
+							activeNodes[position] = { nodeName, NodeValues, color };
+							gridItem.style.backgroundColor = color;
+						}
+						plotNodeValues();
 					}
 				});
 			}
@@ -162,10 +405,31 @@ function createGridWithIcons() {
 	}
 }
 
-	// Call the function to create the grid with icons
-	createGridWithIcons();
+// Call the function to create the grid with icons
+createGridWithIcons();
 
-function plotTemperatureValues(data) {
+function selectLoopEvent() {
+  var dropdown = document.getElementById('loopDropdown');
+
+  // Add change event listener to the dropdown
+  dropdown.addEventListener('change', function() {
+      // Get the selected option value
+      var selectedOption = dropdown.options[dropdown.selectedIndex].value;
+      console.log("Regenerating grid with option value:", selectedOption);
+
+      // Clear the content of the div
+      gridContainer = document.getElementById('grid-container');
+      gridContainer.innerHTML = "";
+
+      // Call function to regenerate the grid
+      createGridWithIcons();
+  });
+}
+
+// Call function to attach event listener when the DOM is fully loaded
+document.addEventListener('DOMContentLoaded', selectLoopEvent);
+
+function plotNodeValues(data) {
     d3.select("#plot").html(""); // Clear any existing plot
 
     const margin = {top: 20, right: 20, bottom: 30, left: 50};
@@ -176,15 +440,21 @@ function plotTemperatureValues(data) {
     const startDate = new Date(2023, 0, 1);
     const endDate = new Date(2024, 0, 1);
 
-    // Create a time scale for the x-axis
-    const x = d3.scaleTime().domain([startDate, endDate]).range([0, width]);
+	// Create a time scale for the x-axis
+    const x = d3.scaleTime()
+				.domain([startDate, endDate])
+				.range([0, width]);
 
-    // Create a linear scale for the y-axis
-    const y = d3.scaleLinear().domain([d3.min(data), d3.max(data)]).range([height, 0]);
+    const yMax = d3.max(Object.values(activeNodes), d => d3.max(d.NodeValues));
+    const yMin = d3.min(Object.values(activeNodes), d => d3.min(d.NodeValues));
+
+    const y = d3.scaleLinear()
+                .domain([yMin, yMax])
+                .range([height, 0]);
 
     // Define the line function
     const line = d3.line()
-        .x((d, i) => x(new Date(startDate.getTime() + i * (endDate - startDate) / (data.length - 1))))
+        .x((d, i) => x(new Date(2023, 0, 1, i + 1)))
         .y(d => y(d));
 
     // Create the SVG container
@@ -199,15 +469,26 @@ function plotTemperatureValues(data) {
         .attr("transform", `translate(0,${height})`)
         .call(d3.axisBottom(x).ticks(d3.timeMonth.every(1)).tickFormat(d3.timeFormat("%b")));
 
-    // Add the y-axis
-    svg.append("g")
-        .call(d3.axisLeft(y));
 
-    // Add the line path
-    svg.append("path")
-        .data([data])
-        .attr("class", "line")
-        .attr("d", line);
+    svg.append("g")
+		.call(d3.axisLeft(y));
+
+	Object.values(activeNodes).forEach(node => {
+		svg.append("path")
+			.data([node.NodeValues])
+			.attr("class", "line")
+			.attr("d", line)
+			.attr("stroke", node.color);
+	});
+}
+
+function getRandomColor() {
+	const letters = '0123456789ABCDEF';
+	let color = '#';
+	for (let i = 0; i < 6; i++) {
+		color += letters[Math.floor(Math.random() * 16)];
+	}
+	return color;
 }
 </script>
 
