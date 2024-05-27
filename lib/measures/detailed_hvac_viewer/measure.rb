@@ -44,7 +44,7 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
     chs << 'Monthly'
     reporting_frequency = OpenStudio::Measure::OSArgument::makeChoiceArgument('reporting_frequency', chs, true)
     reporting_frequency.setDisplayName("<h3>Select a Reporting Frequency?</h3>")
-    reporting_frequency.setDefaultValue("Timestep")
+    reporting_frequency.setDefaultValue("Hourly")
     args << reporting_frequency
 
     # reporting variables
@@ -147,19 +147,19 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
     loops.each do |loop|
       # add the supply objects
       supply_objects = loop.supplyComponents(OpenStudio::Model::Node::iddObjectType)
-      node_names = addNodeNamestoArray(supply_objects, node_names)
+      node_names = add_node_names_to_array(supply_objects, node_names)
 
       # also add the outside air system nodes if an air loop
       if loop.to_AirLoopHVAC.is_initialized
         loop = loop.to_AirLoopHVAC.get
         oa_objects = loop.oaComponents(OpenStudio::Model::Node::iddObjectType)
-        node_names = addNodeNamestoArray(oa_objects, node_names)
+        node_names = add_node_names_to_array(oa_objects, node_names)
       end
 
       # optionally include demand nodes
       if include_demand_nodes
         demand_objects = loop.demandComponents(OpenStudio::Model::Node::iddObjectType)
-        node_names = addNodeNamestoArray(demand_objects, node_names)
+        node_names = add_node_names_to_array(demand_objects, node_names)
       end
     end
 
@@ -202,22 +202,30 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
     comp_data['object_name'] = comp.name.to_s
     comp_data['object_type'] = comp.iddObjectType.valueName.to_s
     if comp.inletModelObject.is_initialized
-      # if !comp.inletModelObject.get.name.is_initialized
-      #   puts comp.name
-      #   puts comp.inletModelObject.get.iddObjectType.valueName.to_s
-      # end
       if comp.inletModelObject.get.name.is_initialized
-        comp_data['before_objects'] = [comp.inletModelObject.get.name.get]
+        inlet_object_name = comp.inletModelObject.get.name.get
+        if comp.loop.get.name.get.to_s == inlet_object_name
+          # don't log the air loop for the supply inlet node
+          comp_data['before_objects'] = []
+        else
+          comp_data['before_objects'] = [inlet_object_name]
+        end
       end
+    else
+      comp_data['before_objects'] = []
     end
     if comp.outletModelObject.is_initialized
-      # if !comp.outletModelObject.get.name.is_initialized
-      #   puts comp.name
-      #   puts comp.outletModelObject.get.iddObjectType.valueName.to_s
-      # end
       if comp.outletModelObject.get.name.is_initialized
-        comp_data['after_objects'] = [comp.outletModelObject.get.name.get]
+        outlet_object_name = comp.outletModelObject.get.name.get
+        if comp.loop.get.name.get.to_s == outlet_object_name
+          # don't log the air loop for the supply outlet node
+          comp_data['after_objects'] = []
+        else
+          comp_data['after_objects'] = [outlet_object_name]
+        end
       end
+    else
+      comp_data['after_objects'] = []
     end
     if comp.to_Node.is_initialized && !variable_names.empty?
       sql = comp.model.sqlFile.get
@@ -237,17 +245,8 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
 
     return comp_data
   end
-  
-  def getBoundaryNodes(loop)
-    node_list = {}
-	node_list['supply_inlet'] = loop.supplyInletNode.name.get
-	node_list['supply_outlet'] = loop.supplyOutletNode.name.get
-	node_list['demand_inlet'] = loop.demandInletNode.name.get
-	node_list['demand_outlet'] = loop.demandOutletNode.name.get
-	return node_list
-  end
 
-  def addNodeNamestoArray(model_objects, node_names)
+  def add_node_names_to_array(model_objects, node_names)
     model_objects.each do |model_object|
       unless model_object.to_Node.empty?
         model_node = model_object.to_Node.get
@@ -257,6 +256,16 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
     end
 
     return node_names
+  end
+
+  def loop_boundary_nodes(loop)
+    node_list = {}
+    node_list['supply_inlet'] = loop.supplyInletNode.name.get
+    node_list['supply_outlet'] = loop.supplyOutletNode.name.get
+    node_list['demand_inlet'] = loop.demandInletNode.name.get
+    node_list['demand_outlet'] = loop.demandOutletNode.name.get
+
+    return node_list
   end
 
   # define what happens when the measure is run
@@ -329,10 +338,9 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
     # get data from air loops
     model.getAirLoopHVACs.each do |air_loop|
       air_loop_data = {}
-      air_loop_data['object_name'] = air_loop.name.to_s
-      air_loop_data['object_type'] = air_loop.iddObjectType.valueName.to_s
-	  air_loop_data['isOutdoorAirSystem'] = false
-	  air_loop_data['boundary_nodes'] = getBoundaryNodes(air_loop)
+      air_loop_data['loop_name'] = air_loop.name.to_s
+      air_loop_data['loop_type'] = air_loop.iddObjectType.valueName.to_s
+      air_loop_data['boundary_nodes'] = loop_boundary_nodes(air_loop)
       air_loop_data['components'] = []
       air_loop.supplyComponents.each do |comp|
         if comp.to_StraightComponent.is_initialized
@@ -343,7 +351,6 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
 
         # capture outdoor air system properties
         if comp.to_AirLoopHVACOutdoorAirSystem.is_initialized
-		  air_loop_data['isOutdoorAirSystem'] = true
           comp_data['object_name'] = comp.name.to_s
           comp_data['object_type'] = comp.iddObjectType.valueName.to_s
           comp = comp.to_AirLoopHVACOutdoorAirSystem.get
@@ -352,7 +359,9 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
           if comp.outboardOANode.is_initialized
             oa_node = comp.outboardOANode.get
             comp_data['before_objects'] << oa_node.name.get
-            air_loop_data['components'] << straight_component_data_hash(oa_node, reporting_frequency, variable_names)
+            temp_comp = straight_component_data_hash(oa_node, reporting_frequency, variable_names)
+            temp_comp['component_side'] = 'supply'
+            air_loop_data['components'] << temp_comp
           end
           if comp.returnAirModelObject.is_initialized
             comp_data['before_objects'] << comp.returnAirModelObject.get.name.get
@@ -360,14 +369,16 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
           if comp.outboardReliefNode.is_initialized
             relief_node = comp.outboardReliefNode.get
             comp_data['after_objects'] << relief_node.name.get
-            air_loop_data['components'] << straight_component_data_hash(relief_node, reporting_frequency, variable_names)
+            temp_comp = straight_component_data_hash(relief_node, reporting_frequency, variable_names)
+            temp_comp['component_side'] = 'supply'
+            air_loop_data['components'] << temp_comp
           end
           if comp.mixedAirModelObject.is_initialized
             comp_data['after_objects'] << comp.mixedAirModelObject.get.name.get
           end
         end
 
-        comp_data['component_type'] = 'supply'
+        comp_data['component_side'] = 'supply'
         air_loop_data['components'] << comp_data
       end
 
@@ -382,7 +393,7 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
           comp_data = {}
         end
 
-        comp_data['component_type'] = 'demand'
+        comp_data['component_side'] = 'demand'
         air_loop_data['components'] << comp_data
       end
 
@@ -392,9 +403,9 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
     # get data from plant loops
     model.getPlantLoops.each do |plant_loop|
       plant_loop_data = {}
-      plant_loop_data['object_name'] = plant_loop.name.to_s
-      plant_loop_data['object_type'] = plant_loop.iddObjectType.valueName.to_s
-	  plant_loop_data['boundary_nodes'] = getBoundaryNodes(plant_loop)
+      plant_loop_data['loop_name'] = plant_loop.name.to_s
+      plant_loop_data['loop_type'] = plant_loop.iddObjectType.valueName.to_s
+      plant_loop_data['boundary_nodes'] = loop_boundary_nodes(plant_loop)
       plant_loop_data['components'] = []
       plant_loop.supplyComponents.each do |comp|
         if comp.to_StraightComponent.is_initialized
@@ -403,7 +414,7 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
           comp_data = {}
         end
 
-        comp_data['component_type'] = 'supply'
+        comp_data['component_side'] = 'supply'
         plant_loop_data['components'] << comp_data
       end
 
@@ -418,7 +429,7 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
           comp_data = {}
         end
 
-        comp_data['component_type'] = 'demand'
+        comp_data['component_side'] = 'demand'
         plant_loop_data['components'] << comp_data
       end
 
