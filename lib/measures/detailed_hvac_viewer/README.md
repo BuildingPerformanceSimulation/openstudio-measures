@@ -17,8 +17,6 @@ The user is asked to provided the following parameters:
     * System Node Mass Flow Rate
     * etc.
 
-Developed as part of HackSimBuild 2024 by Matthew Dahlhausen and Ken Takahashi
-
 ## Measure Type
 ReportingMeasure
 
