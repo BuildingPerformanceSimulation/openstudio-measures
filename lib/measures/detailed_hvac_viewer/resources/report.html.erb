@@ -71,6 +71,160 @@
 <script>
 var hvac_data = <%= hvac_data %>;
 
+// create image dictionary
+var imageDict = {}
+// Default icon to avoid a crash
+imageDict["Catchall"] = "missing_icon.png";
+imageDict["OS_AirConditioner_VariableRefrigerantFlow"] = "vrf_outdoor.png";
+imageDict["OS_AirLoopHVAC_OutdoorAirSystem"] = "OAMixer.png";
+imageDict["OS_AirLoopHVAC_UnitaryCoolOnly"] = "DXCoolingCoil.png";
+imageDict["OS_AirLoopHVAC_UnitaryHeatPump_AirToAir"] = "heat_pump3.png";
+imageDict["OS_AirLoopHVAC_UnitaryHeatPump_AirToAir_MultiSpeed"] = "heat_pump3.png";
+imageDict["OS_AirLoopHVAC_UnitarySystem"] = "unitary_system.png";
+imageDict["OS_AirLoopHVAC_UnitaryHeatCool_VAVChangeoverBypass"] = "unitary_system.png";
+imageDict["OS_AirLoopHVAC_ReturnPlenum"] = "mixer.png";
+imageDict["OS_AirLoopHVAC_SupplyPlenum"] = "splitter.png";
+imageDict["OS_AirLoopHVAC_ZoneMixer"] = "mixer.png";
+imageDict["OS_AirLoopHVAC_ZoneSplitter"] = "splitter.png";
+imageDict["OS_AirTerminal_DualDuct_VAV"] = "airterminal_dualduct_vav.png";
+imageDict["OS_AirTerminal_DualDuct_ConstantVolume"] = "airterminal_dualduct_constantvolume.png";
+imageDict["OS_AirTerminal_DualDuct_VAV_OutdoorAir"] = "airterminal_dualduct_vav_outdoorair.png";
+imageDict["OS_AirTerminal_SingleDuct_ConstantVolume_CooledBeam"] = "chilled_beam.png";
+imageDict["OS_AirTerminal_SingleDuct_ConstantVolume_Reheat"] = "cav_reheat.png";
+imageDict["OS_AirTerminal_SingleDuct_ConstantVolume_FourPipeInduction"] = "single_ducts_constant_vol_4pipe.png";
+imageDict["OS_AirTerminal_SingleDuct_ConstantVolume_FourPipeBeam"] = "airterminal_fourpipebeam.png";
+imageDict["OS_AirTerminal_SingleDuct_ParallelPIU_Reheat"] = "parallel_fan_terminal.png";
+imageDict["OS_AirTerminal_SingleDuct_SeriesPIU_Reheat"] = "series_fan_terminal.png";
+imageDict["OS_AirTerminal_SingleDuct_ConstantVolume_NoReheat"] = "direct-air.png";
+imageDict["OS_AirTerminal_SingleDuct_VAV_NoReheat"] = "vav_noreheat.png";
+imageDict["OS_AirTerminal_SingleDuct_VAV_Reheat"] = "vav-reheat.png";
+imageDict["OS_AirTerminal_SingleDuct_InletSideMixer"] = "air_terminal_inlet_mixer.png";
+imageDict["OS_AirTerminal_SingleDuct_VAV_HeatAndCool_NoReheat"] = "vav_noreheat.png";
+imageDict["OS_AirTerminal_SingleDuct_VAV_HeatAndCool_Reheat"] = "vav-reheat.png";
+imageDict["OS_Boiler_HotWater"] = "boiler.png";
+imageDict["OS_Boiler_Steam"] = "boiler_steam.png";
+imageDict["OS_CentralHeatPumpSystem"] = "centralheatpumpsystem.png";
+imageDict["OS_Chiller_Electric_EIR"] = "chiller_air.png";
+imageDict["OS_Chiller_Absorption_Indirect"] = "chiller_absorption_indirect.png";
+imageDict["OS_Chiller_Absorption"] = "chiller_absorption_direct.png";
+imageDict["OS_Coil_Cooling_DX_SingleSpeed"] = "dxcoolingcoil_singlespeed.png";
+imageDict["OS_Coil_Cooling_DX_TwoSpeed"] = "dxcoolingcoil_2speed.png";
+imageDict["OS_Coil_Cooling_DX_MultiSpeed"] = "dx_cooling_multispeed.png";
+imageDict["OS_Coil_Cooling_DX_VariableSpeed"] = "cool_coil_dx_vari_speed.png";
+imageDict["OS_Coil_Cooling_LowTemperatureRadiant_ConstantFlow"] = "coilcoolinglowtemprad_constflow.png";
+imageDict["OS_Coil_Cooling_LowTemperatureRadiant_VariableFlow"] = "coilcoolinglowtemprad_varflow.png";
+imageDict["OS_Coil_Cooling_WaterToAirHeatPump_EquationFit"] = "wahpDXCC.png";
+imageDict["OS_Coil_Cooling_WaterToAirHeatPump_VariableSpeedEquationFit"] = "Coil_Cooling_WaterToAirHeatPump_VariableSpeedEquationFit.png";
+imageDict["OS_Coil_Cooling_Water"] = "cool_coil.png";
+imageDict["OS_Coil_Cooling_Water_Panel_Radiant"] = "coilcooling_water_panel_radiant.png";
+imageDict["OS_Coil_Heating_DX_SingleSpeed"] = "coil_ht_dx_singlespeed.png";
+imageDict["OS_Coil_Heating_DX_VariableSpeed"] = "ht_coil_dx_vari.png";
+imageDict["OS_Coil_Heating_Electric"] = "electric_furnace.png";
+imageDict["OS_Coil_Heating_Gas"] = "furnace.png";
+imageDict["OS_Coil_Heating_Gas_MultiStage"] = "furnace_multi_stage.png";
+imageDict["OS_Coil_Heating_Water"] = "heat_coil.png";
+imageDict["OS_Coil_Heating_LowTemperatureRadiant_ConstantFlow"] = "coilheatinglowtemprad_constflow.png";
+imageDict["OS_Coil_Heating_LowTemperatureRadiant_VariableFlow"] = "coilheatinglowtemprad_varflow.png";
+imageDict["OS_Coil_Heating_WaterToAirHeatPump_EquationFit"] = "wahpDXHC.png";
+imageDict["OS_Coil_Heating_WaterToAirHeatPump_VariableSpeedEquationFit"] = "Coil_Heating_WaterToAirHeatPump_VariableSpeedEquationFit.png";
+imageDict["OS_CoolingTower_SingleSpeed"] = "cooling_tower.png";
+imageDict["OS_CoolingTower_TwoSpeed"] = "cooling_tower_2speed.png";
+imageDict["OS_CoolingTower_VariableSpeed"] = "cooling_tower_variable.png";
+imageDict["OS_Connector_Mixer"] = "mixer.png";
+imageDict["OS_Connector_Splitter"] = "splitter.png";
+imageDict["OS_DistrictCooling"] = "districtcooling.png";
+imageDict["OS_DistrictHeating_Water"] = "districtheating.png";
+imageDict["OS_Duct"] = "duct.png";
+imageDict["OS_EvaporativeCooler_Direct_ResearchSpecial"] = "directEvap.png";
+imageDict["OS_EvaporativeCooler_Indirect_ResearchSpecial"] = "indirectEvap.png";
+imageDict["OS_Fan_ComponentModel"] = "fan_componentmodel.png";
+imageDict["OS_Fan_ConstantVolume"] = "fan_constant.png";
+imageDict["OS_Fan_OnOff"] = "fan_on_off.png";
+imageDict["OS_Fan_SystemModel"] = "fan_systemmodel.png";
+imageDict["OS_Fan_VariableVolume"] = "fan_variable.png";
+imageDict["OS_Fan_ZoneExhaust"] = "fan_zoneexhaust.png";
+imageDict["OS_FluidCooler_SingleSpeed"] = "fluid_cooler_single.png";
+imageDict["OS_FluidCooler_TwoSpeed"] = "fluid_cooler_two.png";
+imageDict["OS_GroundHeatExchanger_Vertical"] = "ground_heat_exchanger_vertical.png";
+imageDict["OS_GroundHeatExchanger_HorizontalTrench"] = "ground_heat_exchanger_horizontal.png";
+imageDict["OS_HeaderedPumps_ConstantSpeed"] = "headered_pumps_constant.png";
+imageDict["OS_HeaderedPumps_VariableSpeed"] = "headered_pumps_variable.png";
+imageDict["OS_HeatExchanger_AirToAir_SensibleAndLatent"] = "heat_transfer_outdoorair.png";
+imageDict["OS_HeatExchanger_FluidToFluid"] = "fluid_hx.png";
+imageDict["OS_HeatPump_WaterToWater_EquationFit_Cooling"] = "heatpump_watertowater_equationfit_cooling.png";
+imageDict["OS_HeatPump_WaterToWater_EquationFit_Heating"] = "heatpump_watertowater_equationfit_heating.png";
+imageDict["OS_Humidifier_Steam_Electric"] = "electric_humidifier.png";
+imageDict["OS_Humidifier_Steam_Gas"] = "gas_humidifier.png";
+imageDict["OS_EvaporativeFluidCooler_SingleSpeed"] = "evap_fluid_cooler.png";
+imageDict["OS_EvaporativeFluidCooler_TwoSpeed"] = "evap_fluid_cooler_two_speed.png";
+imageDict["OS_Generator_FuelCell_ExhaustGasToWaterHeatExchanger"] = "generator_fuelcell_exhaustgastowaterheatexchanger.png";
+imageDict["OS_Generator_MicroTurbine_HeatRecovery"] = "generator_microturbine_heatrecovery.png";
+imageDict["OS_LoadProfile_Plant"] = "plant_profile.png";
+imageDict["OS_Pipe_Adiabatic"] = "pipe.png";
+imageDict["OS_Pipe_Indoor"] = "pipe_indoor.png";
+imageDict["OS_Pipe_Outdoor"] = "pipe_outdoor.png";
+imageDict["OS_PlantComponent_TemperatureSource"] = "plant_temp_source.png";
+imageDict["OS_PlantComponent_UserDefined"] = "user_defined.png";
+imageDict["OS_Pump_ConstantSpeed"] = "pump_constant.png";
+imageDict["OS_Pump_VariableSpeed"] = "pump_variable.png";
+imageDict["OS_Refrigeration_Condenser_AirCooled"] = "air_cooled.png";
+imageDict["OS_Refrigeration_Condenser_Cascade"] = "condenser_cascade.png";
+imageDict["OS_Refrigeration_Condenser_EvaporativeCooled"] = "evap_cooled.png";
+imageDict["OS_Refrigeration_Condenser_WaterCooled"] = "water_cooled.png";
+imageDict["OS_SolarCollector_FlatPlate_PhotovoltaicThermal"] = "solarcollector_flatplate_photovoltaicthermal.png";
+imageDict["OS_SolarCollector_FlatPlate_Water"] = "solarcollector_flatplate_water.png";
+imageDict["OS_SolarCollector_IntegralCollectorStorage"] = "solarcollector_integralstorage.png";
+imageDict["OS_SwimmingPool_Indoor"] = "swimming_pool.png";
+imageDict["OS_TemperingValve"] = "tempering_valve.png";
+imageDict["OS_ThermalZone"] = "zone.png";
+imageDict["OS_ThermalStorage_Ice_Detailed"] = "thermal_storage_ice.png";
+imageDict["OS_ThermalStorage_ChilledWater_Stratified"] = "thermal_storage_strat.png";
+imageDict["OS_WaterHeater_HeatPump"] = "water_heater.png";
+imageDict["OS_WaterHeater_Mixed"] = "water_heater_mixed.png";
+imageDict["OS_WaterHeater_Stratified"] = "water_heater_stratified.png";
+imageDict["OS_WaterUse_Connections"] = "water_connection.png";
+imageDict["OS_WaterUse_Equipment"] = "sink.png";
+imageDict["OS_ZoneHVAC_Baseboard_RadiantConvective_Electric"] = "baseboard_rad_convect_electric.png";
+imageDict["OS_ZoneHVAC_Baseboard_RadiantConvective_Water"] = "baseboard_rad_convect_water.png";
+imageDict["OS_ZoneHVAC_Baseboard_Convective_Electric"] = "baseboard_electric.png";
+imageDict["OS_ZoneHVAC_Baseboard_Convective_Water"] = "baseboard_water.png";
+imageDict["OS_ZoneHVAC_CoolingPanel_RadiantConvective_Water"] = "zonehvac_coolingpanel_radiantconvective_water.png";
+imageDict["OS_ZoneHVAC_Dehumidifier_DX"] = "dehumidifier_dx.png";
+imageDict["OS_ZoneHVAC_EnergyRecoveryVentilator"] = "energy_recov_vent.png";
+imageDict["OS_Coil_Heating_Water_Baseboard"] = "coilheatingwater_baseboard.png";
+imageDict["OS_Coil_Heating_Water_Baseboard_Radiant"] = "Coil_Heating_Water_Baseboard_Radiant.png";
+imageDict["OS_Coil_Cooling_CooledBeam"] = "coilcoolingchilledbeam.png";
+imageDict["OS_Coil_Cooling_FourPipeBeam"] = "coilcoolingfourpipebeam.png";
+imageDict["OS_Coil_Heating_FourPipeBeam"] = "coilheatingfourpipebeam.png";
+imageDict["OS_Coil_Heating_Desuperheater"] = "coilheatingdesuperheater.png";
+imageDict["OS_Coil_Cooling_DX_TwoStageWithHumidityControlMode"] = "dxcoolingcoil_2stage_humidity.png";
+imageDict["OS_CoilSystem_Cooling_Water_HeatExchangerAssisted"] = "coil_system_coolingwater_heat_exchanger.png";
+imageDict["OS_CoilSystem_Cooling_DX_HeatExchangerAssisted"] = "coilsystem_cooling_dx.png";
+imageDict["OS_ZoneHVAC_FourPipeFanCoil"] = "four_pipe_fan_coil.png";
+imageDict["OS_ZoneHVAC_HighTemperatureRadiant"] = "hightempradiant.png";
+imageDict["OS_ZoneHVAC_LowTemperatureRadiant_VariableFlow"] = "lowtempradiant_varflow.png";
+imageDict["OS_ZoneHVAC_LowTemperatureRadiant_VariableFlow"] = "lowtempradiant_varflow.png";
+imageDict["OS_ZoneHVAC_LowTemperatureRadiant_ConstantFlow"] = "lowtempradiant_constflow.png";
+imageDict["OS_ZoneHVAC_PackagedTerminalAirConditioner"] = "system_type_1.png";
+imageDict["OS_ZoneHVAC_PackagedTerminalHeatPump"] = "system_type_2.png";
+imageDict["OS_ZoneHVAC_TerminalUnit_VariableRefrigerantFlow"] = "vrf_unit.png";
+imageDict["OS_ZoneHVAC_WaterToAirHeatPump"] = "watertoairHP.png";
+imageDict["OS_ZoneHVAC_UnitHeater"] = "heat_coil-uht.png";
+imageDict["OS_ZoneHVAC_UnitVentilator"] = "unit_ventilator.png";
+// placeholder icons until unique icons available
+imageDict["OS_AvailabilityManager_Scheduled"] = "hvac-icon.png";
+imageDict["OS_AvailabilityManager_ScheduledOn"] = "hvac-icon.png";
+imageDict["OS_AvailabilityManager_ScheduledOff"] = "hvac-icon.png";
+imageDict["OS_AvailabilityManager_LowTemperatureTurnOn"] = "hvac-icon.png";
+imageDict["OS_AvailabilityManager_LowTemperatureTurnOff"] = "hvac-icon.png";
+imageDict["OS_AvailabilityManager_HighTemperatureTurnOn"] = "hvac-icon.png";
+imageDict["OS_AvailabilityManager_HighTemperatureTurnOff"] = "hvac-icon.png";
+imageDict["OS_AvailabilityManager_DifferentialThermostat"] = "hvac-icon.png";
+imageDict["OS_AvailabilityManager_OptimumStart"] = "hvac-icon.png";
+imageDict["OS_AvailabilityManager_NightCycle"] = "hvac-icon.png";
+imageDict["OS_AvailabilityManager_NightVentilation"] = "hvac-icon.png";
+imageDict["OS_AvailabilityManager_HybridVentilation"] = "hvac-icon.png";
+
 const activeNodes = {};
 
 function splitOutdoorAirSystemObjects(objects) {
@@ -151,12 +305,16 @@ function assignImage(obj){
         }
     } else if (obj.object_type === 'OS_AirLoopHVAC_OutdoorAirSystem') {
         if (obj.object_name.includes(" Left")) {
-            return 'OS_AirLoopHVAC_OutdoorAirSystem_Left.png'
+            return 'OAMixer_left.png'
         } else {
-            return 'OS_AirLoopHVAC_OutdoorAirSystem_Right.png'
+            return 'OAMixer_right.png'
         }
     } else {
-          return obj.object_type + ".png"
+            if (obj.object_type in imageDict) {
+                return imageDict[obj.object_type]
+            } else {
+                return "missing_icon.png"
+            }
     }
 };
 
