@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>detailed_hvac_viewer</name>
   <uid>416a484f-bd28-4db8-8926-7d70740390eb</uid>
-  <version_id>e9420fc1-03ba-4447-8f21-406039655bbe</version_id>
-  <version_modified>2024-05-27T05:45:22Z</version_modified>
+  <version_id>9b2dbc22-2b25-4bc2-8f5c-5a3ae43415a4</version_id>
+  <version_modified>2024-05-27T15:40:20Z</version_modified>
   <xml_checksum>C068F366</xml_checksum>
   <class_name>DetailedHVACViewer</class_name>
   <display_name>Detailed HVAC Viewer</display_name>
@@ -521,34 +521,16 @@
       <checksum>FC079194</checksum>
     </file>
     <file>
-      <filename>images/OS_AirLoopHVAC_OutdoorAirSystem_Left.png</filename>
+      <filename>images/OAMixer_left.png</filename>
       <filetype>png</filetype>
       <usage_type>resource</usage_type>
       <checksum>44F75E3F</checksum>
     </file>
     <file>
-      <filename>images/OS_AirLoopHVAC_OutdoorAirSystem_Right.png</filename>
+      <filename>images/OAMixer_right.png</filename>
       <filetype>png</filetype>
       <usage_type>resource</usage_type>
       <checksum>00C310F5</checksum>
-    </file>
-    <file>
-      <filename>images/OS_Coil_Cooling_DX_TwoSpeed.png</filename>
-      <filetype>png</filetype>
-      <usage_type>resource</usage_type>
-      <checksum>291533F7</checksum>
-    </file>
-    <file>
-      <filename>images/OS_Coil_Heating_Gas.png</filename>
-      <filetype>png</filetype>
-      <usage_type>resource</usage_type>
-      <checksum>95E0B87F</checksum>
-    </file>
-    <file>
-      <filename>images/OS_Fan_VariableVolume.png</filename>
-      <filetype>png</filetype>
-      <usage_type>resource</usage_type>
-      <checksum>9E4B5D6F</checksum>
     </file>
     <file>
       <filename>images/air_cooled.png</filename>
@@ -851,6 +833,12 @@
       <checksum>90EDB4DD</checksum>
     </file>
     <file>
+      <filename>images/dxcoolingcoil_2stage_humidity.png</filename>
+      <filetype>png</filetype>
+      <usage_type>resource</usage_type>
+      <checksum>291533F7</checksum>
+    </file>
+    <file>
       <filename>images/dxcoolingcoil_singlespeed.png</filename>
       <filetype>png</filetype>
       <usage_type>resource</usage_type>
@@ -923,6 +911,12 @@
       <checksum>22BBCE49</checksum>
     </file>
     <file>
+      <filename>images/fan_variable.png</filename>
+      <filetype>png</filetype>
+      <usage_type>resource</usage_type>
+      <checksum>9E4B5D6F</checksum>
+    </file>
+    <file>
       <filename>images/fan_zoneexhaust.png</filename>
       <filetype>png</filetype>
       <usage_type>resource</usage_type>
@@ -951,6 +945,12 @@
       <filetype>png</filetype>
       <usage_type>resource</usage_type>
       <checksum>3249F600</checksum>
+    </file>
+    <file>
+      <filename>images/furnace.png</filename>
+      <filetype>png</filetype>
+      <usage_type>resource</usage_type>
+      <checksum>95E0B87F</checksum>
     </file>
     <file>
       <filename>images/furnace_multi_stage.png</filename>
@@ -1508,7 +1508,7 @@
       <filename>report.html.erb</filename>
       <filetype>erb</filetype>
       <usage_type>resource</usage_type>
-      <checksum>47D8CA23</checksum>
+      <checksum>F34A16C5</checksum>
     </file>
     <file>
       <filename>USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw</filename>
@@ -1526,7 +1526,7 @@
       <filename>office_chicago_pvav.osm</filename>
       <filetype>osm</filetype>
       <usage_type>test</usage_type>
-      <checksum>12FFD871</checksum>
+      <checksum>780296DE</checksum>
     </file>
   </files>
 </measure>

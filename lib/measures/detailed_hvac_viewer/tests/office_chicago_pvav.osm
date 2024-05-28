@@ -8223,7 +8223,7 @@ OS:Fan:VariableVolume,
   -0.0729,                                !- Fan Power Coefficient 3
   0.9437,                                 !- Fan Power Coefficient 4
   0,                                      !- Fan Power Coefficient 5
-  {9b779745-768d-496a-9918-0fc8fddf8d5e}, !- Air Inlet Node Name
+  {cd983207-1cb7-4985-8fad-1f93d344df4b}, !- Air Inlet Node Name
   {bd02b376-43bb-4d26-9375-c87bce281993}, !- Air Outlet Node Name
   ;                                       !- End-Use Subcategory
 
@@ -8233,100 +8233,6 @@ OS:Connection,
   17,                                     !- Outlet Port
   {e46fcf05-1eed-4bed-8e03-3f54e08c574f}, !- Target Object
   2;                                      !- Inlet Port
-
-OS:Coil:Heating:Gas,
-  {4166fe48-d3a0-4aac-825d-2d64a044ab3d}, !- Handle
-  5 Zone PVAV 1 Main Gas Htg Coil,        !- Name
-  {466e2079-d979-4ed3-884a-64ded6384e3b}, !- Availability Schedule Name
-  0.8,                                    !- Gas Burner Efficiency
-  AutoSize,                               !- Nominal Capacity {W}
-  {70299a6d-cd61-40fe-82c4-fb3a42a90b79}, !- Air Inlet Node Name
-  {83f20047-0437-49f5-9f26-7a5f97169e48}, !- Air Outlet Node Name
-  ,                                       !- Temperature Setpoint Node Name
-  0,                                      !- On Cycle Parasitic Electric Load {W}
-  ,                                       !- Part Load Fraction Correlation Curve Name
-  0;                                      !- Off Cycle Parasitic Gas Load {W}
-
-OS:Node,
-  {34874873-6ec6-47fa-afc4-d3a7650d07c2}, !- Handle
-  5 Zone PVAV 1 Main Gas Htg Coil Outlet Air Node, !- Name
-  {83f20047-0437-49f5-9f26-7a5f97169e48}, !- Inlet Port
-  {9b779745-768d-496a-9918-0fc8fddf8d5e}; !- Outlet Port
-
-OS:Connection,
-  {83f20047-0437-49f5-9f26-7a5f97169e48}, !- Handle
-  {4166fe48-d3a0-4aac-825d-2d64a044ab3d}, !- Source Object
-  6,                                      !- Outlet Port
-  {34874873-6ec6-47fa-afc4-d3a7650d07c2}, !- Target Object
-  2;                                      !- Inlet Port
-
-OS:Connection,
-  {9b779745-768d-496a-9918-0fc8fddf8d5e}, !- Handle
-  {34874873-6ec6-47fa-afc4-d3a7650d07c2}, !- Source Object
-  3,                                      !- Outlet Port
-  {b4a8a144-6e96-4ed8-9f43-bd9fc062f8ec}, !- Target Object
-  16;                                     !- Inlet Port
-
-OS:Coil:Cooling:DX:TwoSpeed,
-  {3151f833-25b1-48cc-b4b5-3a9373e6fe31}, !- Handle
-  5 Zone PVAV 1 2spd DX Clg Coil 331kBtu/hr 9.8EER, !- Name
-  {466e2079-d979-4ed3-884a-64ded6384e3b}, !- Availability Schedule Name
-  Autosize,                               !- Rated High Speed Total Cooling Capacity {W}
-  Autosize,                               !- Rated High Speed Sensible Heat Ratio
-  3.39928881549157,                       !- Rated High Speed COP {W/W}
-  Autosize,                               !- Rated High Speed Air Flow Rate {m3/s}
-  773.3,                                  !- Rated High Speed Evaporator Fan Power Per Volume Flow Rate 2017 {W/(m3/s)}
-  934.4,                                  !- Rated High Speed Evaporator Fan Power Per Volume Flow Rate 2023 {W/(m3/s)}
-  773.3,                                  !- Unit Internal Static Air Pressure {Pa}
-  {1ffa0a44-b37d-4d38-8ad1-cb0c8222b303}, !- Air Inlet Node Name
-  {610e29ce-0252-4ecd-a802-fb22608172d7}, !- Air Outlet Node Name
-  {2c3f61f4-baf5-4835-86bb-cf225b77915b}, !- Total Cooling Capacity Function of Temperature Curve Name
-  {d36e3f11-446b-441d-9f77-a10f0c110124}, !- Total Cooling Capacity Function of Flow Fraction Curve Name
-  {e11b124f-f4f9-4a9f-b50b-6ddbcfb077a4}, !- Energy Input Ratio Function of Temperature Curve Name
-  {1542076e-d5a5-4c5c-b6fe-f229a0d6af0b}, !- Energy Input Ratio Function of Flow Fraction Curve Name
-  {77f96b00-d280-4b2e-97fb-ed0da7ed16ac}, !- Part Load Fraction Correlation Curve Name
-  Autosize,                               !- Rated Low Speed Total Cooling Capacity {W}
-  0.69,                                   !- Rated Low Speed Sensible Heat Ratio
-  3.39928881549157,                       !- Rated Low Speed COP {W/W}
-  ,                                       !- Rated Low Speed Air Flow Rate {m3/s}
-  773.3,                                  !- Rated Low Speed Evaporator Fan Power Per Volume Flow Rate 2017 {W/(m3/s)}
-  934.4,                                  !- Rated Low Speed Evaporator Fan Power Per Volume Flow Rate 2023 {W/(m3/s)}
-  {2c3f61f4-baf5-4835-86bb-cf225b77915b}, !- Low Speed Total Cooling Capacity Function of Temperature Curve Name
-  {e11b124f-f4f9-4a9f-b50b-6ddbcfb077a4}, !- Low Speed Energy Input Ratio Function of Temperature Curve Name
-  ,                                       !- Condenser Air Inlet Node Name
-  AirCooled,                              !- Condenser Type
-  -25,                                    !- Minimum Outdoor Dry-Bulb Temperature for Compressor Operation {C}
-  0,                                      !- High Speed Evaporative Condenser Effectiveness {dimensionless}
-  Autosize,                               !- High Speed Evaporative Condenser Air Flow Rate {m3/s}
-  Autosize,                               !- High Speed Evaporative Condenser Pump Rated Power Consumption {W}
-  0,                                      !- Low Speed Evaporative Condenser Effectiveness {dimensionless}
-  Autosize,                               !- Low Speed Evaporative Condenser Air Flow Rate {m3/s}
-  Autosize,                               !- Low Speed Evaporative Condenser Pump Rated Power Consumption {W}
-  ,                                       !- Supply Water Storage Tank Name
-  ,                                       !- Condensate Collection Water Storage Tank Name
-  10,                                     !- Basin Heater Capacity {W/K}
-  2,                                      !- Basin Heater Setpoint Temperature {C}
-  ;                                       !- Basin Heater Operating Schedule Name
-
-OS:Node,
-  {4dee5f7e-902f-4caf-90dd-c2f98e313d67}, !- Handle
-  5 Zone PVAV 1 2spd DX Clg Coil 331kBtu/hr 9.8EER Outlet Air Node, !- Name
-  {610e29ce-0252-4ecd-a802-fb22608172d7}, !- Inlet Port
-  {70299a6d-cd61-40fe-82c4-fb3a42a90b79}; !- Outlet Port
-
-OS:Connection,
-  {610e29ce-0252-4ecd-a802-fb22608172d7}, !- Handle
-  {3151f833-25b1-48cc-b4b5-3a9373e6fe31}, !- Source Object
-  8,                                      !- Outlet Port
-  {4dee5f7e-902f-4caf-90dd-c2f98e313d67}, !- Target Object
-  2;                                      !- Inlet Port
-
-OS:Connection,
-  {70299a6d-cd61-40fe-82c4-fb3a42a90b79}, !- Handle
-  {4dee5f7e-902f-4caf-90dd-c2f98e313d67}, !- Source Object
-  3,                                      !- Outlet Port
-  {4166fe48-d3a0-4aac-825d-2d64a044ab3d}, !- Target Object
-  5;                                      !- Inlet Port
 
 OS:Controller:OutdoorAir,
   {279485b6-aa09-4a1a-8e61-6b856ca0f047}, !- Handle
@@ -8406,7 +8312,7 @@ OS:Node,
   {6ce2ee7a-edf4-4478-98ab-f34ff6b5b644}, !- Handle
   5 Zone PVAV 1 Mixed Air Node,           !- Name
   {29e26b0d-c901-4f3e-86df-e976cf2d3088}, !- Inlet Port
-  {1ffa0a44-b37d-4d38-8ad1-cb0c8222b303}; !- Outlet Port
+  {e1e4da26-5ac3-4ec2-8ceb-e813c8f44251}; !- Outlet Port
 
 OS:Connection,
   {fd775f0e-ce5d-41f2-9791-c5e094e228e1}, !- Handle
@@ -8421,13 +8327,6 @@ OS:Connection,
   5,                                      !- Outlet Port
   {6ce2ee7a-edf4-4478-98ab-f34ff6b5b644}, !- Target Object
   2;                                      !- Inlet Port
-
-OS:Connection,
-  {1ffa0a44-b37d-4d38-8ad1-cb0c8222b303}, !- Handle
-  {6ce2ee7a-edf4-4478-98ab-f34ff6b5b644}, !- Source Object
-  3,                                      !- Outlet Port
-  {3151f833-25b1-48cc-b4b5-3a9373e6fe31}, !- Target Object
-  7;                                      !- Inlet Port
 
 OS:AvailabilityManager:NightCycle,
   {948aae86-e2cb-49e9-9cd8-5fd30f45dee7}, !- Handle
@@ -13288,19 +13187,166 @@ OS:Output:Table:SummaryReports,
 OS:Output:Diagnostics,
   {5cc13838-19a4-4dd4-9347-7d5b39f13af8}; !- Handle
 
-OS:WeatherFile,
-  {b67cc0e2-b520-480d-bc4d-3fa3c299dbf7}, !- Handle
-  Chicago Ohare Intl Ap,                  !- City
-  IL,                                     !- State Province Region
-  USA,                                    !- Country
-  TMY3,                                   !- Data Source
-  725300,                                 !- WMO Number
-  41.98,                                  !- Latitude {deg}
-  -87.92,                                 !- Longitude {deg}
-  -6,                                     !- Time Zone {hr}
-  201,                                    !- Elevation {m}
-  USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw, !- Url
-  C254B53F,                               !- Checksum
-  ,                                       !- Start Date Actual Year
-  Sunday;                                 !- Start Day of Week
+OS:Coil:Cooling:DX:SingleSpeed,
+  {899a768f-5f80-43eb-8e3d-7e7adb18cfc5}, !- Handle
+  5 Zone PVAV 1 Single Spd DX Clg Coil,   !- Name
+  {7c7989db-8728-48a8-b988-ef3bcbbf5113}, !- Availability Schedule Name
+  Autosize,                               !- Rated Total Cooling Capacity {W}
+  Autosize,                               !- Rated Sensible Heat Ratio
+  3,                                      !- Rated COP {W/W}
+  Autosize,                               !- Rated Air Flow Rate {m3/s}
+  773.29999999999995,                     !- Rated Evaporator Fan Power Per Volume Flow Rate 2017 {W/(m3/s)}
+  934.4,                                  !- Rated Evaporator Fan Power Per Volume Flow Rate 2023 {W/(m3/s)}
+  {e1e4da26-5ac3-4ec2-8ceb-e813c8f44251}, !- Air Inlet Node Name
+  {017a79dd-976d-4f4b-ab71-f41061f41905}, !- Air Outlet Node Name
+  {632234ed-4c5c-4d34-a1d3-197b900673e8}, !- Total Cooling Capacity Function of Temperature Curve Name
+  {a1341cde-3bdb-475b-8cb0-b16c19450047}, !- Total Cooling Capacity Function of Flow Fraction Curve Name
+  {e4e26bb1-17c3-4be2-bf66-f5bcaee16af0}, !- Energy Input Ratio Function of Temperature Curve Name
+  {f94ae50a-282f-4edf-bcd8-a39f22acd47b}, !- Energy Input Ratio Function of Flow Fraction Curve Name
+  {6e9411fb-b235-49b8-a423-72fb46bd9a36}, !- Part Load Fraction Correlation Curve Name
+  -25,                                    !- Minimum Outdoor Dry-Bulb Temperature for Compressor Operation {C}
+  0,                                      !- Nominal Time for Condensate Removal to Begin {s}
+  0,                                      !- Ratio of Initial Moisture Evaporation Rate and Steady State Latent Capacity {dimensionless}
+  0,                                      !- Maximum Cycling Rate {cycles/hr}
+  0,                                      !- Latent Capacity Time Constant {s}
+  ,                                       !- Condenser Air Inlet Node Name
+  AirCooled,                              !- Condenser Type
+  0,                                      !- Evaporative Condenser Effectiveness {dimensionless}
+  Autosize,                               !- Evaporative Condenser Air Flow Rate {m3/s}
+  Autosize,                               !- Evaporative Condenser Pump Rated Power Consumption {W}
+  0,                                      !- Crankcase Heater Capacity {W}
+  ,                                       !- Crankcase Heater Capacity Function of Temperature Curve Name
+  0,                                      !- Maximum Outdoor Dry-Bulb Temperature for Crankcase Heater Operation {C}
+  ,                                       !- Supply Water Storage Tank Name
+  ,                                       !- Condensate Collection Water Storage Tank Name
+  0,                                      !- Basin Heater Capacity {W/K}
+  10,                                     !- Basin Heater Setpoint Temperature {C}
+  ;                                       !- Basin Heater Operating Schedule Name
+
+! Always On Discrete
+OS:Schedule:Constant,
+  {7c7989db-8728-48a8-b988-ef3bcbbf5113}, !- Handle
+  Always On Discrete hvac_library,        !- Name
+  {77902c21-cba5-4f5d-b112-eac2800c41e8}, !- Schedule Type Limits Name
+  1;                                      !- Value
+
+OS:Curve:Biquadratic,
+  {632234ed-4c5c-4d34-a1d3-197b900673e8}, ! Handle
+  OS:Curve:Biquadratic 1,                 ! Name
+  0.42415000000000003,                    ! Coefficient1 Constant
+  0.044260000000000001,                   ! Coefficient2 x
+  -0.00042000000000000002,                ! Coefficient3 x**2
+  0.0033300000000000001,                  ! Coefficient4 y
+  -8.0000000000000007e-05,                ! Coefficient5 y**2
+  -0.00021000000000000001,                ! Coefficient6 x*y
+  17,                                     ! Minimum Value of x {BasedOnField A2}
+  22,                                     ! Maximum Value of x {BasedOnField A2}
+  13,                                     ! Minimum Value of y {BasedOnField A3}
+  46;                                     ! Maximum Value of y {BasedOnField A3}
+
+OS:Curve:Quadratic,
+  {a1341cde-3bdb-475b-8cb0-b16c19450047}, ! Handle
+  OS:Curve:Quadratic 1,                   ! Name
+  0.77136000000000005,                    ! Coefficient1 Constant
+  0.34053,                                ! Coefficient2 x
+  -0.11088000000000001,                   ! Coefficient3 x**2
+  0.75917999999999997,                    ! Minimum Value of x {BasedOnField A2}
+  1.1387700000000001;                     ! Maximum Value of x {BasedOnField A2}
+
+OS:Curve:Biquadratic,
+  {e4e26bb1-17c3-4be2-bf66-f5bcaee16af0}, ! Handle
+  OS:Curve:Biquadratic 2,                 ! Name
+  1.2364900000000001,                     ! Coefficient1 Constant
+  -0.024309999999999998,                  ! Coefficient2 x
+  0.00056999999999999998,                 ! Coefficient3 x**2
+  -0.01434,                               ! Coefficient4 y
+  0.00063000000000000003,                 ! Coefficient5 y**2
+  -0.00038000000000000002,                ! Coefficient6 x*y
+  17,                                     ! Minimum Value of x {BasedOnField A2}
+  22,                                     ! Maximum Value of x {BasedOnField A2}
+  13,                                     ! Minimum Value of y {BasedOnField A3}
+  46;                                     ! Maximum Value of y {BasedOnField A3}
+
+OS:Curve:Quadratic,
+  {f94ae50a-282f-4edf-bcd8-a39f22acd47b}, ! Handle
+  OS:Curve:Quadratic 2,                   ! Name
+  1.2055,                                 ! Coefficient1 Constant
+  -0.32952999999999999,                   ! Coefficient2 x
+  0.12307999999999999,                    ! Coefficient3 x**2
+  0.75917999999999997,                    ! Minimum Value of x {BasedOnField A2}
+  1.1387700000000001;                     ! Maximum Value of x {BasedOnField A2}
+
+OS:Curve:Quadratic,
+  {6e9411fb-b235-49b8-a423-72fb46bd9a36}, ! Handle
+  OS:Curve:Quadratic 3,                   ! Name
+  0.77100000000000002,                    ! Coefficient1 Constant
+  0.22900000000000001,                    ! Coefficient2 x
+  0,                                      ! Coefficient3 x**2
+  0,                                      ! Minimum Value of x {BasedOnField A2}
+  1;                                      ! Maximum Value of x {BasedOnField A2}
+
+! Always OnOff Discrete Schedule Type Limits
+OS:ScheduleTypeLimits,
+  {77902c21-cba5-4f5d-b112-eac2800c41e8}, !- Handle
+  OnOff hvac_library,                     !- Name
+  0,                                      !- Lower Limit Value
+  1,                                      !- Upper Limit Value
+  Discrete,                               !- Numeric Type
+  Availability;                           !- Unit Type
+
+OS:Node,
+  {63ec1c07-0b61-46c9-9141-2701b6d5a872}, !- Handle
+  Node 1,                                 !- Name
+  {017a79dd-976d-4f4b-ab71-f41061f41905}, !- Inlet Port
+  {1512c1dc-02d1-48be-8a7d-55912f49b5de}; !- Outlet Port
+
+OS:Connection,
+  {017a79dd-976d-4f4b-ab71-f41061f41905}, !- Handle
+  {899a768f-5f80-43eb-8e3d-7e7adb18cfc5}, !- Source Object
+  10,                                     !- Outlet Port
+  {63ec1c07-0b61-46c9-9141-2701b6d5a872}, !- Target Object
+  2;                                      !- Inlet Port
+
+OS:Coil:Heating:Electric,
+  {fa36403e-95b2-446f-a467-ae50718fc491}, ! Handle
+  5 Zone PVAV 1 Elec Htg Coil,            ! Name
+  {7c7989db-8728-48a8-b988-ef3bcbbf5113}, ! Availability Schedule Name
+  ,                                       ! Efficiency
+  ,                                       ! Nominal Capacity {W}
+  {1512c1dc-02d1-48be-8a7d-55912f49b5de}, ! Air Inlet Node Name
+  {5cb8284c-2a0d-45ac-9f00-1296473e6c7c}; ! Air Outlet Node Name
+
+OS:Node,
+  {55aa1712-389b-422a-9d88-94775f0f0b8c}, !- Handle
+  Node 2,                                 !- Name
+  {5cb8284c-2a0d-45ac-9f00-1296473e6c7c}, !- Inlet Port
+  {cd983207-1cb7-4985-8fad-1f93d344df4b}; !- Outlet Port
+
+OS:Connection,
+  {5cb8284c-2a0d-45ac-9f00-1296473e6c7c}, !- Handle
+  {fa36403e-95b2-446f-a467-ae50718fc491}, !- Source Object
+  6,                                      !- Outlet Port
+  {55aa1712-389b-422a-9d88-94775f0f0b8c}, !- Target Object
+  2;                                      !- Inlet Port
+
+OS:Connection,
+  {cd983207-1cb7-4985-8fad-1f93d344df4b}, !- Handle
+  {55aa1712-389b-422a-9d88-94775f0f0b8c}, !- Source Object
+  3,                                      !- Outlet Port
+  {b4a8a144-6e96-4ed8-9f43-bd9fc062f8ec}, !- Target Object
+  16;                                     !- Inlet Port
+
+OS:Connection,
+  {e1e4da26-5ac3-4ec2-8ceb-e813c8f44251}, !- Handle
+  {6ce2ee7a-edf4-4478-98ab-f34ff6b5b644}, !- Source Object
+  3,                                      !- Outlet Port
+  {899a768f-5f80-43eb-8e3d-7e7adb18cfc5}, !- Target Object
+  9;                                      !- Inlet Port
+
+OS:Connection,
+  {1512c1dc-02d1-48be-8a7d-55912f49b5de}, !- Handle
+  {63ec1c07-0b61-46c9-9141-2701b6d5a872}, !- Source Object
+  3,                                      !- Outlet Port
+  {fa36403e-95b2-446f-a467-ae50718fc491}, !- Target Object
+  5;                                      !- Inlet Port
 
