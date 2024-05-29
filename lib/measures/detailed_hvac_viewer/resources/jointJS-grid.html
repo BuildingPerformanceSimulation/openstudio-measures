@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>JointJS Grid Layout</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.4.0/backbone-min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@joint/core@4.0.1/dist/joint.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jointjs/3.4.0/joint.css" />
+    <style>
+        #paper {
+            width: 800px;
+            height: 600px;
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+<body>
+    <div id="paper"></div>
+
+<script>
+    // Create a JointJS graph
+    const graph = new joint.dia.Graph();
+
+    // Create a JointJS paper and attach it to the DOM
+    const paper = new joint.dia.Paper({
+        el: document.getElementById('paper'),
+        model: graph,
+        width: 1000,
+        height: 1200,
+        gridSize: 100,
+        drawGrid: true,
+        snapLinks: true,
+        embeddingMode: true,
+        interactive: function(cellView) {
+            if (cellView.model.isElement()) {
+                return { elementMove: false }; // Disable element movement
+            }
+            return true;
+        }
+    });
+
+    // Center the viewport to allow negative coordinates
+    const initialTranslate = {
+        x: -100,
+        y: 300
+    };
+    paper.translate(initialTranslate.x, initialTranslate.y);
+
+    // JSON data
+    const data = {
+        "components": [
+			{
+				"name": "5 Zone PVAV Supply Inlet Node",
+				"type": "node",
+				"row": -1,
+				"column": 1,
+				"before": null,
+                "next": [{"name": "5 Zone PVAV OA System", "port":"out"}],
+				"image": null
+			},
+            {
+				"name": "5 Zone PVAV Relief Air Node",
+				"type": "node",
+				"row": -3,
+				"column": 2,
+				"before": [{"name": "5 Zone PVAV OA System", "port":"in"}],
+                "next": null,
+				"image": null
+			},
+			{
+				"name": "5 Zone PVAV Outdoor Air Node",
+				"type": "node",
+				"row": -3,
+				"column": 3,
+				"before": null,
+                "next": [{"name": "5 Zone PVAV OA System", "port":"out"}],
+				"image": null
+			},
+			{
+				"name": "5 Zone PVAV OA System",
+				"type": "oa_system",
+				"row": -2,
+				"column": 2,
+				"before": [
+                    {"name": "5 Zone PVAV Supply Inlet Node", "port":"in"},
+                    {"name": "5 Zone PVAV Outdoor Air Node", "port": "outdoor"}
+                ],
+                "next": [
+                    {"name": "5 Zone PVAV Mixed Air Node", "port": "out"},
+                    {"name": "5 Zone PVAV Relief Air Node", "port": "relief"}
+                ],
+				"image": "images/OAMixer.png"
+			},
+			{
+				"name": "5 Zone PVAV Mixed Air Node",
+				"type": "node",
+				"row": -2,
+				"column": 4,
+				"before": [{"name": "5 Zone PVAV OA System", "port":"in"}],
+				"next": [{"name": "5 Zone PVAV 2spd DX Clg Coil 354kBtu/hr 9.8EER", "port": "out"}],
+				"image": null
+			},
+			{
+				"name": "5 Zone PVAV 2spd DX Clg Coil 354kBtu/hr 9.8EER",
+				"type": "equipment",
+				"row": -2,
+				"column": 5,
+				"before": [{"name": "5 Zone PVAV Mixed Air Node", "port": "in"}],
+				"next": [{"name": "5 Zone PVAV 2spd DX Clg Coil 354kBtu/hr 9.8EER Outlet Air Node", "port": "out"}],
+				"image": "images/dxcoolingcoil_2speed.png"
+			},
+			{
+				"name": "5 Zone PVAV 2spd DX Clg Coil 354kBtu/hr 9.8EER Outlet Air Node",
+				"type": "node",
+				"row": -2,
+				"column": 6,
+				"before": [{"name": "5 Zone PVAV 2spd DX Clg Coil 354kBtu/hr 9.8EER", "port": "in"}],
+				"next": [{"name": "5 Zone PVAV Main Gas Htg Coil", "port": "out"}],
+				"image": null
+			},
+			{
+				"name": "5 Zone PVAV Main Gas Htg Coil",
+				"type": "equipment",
+				"row": -2,
+				"column": 7,
+				"before": [{"name": "5 Zone PVAV 2spd DX Clg Coil 354kBtu/hr 9.8EER Outlet Air Node", "port": "in"}],
+				"next": [{"name": "5 Zone PVAV Main Gas Htg Coil Outlet Air Node", "port": "out"}],
+				"image": "images/furnace.png"
+			},
+			{
+				"name": "5 Zone PVAV Main Gas Htg Coil Outlet Air Node",
+				"type": "node",
+				"row": -2,
+				"column": 8,
+				"before": [{"name": "5 Zone PVAV Main Gas Htg Coil", "port": "in"}],
+				"next": [{"name": "5 Zone PVAV Fan", "port": "out"}],
+				"image": null
+			},
+			{
+				"name": "5 Zone PVAV Fan",
+				"type": "equipment",
+				"row": -2,
+				"column": 9,
+				"before": [{"name": "5 Zone PVAV Main Gas Htg Coil Outlet Air Node", "port": "in"}],
+				"next": [{"name": "5 Zone PVAV Supply Outlet Node", "port": "out"}],
+				"image": "images/fan_variable.png"
+			},
+			{
+				"name": "5 Zone PVAV Supply Outlet Node",
+				"type": "node",
+				"row": -1,
+				"column": 10,
+				"before": [{"name": "5 Zone PVAV Fan", "port": "in"}],
+				"next": [{"name": "5 Zone PVAV Demand Inlet Node", "port": "out"}],
+				"image": null
+			}
+		]
+    };
+
+    const connector= {
+        position: { name: 'relative' },
+        markup: [{ tagName: 'rect' }]
+    };
+
+    function createNode(name, row, column) {
+        let node = new joint.shapes.standard.Ellipse({
+            id: name,
+            size: {width: 25, height: 25},
+            position: {x: column * 100 + 37.5, y: row * 100 + 37.5},
+            attrs: {
+                body: {
+                    fill: 'white'
+                }
+            }
+        });
+        node.addTo(graph);
+        return node;
+    }
+
+    function createEquipment(name, row, column, image) {
+        let equipment = new joint.shapes.standard.Image({
+            id: name,
+            position: {x: column * 100, y: row * 100},
+            size: {width: 100, height: 100},
+            attrs: {image: {'xlink:href': image}}
+        });
+        equipment.addTo(graph);
+        return equipment;
+    }
+
+    function createOASystem(name, row, column, image) {
+        let oa_sys = new joint.shapes.standard.Image({
+            id: name,
+            position: {x: column * 100, y: row * 100},
+            size: {width: 200, height: 100},
+            attrs: {image: {'xlink:href': image}},
+            ports: {
+                groups: {
+                    "connector":connector
+                },
+                items: [
+                    {
+                        id: 'in',
+                        group: "connector",
+                        args: {x: '0%', y: '50%'}
+                    },
+                    {
+                        id: 'relief',
+                        group: "connector",
+                        args: {x: '25%', y: '0%'}
+                    },
+                    {
+                        id: 'outdoor',
+                        group: "connector",
+                        args: {x: '75%', y: '0%'}
+                    },
+                    {
+                        id: 'out',
+                        group: "connector",
+                        args: {x: '100%', y: '50%'}
+                    }
+                ]
+            }
+        });
+        oa_sys.addTo(graph);
+        return oa_sys;
+    }
+
+    // Create elements from json
+    const elements = {}
+    data.components.forEach(function(component) {
+        let element;
+        if (component.type === 'node') {
+            element = createNode(component.name, component.row, component.column)
+        } else if (component.type === 'equipment') {
+            element = createEquipment(component.name, component.row, component.column, component.image)
+        } else if (component.type === 'oa_system') {
+            element = createOASystem(component.name, component.row, component.column, component.image)
+        }
+
+        elements[component.name] = element;
+    });
+
+    // Link elements from json
+    data.components.forEach(function(component) {
+        if (component.next) {
+            component.next.forEach(function(nextComponent) {
+                const targetComponent = data.components.find(comp => comp.name === nextComponent.name);
+                if (targetComponent && targetComponent.before) {
+                    const targetPort = targetComponent.before.find(before => before && before.name === component.name);
+                    if (targetPort) {
+                        const link = new joint.shapes.standard.Link();
+                        link.source({id: elements[component.name], port: nextComponent.port});
+                        link.target({id: elements[nextComponent.name], port: targetPort.port});
+                        link.router('manhattan');
+                        link.addTo(graph);
+                        console.log(link)
+                    }
+                }
+            });
+        }
+    });
+
+    paper.on('element:pointerclick', function(elementView) {
+        const element = elementView.model;
+        alert('Clicked on ' + element.id);
+    });
+</script>
+
+</body>
+</html>
