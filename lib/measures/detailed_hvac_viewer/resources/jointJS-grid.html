@@ -25,18 +25,13 @@
     const paper = new joint.dia.Paper({
         el: document.getElementById('paper'),
         model: graph,
-        width: 1000,
-        height: 1200,
+        width: 1300,
+        height: 1400,
         gridSize: 100,
         drawGrid: true,
         snapLinks: true,
         embeddingMode: true,
-        interactive: function(cellView) {
-            if (cellView.model.isElement()) {
-                return { elementMove: false }; // Disable element movement
-            }
-            return true;
-        }
+
     });
 
     // Center the viewport to allow negative coordinates
@@ -54,8 +49,8 @@
 				"type": "node",
 				"row": -1,
 				"column": 1,
-				"before": null,
-                "next": [{"name": "5 Zone PVAV OA System", "port":"out"}],
+				"before": [{"name": "5 Zone PVAV Demand Outlet Node", "port":"in"}],
+                "after": [{"name": "5 Zone PVAV OA System", "port":"out"}],
 				"image": null
 			},
             {
@@ -64,7 +59,7 @@
 				"row": -3,
 				"column": 2,
 				"before": [{"name": "5 Zone PVAV OA System", "port":"in"}],
-                "next": null,
+                "after": null,
 				"image": null
 			},
 			{
@@ -73,7 +68,7 @@
 				"row": -3,
 				"column": 3,
 				"before": null,
-                "next": [{"name": "5 Zone PVAV OA System", "port":"out"}],
+                "after": [{"name": "5 Zone PVAV OA System", "port":"out"}],
 				"image": null
 			},
 			{
@@ -85,7 +80,7 @@
                     {"name": "5 Zone PVAV Supply Inlet Node", "port":"in"},
                     {"name": "5 Zone PVAV Outdoor Air Node", "port": "outdoor"}
                 ],
-                "next": [
+                "after": [
                     {"name": "5 Zone PVAV Mixed Air Node", "port": "out"},
                     {"name": "5 Zone PVAV Relief Air Node", "port": "relief"}
                 ],
@@ -97,7 +92,7 @@
 				"row": -2,
 				"column": 4,
 				"before": [{"name": "5 Zone PVAV OA System", "port":"in"}],
-				"next": [{"name": "5 Zone PVAV 2spd DX Clg Coil 354kBtu/hr 9.8EER", "port": "out"}],
+				"after": [{"name": "5 Zone PVAV 2spd DX Clg Coil 354kBtu/hr 9.8EER", "port": "out"}],
 				"image": null
 			},
 			{
@@ -106,7 +101,7 @@
 				"row": -2,
 				"column": 5,
 				"before": [{"name": "5 Zone PVAV Mixed Air Node", "port": "in"}],
-				"next": [{"name": "5 Zone PVAV 2spd DX Clg Coil 354kBtu/hr 9.8EER Outlet Air Node", "port": "out"}],
+				"after": [{"name": "5 Zone PVAV 2spd DX Clg Coil 354kBtu/hr 9.8EER Outlet Air Node", "port": "out"}],
 				"image": "images/dxcoolingcoil_2speed.png"
 			},
 			{
@@ -115,7 +110,7 @@
 				"row": -2,
 				"column": 6,
 				"before": [{"name": "5 Zone PVAV 2spd DX Clg Coil 354kBtu/hr 9.8EER", "port": "in"}],
-				"next": [{"name": "5 Zone PVAV Main Gas Htg Coil", "port": "out"}],
+				"after": [{"name": "5 Zone PVAV Main Gas Htg Coil", "port": "out"}],
 				"image": null
 			},
 			{
@@ -124,7 +119,7 @@
 				"row": -2,
 				"column": 7,
 				"before": [{"name": "5 Zone PVAV 2spd DX Clg Coil 354kBtu/hr 9.8EER Outlet Air Node", "port": "in"}],
-				"next": [{"name": "5 Zone PVAV Main Gas Htg Coil Outlet Air Node", "port": "out"}],
+				"after": [{"name": "5 Zone PVAV Main Gas Htg Coil Outlet Air Node", "port": "out"}],
 				"image": "images/furnace.png"
 			},
 			{
@@ -133,7 +128,7 @@
 				"row": -2,
 				"column": 8,
 				"before": [{"name": "5 Zone PVAV Main Gas Htg Coil", "port": "in"}],
-				"next": [{"name": "5 Zone PVAV Fan", "port": "out"}],
+				"after": [{"name": "5 Zone PVAV Fan", "port": "out"}],
 				"image": null
 			},
 			{
@@ -142,18 +137,363 @@
 				"row": -2,
 				"column": 9,
 				"before": [{"name": "5 Zone PVAV Main Gas Htg Coil Outlet Air Node", "port": "in"}],
-				"next": [{"name": "5 Zone PVAV Supply Outlet Node", "port": "out"}],
+				"after": [{"name": "5 Zone PVAV Supply Outlet Node", "port": "out"}],
 				"image": "images/fan_variable.png"
 			},
 			{
 				"name": "5 Zone PVAV Supply Outlet Node",
 				"type": "node",
 				"row": -1,
-				"column": 10,
+				"column": 13,
 				"before": [{"name": "5 Zone PVAV Fan", "port": "in"}],
-				"next": [{"name": "5 Zone PVAV Demand Inlet Node", "port": "out"}],
+				"after": [{"name": "5 Zone PVAV Demand Inlet Node", "port": "out"}],
 				"image": null
-			}
+			},
+			{
+				"name": "5 Zone PVAV Demand Inlet Node",
+				"type": "node",
+				"row": 1,
+				"column": 13,
+				"before": [{"name": "5 Zone PVAV Supply Outlet Node", "port": "in"}],
+				"after": [
+					{"name": "Perimeter_bot_ZN_1 ZN VAV Terminal Inlet Air Node", "port": "out"},
+					{"name": "Perimeter_bot_ZN_2 ZN VAV Terminal Inlet Air Node", "port": "out"},
+					{"name": "Perimeter_bot_ZN_3 ZN VAV Terminal Inlet Air Node", "port": "out"},
+					{"name": "Perimeter_bot_ZN_4 ZN VAV Terminal Inlet Air Node", "port": "out"},
+					{"name": "Core_bottom ZN VAV Terminal Inlet Air Node", "port": "out"}
+				],
+				"image": null
+			},
+			{
+				"name": "Perimeter_bot_ZN_1 ZN VAV Terminal Inlet Air Node",
+				"type": "node",
+				"row": 2,
+				"column": 10,
+				"before": [{"name": "5 Zone PVAV Demand Inlet Node", "port": "in"}],
+				"after": [{"name": "Perimeter_bot_ZN_1 ZN VAV Terminal", "port": "out"}],
+				"image": null
+			},
+			{
+				"name": "Perimeter_bot_ZN_1 ZN VAV Terminal",
+				"type": "equipment",
+				"row": 2,
+				"column": 9,
+				"before": [{"name": "Perimeter_bot_ZN_1 ZN VAV Terminal Inlet Air Node", "port": "in"}],
+				"after": [{"name": "Perimeter_bot_ZN_1 ZN VAV Terminal Outlet Air Node", "port": "out"}],
+				"image": "images/vav-reheat.png"
+			},
+			{
+				"name": "Perimeter_bot_ZN_1 ZN VAV Terminal Outlet Air Node",
+				"type": "node",
+				"row": 2,
+				"column": 8,
+				"before": [{"name": "Perimeter_bot_ZN_1 ZN VAV Terminal", "port": "in"}],
+				"after": [{"name": "Perimeter_bot_ZN_1 ZN", "port": "out"}],
+				"image": null
+			},
+			{
+				"name": "Perimeter_bot_ZN_1 ZN",
+				"type": "equipment",
+				"row": 2,
+				"column": 7,
+				"before": [{"name": "Perimeter_bot_ZN_1 ZN VAV Terminal Outlet Air Node", "port": "in"}],
+				"after": [{"name": "Perimeter_bot_ZN_1 ZN Return Air Node", "port": "out"}],
+				"image": "images/zone.png"
+			},
+			{
+				"name": "Perimeter_bot_ZN_1 ZN Return Air Node",
+				"type": "node",
+				"row": 2,
+				"column": 6,
+				"before": [{"name": "Perimeter_bot_ZN_1 ZN", "port": "in"}],
+				"after": [{"name": "Air Loop HVAC Return Plenum 1 1", "port": "out"}],
+				"image": null
+			},
+			{
+				"name": "Perimeter_bot_ZN_2 ZN VAV Terminal Inlet Air Node",
+				"type": "node",
+				"row": 4,
+				"column": 10,
+				"before": [{"name": "5 Zone PVAV Demand Inlet Node", "port": "in"}],
+				"after": [{"name": "Perimeter_bot_ZN_2 ZN VAV Terminal", "port": "out"}],
+				"image": null
+			},
+			{
+				"name": "Perimeter_bot_ZN_2 ZN VAV Terminal",
+				"type": "equipment",
+				"row": 4,
+				"column": 9,
+				"before": [{"name": "Perimeter_bot_ZN_2 ZN VAV Terminal Inlet Air Node", "port": "in"}],
+				"after": [{"name": "Perimeter_bot_ZN_2 ZN VAV Terminal Outlet Air Node", "port": "out"}],
+				"image": "images/vav-reheat.png"
+			},
+			{
+				"name": "Perimeter_bot_ZN_2 ZN VAV Terminal Outlet Air Node",
+				"type": "node",
+				"row": 4,
+				"column": 8,
+				"before": [{"name": "Perimeter_bot_ZN_2 ZN VAV Terminal", "port": "in"}],
+				"after": [{"name": "Perimeter_bot_ZN_2 ZN", "port": "out"}],
+				"image": null
+			},
+			{
+				"name": "Perimeter_bot_ZN_2 ZN",
+				"type": "equipment",
+				"row": 4,
+				"column": 7,
+				"before": [{"name": "Perimeter_bot_ZN_2 ZN VAV Terminal Outlet Air Node", "port": "in"}],
+				"after": [{"name": "Perimeter_bot_ZN_2 ZN Return Air Node", "port": "out"}],
+				"image": "images/zone.png"
+			},
+			{
+				"name": "Perimeter_bot_ZN_2 ZN Return Air Node",
+				"type": "node",
+				"row": 4,
+				"column": 6,
+				"before": [{"name": "Perimeter_bot_ZN_2 ZN", "port": "in"}],
+				"after": [{"name": "Air Loop HVAC Return Plenum 1 2", "port": "out"}],
+				"image": null
+			},
+			{
+				"name": "Perimeter_bot_ZN_3 ZN VAV Terminal Inlet Air Node",
+				"type": "node",
+				"row": 6,
+				"column": 10,
+				"before": [{"name": "5 Zone PVAV Demand Inlet Node", "port": "in"}],
+				"after": [{"name": "Perimeter_bot_ZN_3 ZN VAV Terminal", "port": "out"}],
+				"image": null
+			},
+			{
+				"name": "Perimeter_bot_ZN_3 ZN VAV Terminal",
+				"type": "equipment",
+				"row": 6,
+				"column": 9,
+				"before": [{"name": "Perimeter_bot_ZN_3 ZN VAV Terminal Inlet Air Node", "port": "in"}],
+				"after": [{"name": "Perimeter_bot_ZN_3 ZN VAV Terminal Outlet Air Node", "port": "out"}],
+				"image": "images/vav-reheat.png"
+			},
+			{
+				"name": "Perimeter_bot_ZN_3 ZN VAV Terminal Outlet Air Node",
+				"type": "node",
+				"row": 6,
+				"column": 8,
+				"before": [{"name": "Perimeter_bot_ZN_3 ZN VAV Terminal", "port": "in"}],
+				"after": [{"name": "Perimeter_bot_ZN_3 ZN", "port": "out"}],
+				"image": null
+			},
+			{
+				"name": "Perimeter_bot_ZN_3 ZN",
+				"type": "equipment",
+				"row": 6,
+				"column": 7,
+				"before": [{"name": "Perimeter_bot_ZN_3 ZN VAV Terminal Outlet Air Node", "port": "in"}],
+				"after": [{"name": "Perimeter_bot_ZN_3 ZN Return Air Node", "port": "out"}],
+				"image": "images/zone.png"
+			},
+			{
+				"name": "Perimeter_bot_ZN_3 ZN Return Air Node",
+				"type": "node",
+				"row": 6,
+				"column": 6,
+				"before": [{"name": "Perimeter_bot_ZN_3 ZN", "port": "in"}],
+				"after": [{"name": "Air Loop HVAC Return Plenum 1 3", "port": "out"}],
+				"image": null
+			},
+			{
+				"name": "Perimeter_bot_ZN_4 ZN VAV Terminal Inlet Air Node",
+				"type": "node",
+				"row": 8,
+				"column": 10,
+				"before": [{"name": "5 Zone PVAV Demand Inlet Node", "port": "in"}],
+				"after": [{"name": "Perimeter_bot_ZN_4 ZN VAV Terminal", "port": "out"}],
+				"image": null
+			},
+			{
+				"name": "Perimeter_bot_ZN_4 ZN VAV Terminal",
+				"type": "equipment",
+				"row": 8,
+				"column": 9,
+				"before": [{"name": "Perimeter_bot_ZN_4 ZN VAV Terminal Inlet Air Node", "port": "in"}],
+				"after": [{"name": "Perimeter_bot_ZN_4 ZN VAV Terminal Outlet Air Node", "port": "out"}],
+				"image": "images/vav-reheat.png"
+			},
+			{
+				"name": "Perimeter_bot_ZN_4 ZN VAV Terminal Outlet Air Node",
+				"type": "node",
+				"row": 8,
+				"column": 8,
+				"before": [{"name": "Perimeter_bot_ZN_4 ZN VAV Terminal", "port": "in"}],
+				"after": [{"name": "Perimeter_bot_ZN_4 ZN", "port": "out"}],
+				"image": null
+			},
+			{
+				"name": "Perimeter_bot_ZN_4 ZN",
+				"type": "equipment",
+				"row": 8,
+				"column": 7,
+				"before": [{"name": "Perimeter_bot_ZN_4 ZN VAV Terminal Outlet Air Node", "port": "in"}],
+				"after": [{"name": "Perimeter_bot_ZN_4 ZN Return Air Node", "port": "out"}],
+				"image": "images/zone.png"
+			},
+			{
+				"name": "Perimeter_bot_ZN_4 ZN Return Air Node",
+				"type": "node",
+				"row": 8,
+				"column": 6,
+				"before": [{"name": "Perimeter_bot_ZN_4 ZN", "port": "in"}],
+				"after": [{"name": "Air Loop HVAC Return Plenum 1 4", "port": "out"}],
+				"image": null
+			},
+			{
+				"name": "Core_bottom ZN VAV Terminal Inlet Air Node",
+				"type": "node",
+				"row": 10,
+				"column": 10,
+				"before": [{"name": "5 Zone PVAV Demand Inlet Node", "port": "in"}],
+				"after": [{"name": "Core_bottom ZN VAV Terminal", "port": "out"}],
+				"image": null
+			},
+			{
+				"name": "Core_bottom ZN VAV Terminal",
+				"type": "equipment",
+				"row": 10,
+				"column": 9,
+				"before": [{"name": "Core_bottom ZN VAV Terminal Inlet Air Node", "port": "in"}],
+				"after": [{"name": "Core_bottom ZN VAV Terminal Outlet Air Node", "port": "out"}],
+				"image": "images/vav-reheat.png"
+			},
+			{
+				"name": "Core_bottom ZN VAV Terminal Outlet Air Node",
+				"type": "node",
+				"row": 10,
+				"column": 8,
+				"before": [{"name": "Core_bottom ZN VAV Terminal", "port": "in"}],
+				"after": [{"name": "Core_bottom ZN", "port": "out"}],
+				"image": null
+			},
+			{
+				"name": "Core_bottom ZN",
+				"type": "equipment",
+				"row": 10,
+				"column": 7,
+				"before": [{"name": "Core_bottom ZN VAV Terminal Outlet Air Node", "port": "in"}],
+				"after": [{"name": "Core_bottom ZN Return Air Node", "port": "out"}],
+				"image": "images/zone.png"
+			},
+			{
+				"name": "Core_bottom ZN Return Air Node",
+				"type": "node",
+				"row": 10,
+				"column": 6,
+				"before": [{"name": "Core_bottom ZN", "port": "in"}],
+				"after": [{"name": "Air Loop HVAC Return Plenum 1 5", "port": "out"}],
+				"image": null
+			},
+			{
+				"name": "Air Loop HVAC Return Plenum 1 1",
+				"type": "node",
+				"row": 2,
+				"column": 5,
+				"before": [{"name": "Perimeter_bot_ZN_1 ZN Return Air Node", "port": "in"}],
+				"after": [{"name": "Node 32 1", "port": "out"}],
+				"image": null
+			},
+            {
+				"name": "Air Loop HVAC Return Plenum 1 2",
+				"type": "node",
+				"row": 4,
+				"column": 5,
+				"before": [{"name": "Perimeter_bot_ZN_2 ZN Return Air Node", "port": "in"}],
+				"after": [{"name": "Node 32 2", "port": "out"}],
+				"image": null
+			},
+            {
+				"name": "Air Loop HVAC Return Plenum 1 3",
+				"type": "node",
+				"row": 6,
+				"column": 5,
+				"before": [{"name": "Perimeter_bot_ZN_3 ZN Return Air Node", "port": "in"}],
+				"after": [{"name": "Node 32 3", "port": "out"}],
+				"image": null
+			},
+            {
+				"name": "Air Loop HVAC Return Plenum 1 4",
+				"type": "node",
+				"row": 8,
+				"column": 5,
+				"before": [{"name": "Perimeter_bot_ZN_4 ZN Return Air Node", "port": "in"}],
+				"after": [{"name": "Node 32 4", "port": "out"}],
+				"image": null
+			},
+            {
+				"name": "Air Loop HVAC Return Plenum 1 5",
+				"type": "node",
+				"row": 10,
+				"column": 5,
+				"before": [{"name": "Core_bottom ZN Return Air Node", "port": "in"}],
+				"after": [{"name": "Node 32 5", "port": "out"}],
+				"image": null
+			},
+			{
+				"name": "Node 32 1",
+				"type": "node",
+				"row": 2,
+				"column": 4,
+				"before": [{"name": "Air Loop HVAC Return Plenum 1 1", "port": "in"}],
+				"after": [{"name": "5 Zone PVAV Demand Outlet Node", "port": "out"}],
+				"image": null
+			},
+            {
+				"name": "Node 32 2",
+				"type": "node",
+				"row": 4,
+				"column": 4,
+				"before": [{"name": "Air Loop HVAC Return Plenum 1 2", "port": "in"}],
+				"after": [{"name": "5 Zone PVAV Demand Outlet Node", "port": "out"}],
+				"image": null
+			},
+            {
+				"name": "Node 32 3",
+				"type": "node",
+				"row": 6,
+				"column": 4,
+				"before": [{"name": "Air Loop HVAC Return Plenum 1 3", "port": "in"}],
+				"after": [{"name": "5 Zone PVAV Demand Outlet Node", "port": "out"}],
+				"image": null
+			},
+            {
+				"name": "Node 32 4",
+				"type": "node",
+				"row": 8,
+				"column": 4,
+				"before": [{"name": "Air Loop HVAC Return Plenum 1 4", "port": "in"}],
+				"after": [{"name": "5 Zone PVAV Demand Outlet Node", "port": "out"}],
+				"image": null
+			},
+            {
+				"name": "Node 32 5",
+				"type": "node",
+				"row": 10,
+				"column": 4,
+				"before": [{"name": "Air Loop HVAC Return Plenum 1 5", "port": "in"}],
+				"after": [{"name": "5 Zone PVAV Demand Outlet Node", "port": "out"}],
+				"image": null
+			},
+			{
+				"name": "5 Zone PVAV Demand Outlet Node",
+				"type": "node",
+				"row": 1,
+				"column": 1,
+				"before": [
+                    {"name": "Node 32 1", "port": "in"},
+                    {"name": "Node 32 2", "port": "in"},
+                    {"name": "Node 32 3", "port": "in"},
+                    {"name": "Node 32 4", "port": "in"},
+                    {"name": "Node 32 5", "port": "in"},
+                ],
+				"after": [{"name": "5 Zone PVAV Supply Inlet Node", "port": "out"}],
+				"image": null
+			},
 		]
     };
 
@@ -243,18 +583,17 @@
 
     // Link elements from json
     data.components.forEach(function(component) {
-        if (component.next) {
-            component.next.forEach(function(nextComponent) {
-                const targetComponent = data.components.find(comp => comp.name === nextComponent.name);
+        if (component.after) {
+            component.after.forEach(function(afterComponent) {
+                const targetComponent = data.components.find(comp => comp.name === afterComponent.name);
                 if (targetComponent && targetComponent.before) {
                     const targetPort = targetComponent.before.find(before => before && before.name === component.name);
                     if (targetPort) {
                         const link = new joint.shapes.standard.Link();
-                        link.source({id: elements[component.name], port: nextComponent.port});
-                        link.target({id: elements[nextComponent.name], port: targetPort.port});
+                        link.source({id: elements[component.name], port: afterComponent.port});
+                        link.target({id: elements[afterComponent.name], port: targetPort.port});
                         link.router('manhattan');
                         link.addTo(graph);
-                        console.log(link)
                     }
                 }
             });
