@@ -76,11 +76,10 @@
     <div id="plot"></div>
 
     <script>
-
       var hvac_data = <%= hvac_data %>;
 
       // create image dictionary
-      var imageDict = {}
+      var imageDict = {};
       // Default icon to avoid a crash
       imageDict["Catchall"] = "missing_icon.png";
       imageDict["OS_AirConditioner_VariableRefrigerantFlow"] =
@@ -778,14 +777,17 @@
 
         const defs = bindD3Element(svg, "defs", "defs");
 
-        const plot_g = bindD3Element(svg, "g", "plot-g")
-          .attr("transform", `translate(${margin.left},${margin.top})`)
-          .attr("clip-path", `url(#${clipid})`);
-
-        const axis_g = bindD3Element(svg, "g", "axis-g").attr(
+        const plot_g = bindD3Element(svg, "g", "plot-g").attr(
           "transform",
           `translate(${margin.left},${margin.top})`
         );
+
+        const plot_lines_g = bindD3Element(plot_g, "g", "lines-g").attr(
+          "clip-path",
+          `url(#${clipid})`
+        );
+
+        const plot_axis_g = bindD3Element(plot_g, "g", "axis-g");
 
         const context_plot_g = bindD3Element(svg, "g", "context-plot-g").attr(
           "transform",
@@ -793,17 +795,31 @@
             margin.top + plotHeight + contextPadding
           })`
         );
-        const context_axis_g = bindD3Element(svg, "g", "context-axis-g").attr(
-          "transform",
-          `translate(${margin.left},${
-            margin.top + plotHeight + contextPadding
-          })`
+
+        const context_plot_lines_g = bindD3Element(
+          context_plot_g,
+          "g",
+          "context-lines-g"
+        ).attr("pointer-events", "none");
+
+        const context_plot_axis_g = bindD3Element(
+          context_plot_g,
+          "g",
+          "context-axis-g"
         );
 
-        const hover_g = bindD3Element(svg, "g", "hover-g")
-          .attr("transform", `translate(${margin.left},${margin.top})`)
+        const x_line = bindD3Element(plot_g, "line", "x-line")
+          .attr("class", "x-line")
+          .attr("stroke", "black")
+          .attr("stroke-dasharray", "4, 4")
+          .attr("y1", 0)
+          .attr("y2", plotHeight)
           .style("opacity", 0);
 
+        const hover_g = bindD3Element(plot_g, "g", "hover-g").style(
+          "opacity",
+          0
+        );
         const hover_rect = bindD3Element(hover_g, "rect", "hover-rect")
           .attr("width", plotWidth)
           .attr("height", plotHeight);
@@ -814,31 +830,38 @@
           .style("padding", "15px")
           .style("position", "absolute");
 
-        const x_axis_g = bindD3Element(axis_g, "g", "x-axis-g").attr(
+        const x_axis_g = bindD3Element(plot_axis_g, "g", "x-axis-g").attr(
           "transform",
           `translate(${0},${plotHeight})`
         );
-        const y_axis_g = bindD3Element(axis_g, "g", "y-axis-g");
+        const y_axis_g = bindD3Element(plot_axis_g, "g", "y-axis-g");
 
         const context_x_axis_g = bindD3Element(
-          context_axis_g,
+          context_plot_axis_g,
           "g",
           "context-x-axis-g"
         ).attr("transform", `translate(${0},${contextHeight})`);
 
         const context_y_axis_g = bindD3Element(
-          context_axis_g,
+          context_plot_axis_g,
           "g",
           "context-y-axis-g"
         );
 
-        const x_line = bindD3Element(plot_g, "line", "x-line")
-          .attr("class", "x-line")
-          .attr("stroke", "black")
-          .attr("stroke-dasharray", "4, 4")
-          .attr("y1", 0)
-          .attr("y2", plotHeight)
-          .style("opacity", 0);
+
+        const context_brush_g = bindD3Element(context_plot_g, "g", "brush");
+
+        const clip_path = bindD3Element(defs, "clipPath", "clip-path").attr(
+          "id",
+          clipid
+        );
+
+        const clip_rect = bindD3Element(clip_path, "rect", "clip-rect")
+          .join("rect")
+          .attr("width", plotWidth)
+          .attr("height", plotHeight)
+          .attr("x", 0)
+          .attr("y", 0);
 
         /* CALL AXIS FUNCTIONS */
         x_axis_g.call(
@@ -859,7 +882,7 @@
         /* LINE FUNCTIONS */
 
         const createLine = function () {
-          plot_g
+          plot_lines_g
             .selectAll(".series-line")
             .data(data_array)
             .join("path")
@@ -876,7 +899,7 @@
         };
 
         const createContextLine = function () {
-          context_plot_g
+          context_plot_lines_g
             .selectAll(".series-line")
             .data(data_array)
             .join("path")
@@ -888,7 +911,6 @@
                 .y((d) => contextYScale(d))(d.NodeValues);
             })
             .style("stroke-width", "2px")
-
             .style("fill", "none")
             .style("stroke", (d, i) => d.color);
         };
@@ -949,12 +971,12 @@
           tooltip_div
             .style(
               "left",
-              10 + event.pageX / window.innerWidth + event.pageX + "px"
+              20 + event.pageX / window.innerWidth + event.pageX + "px"
             )
-            .style("top", 10 + event.pageY + "px")
+            .style("top", 20 + event.pageY + "px")
             .style("transition", "left 100ms, top 100ms")
             .style("z-index", 999)
-            .style("opacity", 0.85).html(`
+            .style("opacity", 0.9).html(`
                         <div>
                             <div style="
                             padding: 5px;
@@ -1002,18 +1024,6 @@
         hover_rect.on("mousemove", mouseMove);
 
         /* HANDLE ZOOM & BRUSH */
-
-        const clip_path = bindD3Element(defs, "clipPath", "clip-path").attr(
-          "id",
-          clipid
-        );
-
-        const clip_rect = bindD3Element(clip_path, "rect", "clip-rect")
-          .join("rect")
-          .attr("width", plotWidth)
-          .attr("height", plotHeight)
-          .attr("x", 0)
-          .attr("y", 0);
 
         const brush = d3
           .brushX()
@@ -1066,12 +1076,8 @@
             .call(brush.move, xScale.range().map(t.invertX, t));
         }
 
-        context_plot_g
-          .selectAll(".brush")
-          .data([0])
-          .join("g")
-          .attr("class", "brush")
-          .call(brush);
+        context_brush_g.call(brush);
+
         x_axis_g.call(d3.axisBottom(xScale));
 
         hover_g.call(zoomFunc);
