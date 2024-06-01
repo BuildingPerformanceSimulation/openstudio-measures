@@ -303,6 +303,28 @@
 
       const activeNodes = {};
 
+      function cleanObjectReferences(arr) {
+          // Extract all valid object names
+          const validObjectNames = new Set(arr.map(obj => obj.object_name));
+
+          // Function to clean an array of object references
+          function cleanArray(references) {
+              return references.filter(ref => validObjectNames.has(ref));
+          }
+
+          // Iterate through each object in the array
+          arr.forEach(obj => {
+              if (Array.isArray(obj.before_objects)) {
+                  obj.before_objects = cleanArray(obj.before_objects);
+              }
+              if (Array.isArray(obj.after_objects)) {
+                  obj.after_objects = cleanArray(obj.after_objects);
+              }
+          });
+
+          return arr
+      }
+
       function splitOutdoorAirSystemObjects(objects) {
         const newObjects = [];
         var oa_object_name = "";
@@ -516,6 +538,10 @@
         );
         // console.log('supplyComponents');
         // console.log(supplyComponents);
+
+        // clean object references for no; figure out how to link to nodes that are on other loops
+        supplyComponents = cleanObjectReferences(supplyComponents);
+
         // console.log('split object names');
         supplyComponents = splitOutdoorAirSystemObjects(supplyComponents);
         // console.log(supplyComponents);
