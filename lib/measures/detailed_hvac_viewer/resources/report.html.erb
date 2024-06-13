@@ -249,14 +249,33 @@
           return arr
       }
 
+      // search for image directories until one of them works
       function assignImage(obj) {
-        let img_src = "../../measures/detailed_hvac_viewer/resources/images/"
-        if (obj.object_type in imageDict) {
-          return img_src + imageDict[obj.object_type];
-        } else {
-          return img_src + "missing_icon.png";
+        const img = document.createElement("img");
+        const image_sources = [
+                "../../measures/detailed_hvac_viewer/resources/images/",
+                "../../../resources/images/"
+              ];
+        let index = 0
+
+        function tryNextSource() {
+          if (index < image_sources.length) {
+            img.src = image_sources[index] + (obj.object_type in imageDict ? imageDict[obj.object_type] : "missing_icon.png");
+            index++;
+          } else {
+            console.log("Image not found in directory");
+          }
         }
+
+        img.onerror = function () {
+          tryNextSource();
+        };
+
+        tryNextSource();
+
+        return img.src;
       }
+
 
       function populateLoopDropdown() {
         const dropdown = document.getElementById("airLoopDropdown");
