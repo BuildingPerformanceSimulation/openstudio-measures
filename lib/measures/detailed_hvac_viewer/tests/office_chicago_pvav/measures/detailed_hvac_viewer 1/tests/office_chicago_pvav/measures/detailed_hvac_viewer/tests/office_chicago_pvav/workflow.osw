@@ -1,0 +1,7 @@
+{
+   "created_at" : "20240612T183717Z",
+   "seed_file" : "../office_chicago_pvav.osm",
+   "steps" : [],
+   "updated_at" : "20240612T183724Z",
+   "weather_file" : "USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw"
+}

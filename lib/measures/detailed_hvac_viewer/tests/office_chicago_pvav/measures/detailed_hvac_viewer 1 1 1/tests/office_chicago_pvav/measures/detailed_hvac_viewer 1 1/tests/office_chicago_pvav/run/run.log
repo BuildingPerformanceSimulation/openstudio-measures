@@ -1,0 +1,225 @@
+[14:03:23.927014 DEBUG] [openstudio.workflow.OSWorkflow] Removing existing run directory: /private/var/folders/bb/ngmb9l4d165fp8n163x9x8t40000gn/T/osmodel-e86a-d220-926e-75f9-1718301777-0/resources/run
+[14:03:23.927174 DEBUG] [openstudio.workflow.OSWorkflow] Registering that the workflow has started with the adapter
+[14:03:23.927432 DEBUG] [openstudio.workflow.OSWorkflow] Initialization - selected = true
+[14:03:23.927626 DEBUG] [openstudio.workflow.OSWorkflow] The root_dir for the datapoint is /private/var/folders/bb/ngmb9l4d165fp8n163x9x8t40000gn/T/osmodel-e86a-d220-926e-75f9-1718301777-0/resources
+[14:03:23.927642 DEBUG] [openstudio.workflow.OSWorkflow] Removing existing generated files directory: /private/var/folders/bb/ngmb9l4d165fp8n163x9x8t40000gn/T/osmodel-e86a-d220-926e-75f9-1718301777-0/resources/generated_files
+[14:03:23.927686 DEBUG] [openstudio.workflow.OSWorkflow] Creating generated files directory: /private/var/folders/bb/ngmb9l4d165fp8n163x9x8t40000gn/T/osmodel-e86a-d220-926e-75f9-1718301777-0/resources/generated_files
+[14:03:23.927745 DEBUG] [openstudio.workflow.OSWorkflow] Removing existing reports directory: /private/var/folders/bb/ngmb9l4d165fp8n163x9x8t40000gn/T/osmodel-e86a-d220-926e-75f9-1718301777-0/resources/reports
+[14:03:23.927888 DEBUG] [openstudio.workflow.OSWorkflow] Finding and loading the seed file
+[14:03:23.928197 INFO] [openstudio.worklow.Util] Loading OSM model
+[14:03:23.928209 INFO] [openstudio.worklow.Util] Reading in OSM model /private/var/folders/bb/ngmb9l4d165fp8n163x9x8t40000gn/T/osmodel-e86a-d220-926e-75f9-1718301777-0/office_chicago_pvav.osm
+[14:03:23.934104 DEBUG] [openstudio.osversion.VersionTranslator] Starting translation from Version 3.7.0.
+[14:03:23.972417 DEBUG] [openstudio.osversion.VersionTranslator] Initial model has 1283 objects.
+[14:03:23.972493 DEBUG] [openstudio.osversion.VersionTranslator] Final model has 1283 objects in IDF form.
+[14:03:23.982891 DEBUG] [utilities.idf.Workspace] Workspace::isValid called.
+[14:03:24.031518 DEBUG] [openstudio.osversion.VersionTranslator] Final model has 1283 objects in Model form.
+[14:03:24.033095 DEBUG] [openstudio.workflow.OSWorkflow] Initialize the weather file from osw
+[14:03:24.033113 DEBUG] [openstudio.workflow.OSWorkflow] Search for weather file defined by osw USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw
+[14:03:24.039893 DEBUG] [openstudio.EpwFile] No Daylightings Saving start Date
+[14:03:24.041584 WARN] [openstudio.EpwFile] Successive data points (1986-Jan-31 to 1977-Feb-01, ending on line 753) are greater than 1 day apart in EPW file '/private/var/folders/bb/ngmb9l4d165fp8n163x9x8t40000gn/T/osmodel-e86a-d220-926e-75f9-1718301777-0/resources/files/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw'. Data will be treated as typical (TMY)
+[14:03:24.059035 INFO] [openstudio.XMLValidator] Treating schema as a regular XSD
+[14:03:24.060997 DEBUG] [openstudio.workflow.OSWorkflow] OpenStudioMeasures - selected = true
+[14:03:24.061015 INFO] [openstudio.workflow.OSWorkflow] Beginning to execute OpenStudio Measures
+[14:03:24.061236 DEBUG] [openstudio.workflow.OSWorkflow] Finding measures of type ModelMeasure
+[14:03:24.061255 INFO] [openstudio.workflow.OSWorkflow] Finished applying OpenStudio Measures.
+[14:03:24.112640 DEBUG] [openstudio.workflow.OSWorkflow] Translator - selected = true
+[14:03:24.114427 INFO] [openstudio.workflow.OSWorkflow] Beginning the translation to IDF
+[14:03:24.192518 WARN] [openstudio.energyplus.ForwardTranslator] OS_ProgramControl is not currently translated
+[14:03:24.197455 INFO] [openstudio.model.EnergyManagementSystemSensor]  does not have an Output Variable attached.
+[14:03:24.197497 INFO] [openstudio.model.EnergyManagementSystemSensor]  does not have an Output Meter attached.
+[14:03:24.197530 INFO] [openstudio.model.EnergyManagementSystemSensor]  does not have an Output Variable attached.
+[14:03:24.197549 INFO] [openstudio.model.EnergyManagementSystemSensor]  does not have an Output Meter attached.
+[14:03:24.213607 WARN] [utilities.idf.WorkspaceObject] Object of type 'Schedule:Constant' and named 'Always Off Discrete', points to an object named OnOff 1 from field 1, but that object cannot be located.
+[14:03:24.213685 WARN] [utilities.idf.WorkspaceObject] Object of type 'Schedule:Constant' and named 'Always On Continuous', points to an object named Fractional 1 from field 1, but that object cannot be located.
+[14:03:24.218053 INFO] [openstudio.workflow.OSWorkflow] Successfully translated to IDF
+[14:03:24.218095 DEBUG] [openstudio.workflow.OSWorkflow] EnergyPlusMeasures - selected = true
+[14:03:24.218109 INFO] [openstudio.workflow.OSWorkflow] Beginning to execute EnergyPlus Measures.
+[14:03:24.218120 DEBUG] [openstudio.workflow.OSWorkflow] Finding measures of type EnergyPlusMeasure
+[14:03:24.218131 INFO] [openstudio.workflow.OSWorkflow] Finished applying EnergyPlus Measures.
+[14:03:24.218342 DEBUG] [openstudio.workflow.OSWorkflow] PreProcess - selected = true
+[14:03:24.249572 INFO] [openstudio.workflow.OSWorkflow] Beginning to collect output requests from Reporting measures.
+[14:03:24.249595 DEBUG] [openstudio.workflow.OSWorkflow] Finding measures of type ReportingMeasure
+[14:03:24.249606 DEBUG] [openstudio.workflow.OSWorkflow] Running step 0
+[14:03:24.249722 DEBUG] [openstudio.workflow.OSWorkflow] Find model's weather file and update LastEpwFilePath
+[14:03:24.249735 DEBUG] [openstudio.workflow.OSWorkflow] Search for weather file /private/var/folders/bb/ngmb9l4d165fp8n163x9x8t40000gn/T/osmodel-e86a-d220-926e-75f9-1718301777-0/resources/files/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw
+[14:03:24.249833 DEBUG] [openstudio.workflow.OSWorkflow] Creating run directory for measure in '/private/var/folders/bb/ngmb9l4d165fp8n163x9x8t40000gn/T/osmodel-e86a-d220-926e-75f9-1718301777-0/resources/run/000_detailed_hvac_viewer 1'
+[14:03:24.250862 INFO] [openstudio.XMLValidator] Treating schema as a regular XSD
+[14:03:24.252824 DEBUG] [openstudio.workflow.OSWorkflow] Found detailed_hvac_viewer 1 at primaryScriptPath: '/private/var/folders/bb/ngmb9l4d165fp8n163x9x8t40000gn/T/osmodel-e86a-d220-926e-75f9-1718301777-0/resources/measures/detailed_hvac_viewer 1/measure.rb'
+[14:03:24.252847 DEBUG] [openstudio.workflow.OSWorkflow] Class Name: DetailedHVACViewer
+[14:03:24.252858 DEBUG] [openstudio.workflow.OSWorkflow] Measure Script Path: /private/var/folders/bb/ngmb9l4d165fp8n163x9x8t40000gn/T/osmodel-e86a-d220-926e-75f9-1718301777-0/resources/measures/detailed_hvac_viewer 1/measure.rb
+[14:03:24.252869 DEBUG] [openstudio.workflow.OSWorkflow] Measure Type: ReportingMeasure
+[14:03:24.252878 DEBUG] [openstudio.workflow.OSWorkflow] Measure Language: Ruby
+[14:03:24.253332 DEBUG] [ApplicationPathHelpers] getOpenStudioModule, info.dli_fname = '/Applications/OpenStudioApplication-1.7.1/lib/libopenstudiolib.dylib'
+[14:03:24.253371 DEBUG] [PathHelpers] completeAndNormalize: result = /Applications/OpenStudioApplication-1.7.1/lib/libopenstudiolib.dylib
+[14:03:24.253388 DEBUG] [ApplicationPathHelpers] getOpenStudioModule, found '/Applications/OpenStudioApplication-1.7.1/lib/libopenstudiolib.dylib'
+[14:03:24.753212 DEBUG] [openstudio.workflow.OSWorkflow] measure->name()= 'Detailed HVAC Viewer'
+[14:03:24.753255 DEBUG] [openstudio.workflow.OSWorkflow] Current step has 0 arguments
+[14:03:24.755793 DEBUG] [openstudio.workflow.OSWorkflow] argumentMap={"System Node Current Density": "false", "System Node Current Density Volume Flow Rate": "false", "System Node Dewpoint Temperature": "false", "System Node Enthalpy": "false", "System Node Height": "false", "System Node Humidity Ratio": "false", "System Node Mass Flow Rate": "true", "System Node Pressure": "false", "System Node Quality": "false", "System Node Relative Humidity": "false", "System Node Setpoint High Temperature": "false", "System Node Setpoint Humidity Ratio": "false", "System Node Setpoint Low Temperature": "false", "System Node Setpoint Maximum Humidity Ratio": "false", "System Node Setpoint Minimum Humidity Ratio": "false", "System Node Setpoint Temperature": "false", "System Node Standard Density Volume Flow Rate": "false", "System Node Temperature": "true", "System Node Wetbulb Temperature": "false", "include_demand_nodes": "false", "reporting_frequency": "Hourly"}
+[14:03:24.755842 DEBUG] [openstudio.workflow.OSWorkflow] Calling measure.energyPlusOutputRequests for 'detailed_hvac_viewer 1'
+[14:03:24.759095 INFO] [openstudio.measure.OSRunner] The model started out with 0 output variables
+[14:03:24.764681 INFO] [openstudio.measure.OSRunner] <b style='color: #00529B;background-color:#BDE5F8;'>We found 34 corresponding Nodes.</b>
+[14:03:24.764713 INFO] [openstudio.measure.OSRunner] <b>==> 34 nodes x 2 variables = <span style='color:#862d2d'>68 variables to create.</span></b>
+[14:03:24.767473 DEBUG] [openstudio.workflow.OSWorkflow] Finished measure.energyPlusOutputRequests for 'detailed_hvac_viewer 1', 68 output requests added
+[14:03:24.767556 INFO] [openstudio.workflow.OSWorkflow] Finished collecting output requests from Reporting measures.
+[14:03:24.767566 INFO] [openstudio.workflow.OSWorkflow] Running EnergyPlus Preprocess
+[14:03:24.769336 INFO] [openstudio.workflow.OSWorkflow] Finished preprocess job for EnergyPlus simulation
+[14:03:24.802271 DEBUG] [openstudio.workflow.OSWorkflow] Saved final IDF as /private/var/folders/bb/ngmb9l4d165fp8n163x9x8t40000gn/T/osmodel-e86a-d220-926e-75f9-1718301777-0/resources/run/in.idf
+[14:03:24.802299 DEBUG] [openstudio.workflow.OSWorkflow] EnergyPlus - selected = true
+[14:03:24.802394 DEBUG] [openstudio.OSWorkflow.prepareEnergyPlusDir] Original Directory: /
+[14:03:24.802407 DEBUG] [openstudio.OSWorkflow.prepareEnergyPlusDir] Changing To run directory: /private/var/folders/bb/ngmb9l4d165fp8n163x9x8t40000gn/T/osmodel-e86a-d220-926e-75f9-1718301777-0/resources/run
+[14:03:24.802601 DEBUG] [ApplicationPathHelpers] getOpenStudioModule, info.dli_fname = '/Applications/OpenStudioApplication-1.7.1/lib/libopenstudiolib.dylib'
+[14:03:24.802622 DEBUG] [PathHelpers] completeAndNormalize: result = /Applications/OpenStudioApplication-1.7.1/lib/libopenstudiolib.dylib
+[14:03:24.802634 DEBUG] [ApplicationPathHelpers] getOpenStudioModule, found '/Applications/OpenStudioApplication-1.7.1/lib/libopenstudiolib.dylib'
+[14:03:24.802644 DEBUG] [ApplicationPathHelpers] Searching for EnergyPlus in '/Applications/OpenStudioApplication-1.7.1/EnergyPlus/energyplus-23.2.0'
+[14:03:24.802662 DEBUG] [PathHelpers] completeAndNormalize: result = /Applications/OpenStudioApplication-1.7.1/EnergyPlus/energyplus-23.2.0
+[14:03:24.802670 DEBUG] [ApplicationPathHelpers] Found EnergyPlus at '/Applications/OpenStudioApplication-1.7.1/EnergyPlus/energyplus-23.2.0'
+[14:03:24.802683 DEBUG] [PathHelpers] completeAndNormalize: result = /Applications/OpenStudioApplication-1.7.1/EnergyPlus/energyplus-23.2.0
+[14:03:24.843728 INFO] [openstudio.OSWorkflow.prepareEnergyPlusDir] EnergyPlus executable path is /Applications/OpenStudioApplication-1.7.1/EnergyPlus/energyplus
+[14:03:24.843784 INFO] [openstudio.OSWorkflow.prepareEnergyPlusDir] ExpandObjects executable path is /Applications/OpenStudioApplication-1.7.1/EnergyPlus/ExpandObjects
+[14:03:24.843798 INFO] [openstudio.workflow.OSWorkflow] Starting simulation in run directory: /private/var/folders/bb/ngmb9l4d165fp8n163x9x8t40000gn/T/osmodel-e86a-d220-926e-75f9-1718301777-0/resources/run
+[14:03:24.875787 INFO] [openstudio.workflow.OSWorkflow] Running command '/Applications/OpenStudioApplication-1.7.1/EnergyPlus/ExpandObjects'
+[14:03:24.934916 INFO] [openstudio.workflow.OSWorkflow] Running command '"/Applications/OpenStudioApplication-1.7.1/EnergyPlus/energyplus" in.idf'
+[14:03:38.109240 INFO] [openstudio.workflow.OSWorkflow] EnergyPlus returned '0'
+[14:03:38.110373 INFO] [openstudio.workflow.OSWorkflow] EnergyPlus finished with 162793 warnings and 0 severe errors
+[14:03:38.110397 INFO] [openstudio.OSWorkflow.prepareEnergyPlusDir] Removing any copied EnergyPlus files
+[14:03:38.111249 DEBUG] [openstudio.OSWorkflow.prepareEnergyPlusDir] Changing Current Directory back to: /
+[14:03:38.111335 DEBUG] [openstudio.workflow.OSWorkflow] ReportingMeasures - selected = true
+[14:03:38.111582 INFO] [openstudio.workflow.OSWorkflow] Beginning to execute Reporting Measures.
+[14:03:38.111594 DEBUG] [openstudio.workflow.OSWorkflow] Finding measures of type ReportingMeasure
+[14:03:38.111622 DEBUG] [openstudio.workflow.OSWorkflow] Running step 0
+[14:03:38.111698 DEBUG] [openstudio.workflow.OSWorkflow] Find model's weather file and update LastEpwFilePath
+[14:03:38.111714 DEBUG] [openstudio.workflow.OSWorkflow] Search for weather file /private/var/folders/bb/ngmb9l4d165fp8n163x9x8t40000gn/T/osmodel-e86a-d220-926e-75f9-1718301777-0/resources/files/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw
+[14:03:38.111792 DEBUG] [openstudio.workflow.OSWorkflow] Creating run directory for measure in '/private/var/folders/bb/ngmb9l4d165fp8n163x9x8t40000gn/T/osmodel-e86a-d220-926e-75f9-1718301777-0/resources/run/000_detailed_hvac_viewer 1'
+[14:03:38.112655 INFO] [openstudio.XMLValidator] Treating schema as a regular XSD
+[14:03:38.114674 DEBUG] [openstudio.workflow.OSWorkflow] Found detailed_hvac_viewer 1 at primaryScriptPath: '/private/var/folders/bb/ngmb9l4d165fp8n163x9x8t40000gn/T/osmodel-e86a-d220-926e-75f9-1718301777-0/resources/measures/detailed_hvac_viewer 1/measure.rb'
+[14:03:38.114687 DEBUG] [openstudio.workflow.OSWorkflow] Class Name: DetailedHVACViewer
+[14:03:38.114698 DEBUG] [openstudio.workflow.OSWorkflow] Measure Script Path: /private/var/folders/bb/ngmb9l4d165fp8n163x9x8t40000gn/T/osmodel-e86a-d220-926e-75f9-1718301777-0/resources/measures/detailed_hvac_viewer 1/measure.rb
+[14:03:38.114707 DEBUG] [openstudio.workflow.OSWorkflow] Measure Type: ReportingMeasure
+[14:03:38.114716 DEBUG] [openstudio.workflow.OSWorkflow] Measure Language: Ruby
+[14:03:38.118899 DEBUG] [openstudio.workflow.OSWorkflow] measure->name()= 'Detailed HVAC Viewer'
+[14:03:38.118937 DEBUG] [openstudio.workflow.OSWorkflow] Current step has 0 arguments
+[14:03:38.121727 DEBUG] [openstudio.workflow.OSWorkflow] argumentMap={"System Node Current Density": "false", "System Node Current Density Volume Flow Rate": "false", "System Node Dewpoint Temperature": "false", "System Node Enthalpy": "false", "System Node Height": "false", "System Node Humidity Ratio": "false", "System Node Mass Flow Rate": "true", "System Node Pressure": "false", "System Node Quality": "false", "System Node Relative Humidity": "false", "System Node Setpoint High Temperature": "false", "System Node Setpoint Humidity Ratio": "false", "System Node Setpoint Low Temperature": "false", "System Node Setpoint Maximum Humidity Ratio": "false", "System Node Setpoint Minimum Humidity Ratio": "false", "System Node Setpoint Temperature": "false", "System Node Standard Density Volume Flow Rate": "false", "System Node Temperature": "true", "System Node Wetbulb Temperature": "false", "include_demand_nodes": "false", "reporting_frequency": "Hourly"}
+[14:03:38.168778 DEBUG] [openstudio.energyplus.SqlFile] Dictionary Built
+[14:03:38.554396 DEBUG] [openstudio.energyplus.SqlFile] Making time series for envPeriod = 'RUN PERIOD 1', reportingFrequency = 'Hourly', timeSeriesName = 'System Node Temperature', keyValue = 'VAV Hot Water Loop Supply Inlet Node'
+[14:03:38.554431 DEBUG] [openstudio.energyplus.SqlFile] Tuple: RUN PERIOD 1, Hourly, System Node Temperature, VAV Hot Water Loop Supply Inlet Node not found in data dictionary.
+[14:03:38.554443 DEBUG] [openstudio.energyplus.SqlFile] Trying query: RUN PERIOD 1, Hourly, System Node Temperature, VAV HOT WATER LOOP SUPPLY INLET NODE
+[14:03:38.554453 DEBUG] [openstudio.energyplus.SqlFile] Making time series for envPeriod = 'RUN PERIOD 1', reportingFrequency = 'Hourly', timeSeriesName = 'System Node Temperature', keyValue = 'VAV HOT WATER LOOP SUPPLY INLET NODE'
+[14:03:38.554464 DEBUG] [openstudio.energyplus.SqlFile] RUN PERIOD 1
+[14:03:38.554473 DEBUG] [openstudio.energyplus.SqlFile] System Node Temperature
+[14:03:38.554599 DEBUG] [openstudio.energyplus.SqlFile] SQL Query:
+SELECT dt.VariableValue, Time.Year, Time.Month, Time.Day, Time.Interval FROM ReportVariableData dt INNER JOIN Time ON Time.timeIndex = dt.TimeIndex WHERE  dt.ReportVariableDataDictionaryIndex=3080 AND Time.EnvironmentPeriodIndex = 3Return Code:
+100
+[14:03:38.562415 DEBUG] [openstudio.energyplus.SqlFile] Time series found
+[14:03:38.562511 DEBUG] [openstudio.energyplus.SqlFile] Time series found
+[14:03:38.564192 DEBUG] [openstudio.energyplus.SqlFile] Making time series for envPeriod = 'RUN PERIOD 1', reportingFrequency = 'Hourly', timeSeriesName = 'System Node Mass Flow Rate', keyValue = 'VAV Hot Water Loop Supply Inlet Node'
+[14:03:38.564215 DEBUG] [openstudio.energyplus.SqlFile] Tuple: RUN PERIOD 1, Hourly, System Node Mass Flow Rate, VAV Hot Water Loop Supply Inlet Node not found in data dictionary.
+[14:03:38.564226 DEBUG] [openstudio.energyplus.SqlFile] Trying query: RUN PERIOD 1, Hourly, System Node Mass Flow Rate, VAV HOT WATER LOOP SUPPLY INLET NODE
+[14:03:38.564236 DEBUG] [openstudio.energyplus.SqlFile] Making time series for envPeriod = 'RUN PERIOD 1', reportingFrequency = 'Hourly', timeSeriesName = 'System Node Mass Flow Rate', keyValue = 'VAV HOT WATER LOOP SUPPLY INLET NODE'
+[14:03:38.564246 DEBUG] [openstudio.energyplus.SqlFile] RUN PERIOD 1
+[14:03:38.564256 DEBUG] [openstudio.energyplus.SqlFile] System Node Mass Flow Rate
+[14:03:38.564404 DEBUG] [openstudio.energyplus.SqlFile] SQL Query:
+SELECT dt.VariableValue, Time.Year, Time.Month, Time.Day, Time.Interval FROM ReportVariableData dt INNER JOIN Time ON Time.timeIndex = dt.TimeIndex WHERE  dt.ReportVariableDataDictionaryIndex=3081 AND Time.EnvironmentPeriodIndex = 3Return Code:
+100
+[14:03:38.571564 DEBUG] [openstudio.energyplus.SqlFile] Time series found
+[14:03:38.571593 DEBUG] [openstudio.energyplus.SqlFile] Time series found
+[14:03:38.573316 DEBUG] [openstudio.energyplus.SqlFile] Making time series for envPeriod = 'RUN PERIOD 1', reportingFrequency = 'Hourly', timeSeriesName = 'System Node Temperature', keyValue = 'VAV Hot Water Loop Var Spd Pump Oulet Node'
+[14:03:38.573337 DEBUG] [openstudio.energyplus.SqlFile] Tuple: RUN PERIOD 1, Hourly, System Node Temperature, VAV Hot Water Loop Var Spd Pump Oulet Node not found in data dictionary.
+[14:03:38.573347 DEBUG] [openstudio.energyplus.SqlFile] Trying query: RUN PERIOD 1, Hourly, System Node Temperature, VAV HOT WATER LOOP VAR SPD PUMP OULET NODE
+[14:03:38.573357 DEBUG] [openstudio.energyplus.SqlFile] Making time series for envPeriod = 'RUN PERIOD 1', reportingFrequency = 'Hourly', timeSeriesName = 'System Node Temperature', keyValue = 'VAV HOT WATER LOOP VAR SPD PUMP OULET NODE'
+[14:03:38.573367 DEBUG] [openstudio.energyplus.SqlFile] RUN PERIOD 1
+[14:03:38.573376 DEBUG] [openstudio.energyplus.SqlFile] System Node Temperature
+[14:03:38.573476 DEBUG] [openstudio.energyplus.SqlFile] SQL Query:
+SELECT dt.VariableValue, Time.Year, Time.Month, Time.Day, Time.Interval FROM ReportVariableData dt INNER JOIN Time ON Time.timeIndex = dt.TimeIndex WHERE  dt.ReportVariableDataDictionaryIndex=3082 AND Time.EnvironmentPeriodIndex = 3Return Code:
+100
+[14:03:38.580573 DEBUG] [openstudio.energyplus.SqlFile] Time series found
+[14:03:38.580610 DEBUG] [openstudio.energyplus.SqlFile] Time series found
+[14:03:38.581396 DEBUG] [openstudio.energyplus.SqlFile] Making time series for envPeriod = 'RUN PERIOD 1', reportingFrequency = 'Hourly', timeSeriesName = 'System Node Mass Flow Rate', keyValue = 'VAV Hot Water Loop Var Spd Pump Oulet Node'
+[14:03:38.581417 DEBUG] [openstudio.energyplus.SqlFile] Tuple: RUN PERIOD 1, Hourly, System Node Mass Flow Rate, VAV Hot Water Loop Var Spd Pump Oulet Node not found in data dictionary.
+[14:03:38.581432 DEBUG] [openstudio.energyplus.SqlFile] Trying query: RUN PERIOD 1, Hourly, System Node Mass Flow Rate, VAV HOT WATER LOOP VAR SPD PUMP OULET NODE
+[14:03:38.581441 DEBUG] [openstudio.energyplus.SqlFile] Making time series for envPeriod = 'RUN PERIOD 1', reportingFrequency = 'Hourly', timeSeriesName = 'System Node Mass Flow Rate', keyValue = 'VAV HOT WATER LOOP VAR SPD PUMP OULET NODE'
+[14:03:38.581451 DEBUG] [openstudio.energyplus.SqlFile] RUN PERIOD 1
+[14:03:38.581460 DEBUG] [openstudio.energyplus.SqlFile] System Node Mass Flow Rate
+[14:03:38.581593 DEBUG] [openstudio.energyplus.SqlFile] SQL Query:
+SELECT dt.VariableValue, Time.Year, Time.Month, Time.Day, Time.Interval FROM ReportVariableData dt INNER JOIN Time ON Time.timeIndex = dt.TimeIndex WHERE  dt.ReportVariableDataDictionaryIndex=3083 AND Time.EnvironmentPeriodIndex = 3Return Code:
+100
+[14:03:38.588729 DEBUG] [openstudio.energyplus.SqlFile] Time series found
+[14:03:38.588759 DEBUG] [openstudio.energyplus.SqlFile] Time series found
+[14:03:38.591786 DEBUG] [openstudio.energyplus.SqlFile] Making time series for envPeriod = 'RUN PERIOD 1', reportingFrequency = 'Hourly', timeSeriesName = 'System Node Temperature', keyValue = 'VAV Hot Water Loop HW Boiler Inlet Node'
+[14:03:38.591801 DEBUG] [openstudio.energyplus.SqlFile] Tuple: RUN PERIOD 1, Hourly, System Node Temperature, VAV Hot Water Loop HW Boiler Inlet Node not found in data dictionary.
+[14:03:38.591812 DEBUG] [openstudio.energyplus.SqlFile] Trying query: RUN PERIOD 1, Hourly, System Node Temperature, VAV HOT WATER LOOP HW BOILER INLET NODE
+[14:03:38.591821 DEBUG] [openstudio.energyplus.SqlFile] Making time series for envPeriod = 'RUN PERIOD 1', reportingFrequency = 'Hourly', timeSeriesName = 'System Node Temperature', keyValue = 'VAV HOT WATER LOOP HW BOILER INLET NODE'
+[14:03:38.591839 DEBUG] [openstudio.energyplus.SqlFile] RUN PERIOD 1
+[14:03:38.591848 DEBUG] [openstudio.energyplus.SqlFile] System Node Temperature
+[14:03:38.591945 DEBUG] [openstudio.energyplus.SqlFile] SQL Query:
+SELECT dt.VariableValue, Time.Year, Time.Month, Time.Day, Time.Interval FROM ReportVariableData dt INNER JOIN Time ON Time.timeIndex = dt.TimeIndex WHERE  dt.ReportVariableDataDictionaryIndex=3084 AND Time.EnvironmentPeriodIndex = 3Return Code:
+100
+[14:03:38.599115 DEBUG] [openstudio.energyplus.SqlFile] Time series found
+[14:03:38.599143 DEBUG] [openstudio.energyplus.SqlFile] Time series found
+[14:03:38.599946 DEBUG] [openstudio.energyplus.SqlFile] Making time series for envPeriod = 'RUN PERIOD 1', reportingFrequency = 'Hourly', timeSeriesName = 'System Node Mass Flow Rate', keyValue = 'VAV Hot Water Loop HW Boiler Inlet Node'
+[14:03:38.599962 DEBUG] [openstudio.energyplus.SqlFile] Tuple: RUN PERIOD 1, Hourly, System Node Mass Flow Rate, VAV Hot Water Loop HW Boiler Inlet Node not found in data dictionary.
+[14:03:38.599972 DEBUG] [openstudio.energyplus.SqlFile] Trying query: RUN PERIOD 1, Hourly, System Node Mass Flow Rate, VAV HOT WATER LOOP HW BOILER INLET NODE
+[14:03:38.599982 DEBUG] [openstudio.energyplus.SqlFile] Making time series for envPeriod = 'RUN PERIOD 1', reportingFrequency = 'Hourly', timeSeriesName = 'System Node Mass Flow Rate', keyValue = 'VAV HOT WATER LOOP HW BOILER INLET NODE'
+[14:03:38.599992 DEBUG] [openstudio.energyplus.SqlFile] RUN PERIOD 1
+[14:03:38.600001 DEBUG] [openstudio.energyplus.SqlFile] System Node Mass Flow Rate
+[14:03:38.600123 DEBUG] [openstudio.energyplus.SqlFile] SQL Query:
+SELECT dt.VariableValue, Time.Year, Time.Month, Time.Day, Time.Interval FROM ReportVariableData dt INNER JOIN Time ON Time.timeIndex = dt.TimeIndex WHERE  dt.ReportVariableDataDictionaryIndex=3085 AND Time.EnvironmentPeriodIndex = 3Return Code:
+100
+[14:03:38.607208 DEBUG] [openstudio.energyplus.SqlFile] Time series found
+[14:03:38.607234 DEBUG] [openstudio.energyplus.SqlFile] Time series found
+[14:03:38.612836 DEBUG] [openstudio.energyplus.SqlFile] Making time series for envPeriod = 'RUN PERIOD 1', reportingFrequency = 'Hourly', timeSeriesName = 'System Node Temperature', keyValue = 'VAV Hot Water Loop HW Boiler Outlet Node'
+[14:03:38.612861 DEBUG] [openstudio.energyplus.SqlFile] Tuple: RUN PERIOD 1, Hourly, System Node Temperature, VAV Hot Water Loop HW Boiler Outlet Node not found in data dictionary.
+[14:03:38.612871 DEBUG] [openstudio.energyplus.SqlFile] Trying query: RUN PERIOD 1, Hourly, System Node Temperature, VAV HOT WATER LOOP HW BOILER OUTLET NODE
+[14:03:38.612881 DEBUG] [openstudio.energyplus.SqlFile] Making time series for envPeriod = 'RUN PERIOD 1', reportingFrequency = 'Hourly', timeSeriesName = 'System Node Temperature', keyValue = 'VAV HOT WATER LOOP HW BOILER OUTLET NODE'
+[14:03:38.612891 DEBUG] [openstudio.energyplus.SqlFile] RUN PERIOD 1
+[14:03:38.612900 DEBUG] [openstudio.energyplus.SqlFile] System Node Temperature
+[14:03:38.613019 DEBUG] [openstudio.energyplus.SqlFile] SQL Query:
+SELECT dt.VariableValue, Time.Year, Time.Month, Time.Day, Time.Interval FROM ReportVariableData dt INNER JOIN Time ON Time.timeIndex = dt.TimeIndex WHERE  dt.ReportVariableDataDictionaryIndex=3086 AND Time.EnvironmentPeriodIndex = 3Return Code:
+100
+[14:03:38.620260 DEBUG] [openstudio.energyplus.SqlFile] Time series found
+[14:03:38.620285 DEBUG] [openstudio.energyplus.SqlFile] Time series found
+[14:03:38.621051 DEBUG] [openstudio.energyplus.SqlFile] Making time series for envPeriod = 'RUN PERIOD 1', reportingFrequency = 'Hourly', timeSeriesName = 'System Node Mass Flow Rate', keyValue = 'VAV Hot Water Loop HW Boiler Outlet Node'
+[14:03:38.621067 DEBUG] [openstudio.energyplus.SqlFile] Tuple: RUN PERIOD 1, Hourly, System Node Mass Flow Rate, VAV Hot Water Loop HW Boiler Outlet Node not found in data dictionary.
+[14:03:38.621077 DEBUG] [openstudio.energyplus.SqlFile] Trying query: RUN PERIOD 1, Hourly, System Node Mass Flow Rate, VAV HOT WATER LOOP HW BOILER OUTLET NODE
+[14:03:38.621086 DEBUG] [openstudio.energyplus.SqlFile] Making time series for envPeriod = 'RUN PERIOD 1', reportingFrequency = 'Hourly', timeSeriesName = 'System Node Mass Flow Rate', keyValue = 'VAV HOT WATER LOOP HW BOILER OUTLET NODE'
+[14:03:38.621096 DEBUG] [openstudio.energyplus.SqlFile] RUN PERIOD 1
+[14:03:38.621105 DEBUG] [openstudio.energyplus.SqlFile] System Node Mass Flow Rate
+[14:03:38.621219 DEBUG] [openstudio.energyplus.SqlFile] SQL Query:
+SELECT dt.VariableValue, Time.Year, Time.Month, Time.Day, Time.Interval FROM ReportVariableData dt INNER JOIN Time ON Time.timeIndex = dt.TimeIndex WHERE  dt.ReportVariableDataDictionaryIndex=3087 AND Time.EnvironmentPeriodIndex = 3Return Code:
+100
+[14:03:38.628280 DEBUG] [openstudio.energyplus.SqlFile] Time series found
+[14:03:38.628309 DEBUG] [openstudio.energyplus.SqlFile] Time series found
+[14:03:38.630213 DEBUG] [openstudio.energyplus.SqlFile] Making time series for envPeriod = 'RUN PERIOD 1', reportingFrequency = 'Hourly', timeSeriesName = 'System Node Temperature', keyValue = 'VAV Hot Water Loop Supply Outlet Node'
+[14:03:38.630229 DEBUG] [openstudio.energyplus.SqlFile] Tuple: RUN PERIOD 1, Hourly, System Node Temperature, VAV Hot Water Loop Supply Outlet Node not found in data dictionary.
+[14:03:38.630239 DEBUG] [openstudio.energyplus.SqlFile] Trying query: RUN PERIOD 1, Hourly, System Node Temperature, VAV HOT WATER LOOP SUPPLY OUTLET NODE
+[14:03:38.630248 DEBUG] [openstudio.energyplus.SqlFile] Making time series for envPeriod = 'RUN PERIOD 1', reportingFrequency = 'Hourly', timeSeriesName = 'System Node Temperature', keyValue = 'VAV HOT WATER LOOP SUPPLY OUTLET NODE'
+[14:03:38.630258 DEBUG] [openstudio.energyplus.SqlFile] RUN PERIOD 1
+[14:03:38.630267 DEBUG] [openstudio.energyplus.SqlFile] System Node Temperature
+[14:03:38.630353 DEBUG] [openstudio.energyplus.SqlFile] SQL Query:
+SELECT dt.VariableValue, Time.Year, Time.Month, Time.Day, Time.Interval FROM ReportVariableData dt INNER JOIN Time ON Time.timeIndex = dt.TimeIndex WHERE  dt.ReportVariableDataDictionaryIndex=3088 AND Time.EnvironmentPeriodIndex = 3Return Code:
+100
+[14:03:38.637444 DEBUG] [openstudio.energyplus.SqlFile] Time series found
+[14:03:38.637473 DEBUG] [openstudio.energyplus.SqlFile] Time series found
+[14:03:38.638232 DEBUG] [openstudio.energyplus.SqlFile] Making time series for envPeriod = 'RUN PERIOD 1', reportingFrequency = 'Hourly', timeSeriesName = 'System Node Mass Flow Rate', keyValue = 'VAV Hot Water Loop Supply Outlet Node'
+[14:03:38.638252 DEBUG] [openstudio.energyplus.SqlFile] Tuple: RUN PERIOD 1, Hourly, System Node Mass Flow Rate, VAV Hot Water Loop Supply Outlet Node not found in data dictionary.
+[14:03:38.638265 DEBUG] [openstudio.energyplus.SqlFile] Trying query: RUN PERIOD 1, Hourly, System Node Mass Flow Rate, VAV HOT WATER LOOP SUPPLY OUTLET NODE
+[14:03:38.638274 DEBUG] [openstudio.energyplus.SqlFile] Making time series for envPeriod = 'RUN PERIOD 1', reportingFrequency = 'Hourly', timeSeriesName = 'System Node Mass Flow Rate', keyValue = 'VAV HOT WATER LOOP SUPPLY OUTLET NODE'
+[14:03:38.638312 DEBUG] [openstudio.energyplus.SqlFile] RUN PERIOD 1
+[14:03:38.638322 DEBUG] [openstudio.energyplus.SqlFile] System Node Mass Flow Rate
+[14:03:38.638453 DEBUG] [openstudio.energyplus.SqlFile] SQL Query:
+SELECT dt.VariableValue, Time.Year, Time.Month, Time.Day, Time.Interval FROM ReportVariableData dt INNER JOIN Time ON Time.timeIndex = dt.TimeIndex WHERE  dt.ReportVariableDataDictionaryIndex=3089 AND Time.EnvironmentPeriodIndex = 3Return Code:
+100
+[14:03:38.645600 DEBUG] [openstudio.energyplus.SqlFile] Time series found
+[14:03:38.645628 DEBUG] [openstudio.energyplus.SqlFile] Time series found
+[14:03:38.709233 WARN] [OpenStudio] getSharedResourcesPath is deprecated.
+[14:03:38.714132 DEBUG] [openstudio.workflow.OSWorkflow] Step Result: Success
+[14:03:38.714200 INFO] [openstudio.workflow.OSWorkflow] Finished applying Reporting Measures.
+[14:03:38.715465 DEBUG] [openstudio.workflow.OSWorkflow] PostProcess - selected = true
+[14:03:38.715486 INFO] [openstudio.workflow.OSWorkflow] Gathering reports
+[14:03:38.715552 INFO] [openstudio.workflow.Util] Run directory: /private/var/folders/bb/ngmb9l4d165fp8n163x9x8t40000gn/T/osmodel-e86a-d220-926e-75f9-1718301777-0/resources/run
+[14:03:38.715603 INFO] [openstudio.workflow.Util] Reports directory/private/var/folders/bb/ngmb9l4d165fp8n163x9x8t40000gn/T/osmodel-e86a-d220-926e-75f9-1718301777-0/resources
+[14:03:38.715617 INFO] [openstudio.workflow.Util] Saving EnergyPlus HTML report to /private/var/folders/bb/ngmb9l4d165fp8n163x9x8t40000gn/T/osmodel-e86a-d220-926e-75f9-1718301777-0/resources/reports/eplustbl.html
+[14:03:38.717482 INFO] [openstudio.workflow.OSWorkflow] Finished gathering reports
+[14:03:38.717498 DEBUG] [openstudio.workflow.OSWorkflow] Cleanup - selected = true
+[14:03:38.717511 INFO] [openstudio.workflow.OSWorkflow] Beginning cleanup of the run directory
+[14:03:38.730280 INFO] [openstudio.workflow.OSWorkflow] Finished cleanup of the run directory
+[14:03:40.421208 INFO] [openstudio.XMLValidator] Treating schema as a regular XSD

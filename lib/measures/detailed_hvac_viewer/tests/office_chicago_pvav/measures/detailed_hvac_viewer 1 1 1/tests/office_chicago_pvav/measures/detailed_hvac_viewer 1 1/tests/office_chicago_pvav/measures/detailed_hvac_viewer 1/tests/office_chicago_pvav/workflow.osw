@@ -1,0 +1,16 @@
+{
+   "created_at" : "20240612T183717Z",
+   "seed_file" : "../office_chicago_pvav.osm",
+   "steps" : 
+   [
+      {
+         "arguments" : {},
+         "description" : "This measure creates a facsimile of the HVAC grid layout in the OpenStudio Application in an interactive html report. The user can optionally select loops to add Output:Variable to view node timeseries output data.",
+         "measure_dir_name" : "detailed_hvac_viewer",
+         "modeler_description" : "The user is asked to provided the following parameters:\n- A plantLoop or airLoop from the model (dropdown)\n- A boolean to include or exclude demand nodes\n- Which variable they want to output for each node:\n    * System Node Temperature\n    * System Node Setpoint Temperature\n    * System Node Mass Flow Rate\n    * etc.",
+         "name" : "Detailed HVAC Viewer"
+      }
+   ],
+   "updated_at" : "20240612T183757Z",
+   "weather_file" : "USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw"
+}
