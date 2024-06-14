@@ -502,13 +502,17 @@
             gridData.push(makeNode(currentComp, dimensions.demandDimensions.mainBranch, column));
             currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
             column--;
-          } else if (currentComp['object_type'] === "OS_AirLoopHVAC_ZoneSplitter" || "OS_Connector_Splitter") {
+          } else if (currentComp['object_type'] === "OS_AirLoopHVAC_ZoneSplitter" || currentComp['object_type'] === "OS_Connector_Splitter") {
             let mixer_type;
             if (currentComp['object_type'] === "OS_AirLoopHVAC_ZoneSplitter") {
               mixer_type = "OS_AirLoopHVAC_ZoneMixer";
             } else if (currentComp['object_type'] === "OS_Connector_Splitter") {
               mixer_type = "OS_Connector_Mixer";
+            } else {
+              throw new Error("Mixer not found");
             }
+            
+            console.log(mixer_type)
 
             gridData.push(makeConnector(currentComp, dimensions.demandDimensions.mainBranch, column));
             let finalBranchColumn = column;
