@@ -265,7 +265,7 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
         oa_node = comp.outboardOANode.get
         comp_data['before_objects'] << oa_node.name.get
         temp_comp = straight_component_data_hash(oa_node, reporting_frequency, variable_names)
-        temp_comp['component_side'] = 'supply'
+        temp_comp['component_side'] = 'outdoor'
         loop_data['components'] << temp_comp
       end
       if comp.returnAirModelObject.is_initialized
@@ -275,7 +275,7 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
         relief_node = comp.outboardReliefNode.get
         comp_data['after_objects'] << relief_node.name.get
         temp_comp = straight_component_data_hash(relief_node, reporting_frequency, variable_names)
-        temp_comp['component_side'] = 'supply'
+        temp_comp['component_side'] = 'relief'
         loop_data['components'] << temp_comp
       end
       if comp.mixedAirModelObject.is_initialized
