@@ -673,7 +673,8 @@
             delete activeNodes[element.id];
             element.attr('body/fill','white');
           } else {
-          let color = getRandomColor()
+            const gridIndex = gridData.findIndex(obj => obj.name === element.id);
+            const color = getColorById(gridIndex)
             activeNodes[element.id] = {"nodeName": element.id, NodeValues, color}
             element.attr('body/fill', color);
           }
@@ -1119,7 +1120,7 @@
       /* END D3 MULTILINE PLOT */
       function getColorById(id, colorScale = "schemeTableau10") {
         // should decide on how to approach series greater than 10. generating random values above 10.
-        if (id > d3[colorScale].length) {
+        if (id > d3[colorScale].length - 1) {
           return getRandomColor();
         }
         return d3[colorScale][id];
