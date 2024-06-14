@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>detailed_hvac_viewer</name>
   <uid>416a484f-bd28-4db8-8926-7d70740390eb</uid>
-  <version_id>ef6a557d-2253-4a02-b6ed-8d39e4f688f7</version_id>
-  <version_modified>2024-06-01T18:08:59Z</version_modified>
+  <version_id>9c4ffef1-fd2b-4192-a076-4f0daee02913</version_id>
+  <version_modified>2024-06-14T15:36:43Z</version_modified>
   <xml_checksum>C068F366</xml_checksum>
   <class_name>DetailedHVACViewer</class_name>
   <display_name>Detailed HVAC Viewer</display_name>
@@ -488,7 +488,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>94109FA2</checksum>
+      <checksum>747820BC</checksum>
     </file>
     <file>
       <filename>README.md</filename>
@@ -519,18 +519,6 @@
       <filetype>png</filetype>
       <usage_type>resource</usage_type>
       <checksum>FC079194</checksum>
-    </file>
-    <file>
-      <filename>images/OAMixer_left.png</filename>
-      <filetype>png</filetype>
-      <usage_type>resource</usage_type>
-      <checksum>44F75E3F</checksum>
-    </file>
-    <file>
-      <filename>images/OAMixer_right.png</filename>
-      <filetype>png</filetype>
-      <usage_type>resource</usage_type>
-      <checksum>00C310F5</checksum>
     </file>
     <file>
       <filename>images/air_cooled.png</filename>
@@ -767,12 +755,6 @@
       <checksum>F5697368</checksum>
     </file>
     <file>
-      <filename>images/cross.png</filename>
-      <filetype>png</filetype>
-      <usage_type>resource</usage_type>
-      <checksum>B930D72E</checksum>
-    </file>
-    <file>
       <filename>images/dehumidifier_dx.png</filename>
       <filetype>png</filetype>
       <usage_type>resource</usage_type>
@@ -801,18 +783,6 @@
       <filetype>png</filetype>
       <usage_type>resource</usage_type>
       <checksum>5496609A</checksum>
-    </file>
-    <file>
-      <filename>images/down_node.png</filename>
-      <filetype>png</filetype>
-      <usage_type>resource</usage_type>
-      <checksum>633E7DA5</checksum>
-    </file>
-    <file>
-      <filename>images/down_none.png</filename>
-      <filetype>png</filetype>
-      <usage_type>resource</usage_type>
-      <checksum>8ADD7988</checksum>
     </file>
     <file>
       <filename>images/duct.png</filename>
@@ -891,12 +861,6 @@
       <filetype>png</filetype>
       <usage_type>resource</usage_type>
       <checksum>4A4A537E</checksum>
-    </file>
-    <file>
-      <filename>images/fan_constant@2x.png</filename>
-      <filetype>png</filetype>
-      <usage_type>resource</usage_type>
-      <checksum>4554B117</checksum>
     </file>
     <file>
       <filename>images/fan_on_off.png</filename>
@@ -989,18 +953,6 @@
       <checksum>669CF425</checksum>
     </file>
     <file>
-      <filename>images/h_line.png</filename>
-      <filetype>png</filetype>
-      <usage_type>resource</usage_type>
-      <checksum>397E4641</checksum>
-    </file>
-    <file>
-      <filename>images/h_node.png</filename>
-      <filetype>png</filetype>
-      <usage_type>resource</usage_type>
-      <checksum>927F5B77</checksum>
-    </file>
-    <file>
       <filename>images/headered_pumps_constant.png</filename>
       <filetype>png</filetype>
       <usage_type>resource</usage_type>
@@ -1065,18 +1017,6 @@
       <filetype>png</filetype>
       <usage_type>resource</usage_type>
       <checksum>D80852F5</checksum>
-    </file>
-    <file>
-      <filename>images/left_down.png</filename>
-      <filetype>png</filetype>
-      <usage_type>resource</usage_type>
-      <checksum>5E0C19A6</checksum>
-    </file>
-    <file>
-      <filename>images/left_none.png</filename>
-      <filetype>png</filetype>
-      <usage_type>resource</usage_type>
-      <checksum>9862BD3F</checksum>
     </file>
     <file>
       <filename>images/lowtempradiant_constflow.png</filename>
@@ -1175,18 +1115,6 @@
       <checksum>97E7427D</checksum>
     </file>
     <file>
-      <filename>images/right_down.png</filename>
-      <filetype>png</filetype>
-      <usage_type>resource</usage_type>
-      <checksum>F7277456</checksum>
-    </file>
-    <file>
-      <filename>images/right_none.png</filename>
-      <filetype>png</filetype>
-      <usage_type>resource</usage_type>
-      <checksum>22CB689F</checksum>
-    </file>
-    <file>
       <filename>images/series_fan_terminal.png</filename>
       <filetype>png</filetype>
       <usage_type>resource</usage_type>
@@ -1217,12 +1145,6 @@
       <checksum>6586E351</checksum>
     </file>
     <file>
-      <filename>images/shw_loop_icon.png</filename>
-      <filetype>png</filetype>
-      <usage_type>resource</usage_type>
-      <checksum>C8B99B51</checksum>
-    </file>
-    <file>
       <filename>images/single_ducts_constant_vol_4pipe.png</filename>
       <filetype>png</filetype>
       <usage_type>resource</usage_type>
@@ -1235,22 +1157,10 @@
       <checksum>6BFD0377</checksum>
     </file>
     <file>
-      <filename>images/sizing.png</filename>
-      <filetype>png</filetype>
-      <usage_type>resource</usage_type>
-      <checksum>587F3711</checksum>
-    </file>
-    <file>
       <filename>images/slhx.png</filename>
       <filetype>png</filetype>
       <usage_type>resource</usage_type>
       <checksum>09BCC3A3</checksum>
-    </file>
-    <file>
-      <filename>images/snowflake.png</filename>
-      <filetype>png</filetype>
-      <usage_type>resource</usage_type>
-      <checksum>3FCEE6BF</checksum>
     </file>
     <file>
       <filename>images/solarcollector_flatplate_photovoltaicthermal.png</filename>
@@ -1343,40 +1253,10 @@
       <checksum>856C70A8</checksum>
     </file>
     <file>
-      <filename>images/up_left.png</filename>
-      <filetype>png</filetype>
-      <usage_type>resource</usage_type>
-      <checksum>99922885</checksum>
-    </file>
-    <file>
-      <filename>images/up_none.png</filename>
-      <filetype>png</filetype>
-      <usage_type>resource</usage_type>
-      <checksum>9B77154A</checksum>
-    </file>
-    <file>
-      <filename>images/up_right.png</filename>
-      <filetype>png</filetype>
-      <usage_type>resource</usage_type>
-      <checksum>B1D4B9C1</checksum>
-    </file>
-    <file>
       <filename>images/user_defined.png</filename>
       <filetype>png</filetype>
       <usage_type>resource</usage_type>
       <checksum>9DA34FFD</checksum>
-    </file>
-    <file>
-      <filename>images/v_line.png</filename>
-      <filetype>png</filetype>
-      <usage_type>resource</usage_type>
-      <checksum>22410D81</checksum>
-    </file>
-    <file>
-      <filename>images/v_node.png</filename>
-      <filetype>png</filetype>
-      <usage_type>resource</usage_type>
-      <checksum>8D314ED4</checksum>
     </file>
     <file>
       <filename>images/vav-reheat.png</filename>
@@ -1475,12 +1355,6 @@
       <checksum>C0B361D9</checksum>
     </file>
     <file>
-      <filename>images/wizard.png</filename>
-      <filetype>png</filetype>
-      <usage_type>resource</usage_type>
-      <checksum>4A097B35</checksum>
-    </file>
-    <file>
       <filename>images/zone.png</filename>
       <filetype>png</filetype>
       <usage_type>resource</usage_type>
@@ -1505,22 +1379,22 @@
       <checksum>D16BA2BA</checksum>
     </file>
     <file>
-      <filename>jointJS-grid.html</filename>
-      <filetype>html</filetype>
-      <usage_type>resource</usage_type>
-      <checksum>327C6AF4</checksum>
-    </file>
-    <file>
       <filename>report.html.erb</filename>
       <filetype>erb</filetype>
       <usage_type>resource</usage_type>
-      <checksum>93C787AE</checksum>
+      <checksum>6A0BF67E</checksum>
     </file>
     <file>
       <filename>USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw</filename>
       <filetype>epw</filetype>
       <usage_type>test</usage_type>
       <checksum>C254B53F</checksum>
+    </file>
+    <file>
+      <filename>d3_static_working.html</filename>
+      <filetype>html</filetype>
+      <usage_type>test</usage_type>
+      <checksum>CC30E808</checksum>
     </file>
     <file>
       <filename>detailed_hvac_viewer_test.rb</filename>
@@ -1532,7 +1406,7 @@
       <filename>office_chicago_pvav.osm</filename>
       <filetype>osm</filetype>
       <usage_type>test</usage_type>
-      <checksum>D4ED9EF5</checksum>
+      <checksum>08429D17</checksum>
     </file>
   </files>
 </measure>

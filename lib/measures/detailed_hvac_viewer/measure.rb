@@ -432,6 +432,18 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
         loop_data['components'] << comp_data
       end
 
+      # connect supply outlet and demand inlet
+      supply_outlet = loop_data['components'].select { |comp|  comp['object_name'] == loop_data['boundary_nodes']['supply_outlet'] }[0]
+      demand_inlet = loop_data['components'].select { |comp|  comp['object_name'] == loop_data['boundary_nodes']['demand_inlet'] }[0]
+      supply_outlet['after_objects'] << loop_data['boundary_nodes']['demand_inlet']
+      demand_inlet['before_objects'] << loop_data['boundary_nodes']['supply_outlet']
+
+      # connect demand outlet and supply inlet
+      demand_outlet = loop_data['components'].select { |comp|  comp['object_name'] == loop_data['boundary_nodes']['demand_outlet'] }[0]
+      supply_inlet = loop_data['components'].select { |comp|  comp['object_name'] == loop_data['boundary_nodes']['supply_inlet'] }[0]
+      demand_outlet['after_objects'] << loop_data['boundary_nodes']['supply_inlet']
+      supply_inlet['before_objects'] << loop_data['boundary_nodes']['demand_outlet']
+
       hvac_data << loop_data
     end
 
