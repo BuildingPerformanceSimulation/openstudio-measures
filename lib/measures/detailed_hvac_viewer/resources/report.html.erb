@@ -276,7 +276,6 @@
         return img.src;
       }
 
-
       function populateLoopDropdown() {
         const dropdown = document.getElementById("airLoopDropdown");
         const attributes = new Set();
@@ -319,7 +318,25 @@
         }
         return component;
       }
-
+      // returns the first before/after object in the same loop
+      function validObjectInLoop(comps, component, order='after_objects') {
+        let check_component;
+        let valid_component_name;
+        let i = 0;
+        while (!valid_component_name) {
+            check_component = comps.some(comp => comp.object_name === component.after_objects[i]);
+            if (check_component) {
+                valid_component_name = component.after_objects[i];
+            }
+            i++
+        }
+        if (!valid_component_name) {
+            throw new Error(`No objects in ${order} for ${component.object_name} found in this loop`);
+        } else{
+            return valid_component_name;
+        }
+      }
+      
       function findType(comps, objType) {
         const component = comps.find(comp => comp.object_type === objType);
         if (!component) {
@@ -363,67 +380,80 @@
         return makeComponent(comp, 'oa_system', row, col, imageFile, specialPorts);
       }
 
-      function loopDimensions(components) {
-        const dimension = {
-          numSupplyComponents: 0,
-          numOutdoorComponents: 0,
-          numReliefComponents: 0,
-          numZones: 0,
-          numZoneComponents: 0,
-          supplyRow: -2
-        };
+      function loopDimensions(loop) {
+        let boundary = loop['boundary_nodes'];
+        let components = loop["components"];
 
-        components.forEach(comp => {
-          switch (comp['component_side']) {
-            case "supply":
-              dimension.numSupplyComponents++;
-              if (comp["object_type"] === "OS_AirLoopHVAC_OutdoorAirSystem") {
-                dimension.reliefCol = dimension.numSupplyComponents;
-                dimension.outdoorCol = dimension.numSupplyComponents + 1;
+        function calcDimensions(side) {
+          let dimension = {
+            width: 0,
+            height:0,
+            rows: [],
+            mainBranch: 0,
+          };
+
+          let comp = findComponent(components, boundary[`${side}_inlet`]);
+          let end_comp = findComponent(components, boundary[`${side}_outlet`]);
+          let afterObjectName;
+          const scalar = side === "supply" ? -1 : 1;
+          dimension.width++;
+          while (comp !== end_comp) {
+            if (comp.object_type === 'OS_AirLoopHVAC_ZoneSplitter' || comp.object_type === 'OS_Connector_Splitter') {
+              dimension.rows = Array.from({ length: comp.after_objects.length }, (_, i) => 2 * (i + 1)).map(x => x * scalar);
+              const mid = Math.floor(dimension.rows.length / 2);
+              dimension.mainBranch = dimension.rows.length % 2 !== 0 ? dimension.rows[mid]: (dimension.rows[mid - 1] + dimension.rows[mid]) / 2;
+              dimension.height = dimension.rows[dimension.rows.length - 1];
+              afterObjectName = validObjectInLoop(components, comp, 'after_objects')
+            } else if (comp.object_type === 'OS_AirLoopHVAC_OutdoorAirSystem') {
+              dimension.reliefCol = dimension.width;
+              dimension.outdoorCol = dimension.width + 1;
+              dimension.numOutdoorComponents = 0;
+              dimension.numReliefComponents = 0;
+              components.forEach(comp => {
+                if (comp['component_side'] === "outdoor") {
+                    dimension.numOutdoorComponents++;
+                } else if (comp['component_side'] === "relief") {
+                    dimension.numReliefComponents++;
+                }
+              });
+              for (let objName of comp['after_objects']) {
+                let obj = findComponent(components, objName);
+                if (obj['component_side'] === 'supply') {
+                  afterObjectName = obj['object_name'];
+                }
               }
-              break;
-            case "outdoor":
-              dimension.numOutdoorComponents++;
-              break;
-            case "relief":
-              dimension.numReliefComponents++;
-              break;
-            default:
-              if (comp['object_type'] === "OS_ThermalZone") {
-                dimension.numZones++;
-              }
+              dimension.width++;
+              dimension.mainBranch = -2;
+              dimension.height = (Math.max(dimension.numOutdoorComponents, dimension.numReliefComponents) + 2) * scalar;
+            } else {
+              afterObjectName = validObjectInLoop(components, comp, 'after_objects')
+            }
+            comp = findComponent(components, afterObjectName);
+            dimension.width++;
+
+
           }
-        });
-
-        dimension.demandRows = Array.from({ length: dimension.numZones }, (_, i) => 2 * (i + 1));
-        const mid = Math.floor(dimension.demandRows.length / 2);
-        dimension.splitterRow = dimension.demandRows.length % 2 !== 0 ? dimension.demandRows[mid] : (dimension.demandRows[mid - 1] + dimension.demandRows[mid]) / 2;
-
-        // Find the number of components in each zone system between the spitter and mixer
-        let splitter = findType(components, "OS_AirLoopHVAC_ZoneSplitter");
-        let mixer = findType(components, "OS_AirLoopHVAC_ZoneMixer");
-        let comp = findComponent(components, splitter['after_objects'][0]);
-        while (comp !== mixer) {
-            comp = findComponent(components, comp['after_objects'][0]);
-            dimension.numZoneComponents++;
+          return dimension
         }
 
-        dimension.width = Math.max(dimension.numSupplyComponents, dimension.numZoneComponents + 6);
-        dimension.supplyHeight = -1 * (Math.max(dimension.numOutdoorComponents, dimension.numReliefComponents) + 2);
-        dimension.demandHeight = dimension.numZones * 2;
-
-        return dimension;
+        let supplyDimensions = calcDimensions('supply')
+        let demandDimensions = calcDimensions('demand')
+        return {
+            totalWidth: Math.max(supplyDimensions.width, demandDimensions.width),
+            supplyDimensions,
+            demandDimensions
+        };
       }
 
       function defineGridData(loop) {
         let boundary = loop['boundary_nodes'];
         let components = loop["components"];
-        let dimensions = loopDimensions(components)
+        let dimensions = loopDimensions(loop)
         let gridData = [];
 
         // set Supply Inlet Node
         let currentComp = findComponent(components, boundary['supply_inlet']);
-        let currentCompName = currentComp['after_objects'][0];
+        let currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
         gridData.push(makeNode(currentComp, -1, 1, 'supply_inlet'))
         let column = 2;
 
@@ -434,8 +464,8 @@
           switch (currentComp['object_type']) {
             // set node object
             case "OS_Node":
-              gridData.push(makeNode(currentComp, dimensions['supplyRow'], column));
-              currentCompName = currentComp['after_objects'][0];
+              gridData.push(makeNode(currentComp, dimensions.supplyDimensions.mainBranch, column));
+              currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
               column++;
               break;
 
@@ -446,7 +476,7 @@
               for (let objName of currentComp['before_objects']) {
                 let obj = findComponent(components, objName);
                 if (obj['component_side'] === 'outdoor') {
-                  gridData.push(makeNode(obj, dimensions['supplyHeight'], dimensions['outdoorCol']));
+                  gridData.push(makeNode(obj, dimensions.supplyDimensions.height, dimensions.supplyDimensions.outdoorCol));
                   outdoorName = obj['object_name'];
                 }
               }
@@ -455,25 +485,25 @@
                 if (obj['component_side'] === 'supply') {
                   currentCompName = obj['object_name'];
                 } else if (obj['component_side'] === 'relief') {
-                  gridData.push(makeNode(obj, dimensions['supplyHeight'], dimensions['reliefCol']));
+                  gridData.push(makeNode(obj, dimensions.supplyDimensions.height, dimensions.supplyDimensions.reliefCol));
                   reliefName = obj['object_name']
                 }
               }
-              gridData.push(makeOASystem(currentComp, dimensions['supplyRow'], column, assignImage(currentComp), outdoorName, reliefName));
+              gridData.push(makeOASystem(currentComp, dimensions.supplyDimensions.mainBranch, column, assignImage(currentComp), outdoorName, reliefName));
               column += 2;
               break;
 
             // set other equipments
             default:
-              gridData.push(makeEquipment(currentComp, dimensions['supplyRow'], column, assignImage(currentComp)));
-              currentCompName = currentComp['after_objects'][0];
+              gridData.push(makeEquipment(currentComp, dimensions.supplyDimensions.mainBranch, column, assignImage(currentComp)));
+              currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
               column ++;
           }
         }
 
         // add supply outlet
         currentComp = findComponent(components, currentCompName);
-        gridData.push(makeNode(currentComp, -1, dimensions['width'], 'supply_outlet'))
+        gridData.push(makeNode(currentComp, -1, dimensions.totalWidth, 'supply_outlet'))
         return gridData
       }
 
@@ -499,10 +529,10 @@
       });
 
       function changePaperDimensions(dimensions) {
-        let width = dimensions.width * 100
-        let height = ( -1 * (dimensions.supplyHeight) + dimensions.demandHeight ) * 100
+        let width = dimensions.totalWidth * 100
+        let height = ( -1 * (dimensions.supplyDimensions.height) + dimensions.demandDimensions.height ) * 100
         paper.setDimensions(width, height)
-        paper.translate(-100, (-1 * (dimensions.supplyHeight)) * 100)
+        paper.translate(-100, (-1 * (dimensions.supplyDimensions.height)) * 100)
       }
 
       const topPort= {position: { name: 'top' },markup: [{ tagName: 'rect' }]};
@@ -617,6 +647,7 @@
                   // };
                   // link.vertices([midPoint]);
                   link.router('manhattan');
+                  link.attr({line:{strokeWidth:5, targetMarker:null}})
                   link.addTo(graph);
                 }
               }
@@ -663,7 +694,7 @@
       let loopName = document.getElementById("airLoopDropdown").value
       let selectedLoopData = hvac_data.find((hash) => hash.loop_name === loopName);
       plotNodeValues(activeNodes)
-      let dimensions = loopDimensions(selectedLoopData['components'])
+      let dimensions = loopDimensions(selectedLoopData)
       changePaperDimensions(dimensions)
       let gridData = defineGridData(selectedLoopData)
       createElements(gridData)
@@ -685,11 +716,12 @@
           plotNodeValues(activeNodes)
 
           // Call function to regenerate the grid
-          let selectedLoopData = hvac_data.find((hash) => hash.loop_name === selectedOption)
-          let dimensions = loopDimensions(selectedLoopData['components'])
-          changePaperDimensions(dimensions)
-          let gridData = defineGridData(selectedLoopData)
-          createElements(gridData)
+          let selectedLoopData = hvac_data.find((hash) => hash.loop_name === selectedOption);
+          let dimensions = loopDimensions(selectedLoopData);
+          // console.log(dimensions);
+          changePaperDimensions(dimensions);
+          let gridData = defineGridData(selectedLoopData);
+          createElements(gridData);
         });
       }
       function selectAttributeEvent() {
