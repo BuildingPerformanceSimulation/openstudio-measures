@@ -6,8 +6,7 @@
     <title>HVAC Detailed Viewer</title>
     <link
       href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
+      rel="stylesheet" />
     <script
       type="text/javascript"
       src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"
@@ -65,6 +64,8 @@
 
     <script>
       var hvac_data = <%= hvac_data %>;
+
+
 
       // create image dictionary
       const imageDict = {
@@ -1116,7 +1117,13 @@
       }
 
       /* END D3 MULTILINE PLOT */
-
+      function getColorById(id, colorScale = "schemeTableau10") {
+        // should decide on how to approach series greater than 10. generating random values above 10.
+        if (id > d3[colorScale].length) {
+          return getRandomColor();
+        }
+        return d3[colorScale][id];
+      }
       function getRandomColor() {
         const letters = "0123456789ABCDEF";
         let color = "#";

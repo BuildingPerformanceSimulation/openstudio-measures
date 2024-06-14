@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>HVAC Detailed Viewer</title>
+    <link
+      href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <script
+      type="text/javascript"
+      src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.4.0/backbone-min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@joint/core@4.0.1/dist/joint.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jointjs/3.4.0/joint.css" />
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+    <style type="text/css">
+      body {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f0f0f0;
+      }
+	  
+      .slice text {
+        font-size: 10pt;
+        font-family: Arial;
+      }
+
+      #plot {
+        margin-top: 20px;
+      }
+
+      #paper {
+        width: 800px;
+        height: 600px;
+        border: 1px solid #000;
+      }
+
+      .joint-element {
+        cursor: pointer; /* Change the cursor to a finger pointer */
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <select id="airLoopDropdown">
+        <!-- Options will be dynamically populated -->
+      </select>
+      <select id="nodeAttributeDropdown">
+        <!-- Options will be dynamically populated -->
+      </select>
+    </div>
+
+
+    <div id="plot"></div>
+	<div id="paper"></div>					  
+
+    <script>
+      var hvac_data = <%= hvac_data %>;
+
+      // create image dictionary
+      const imageDict = {
+      // Default icon to avoid a crash
+        "Catchall": "missing_icon.png",
+        "OS_AirConditioner_VariableRefrigerantFlow": "vrf_outdoor.png",  
+        "OS_AirLoopHVAC_OutdoorAirSystem": "OAMixer.png",
+        "OS_AirLoopHVAC_UnitaryCoolOnly": "DXCoolingCoil.png",
+        "OS_AirLoopHVAC_UnitaryHeatPump_AirToAir": "heat_pump3.png",
+        "OS_AirLoopHVAC_UnitaryHeatPump_AirToAir_MultiSpeed": "heat_pump3.png",					 
+        "OS_AirLoopHVAC_UnitarySystem": "unitary_system.png",
+        "OS_AirLoopHVAC_UnitaryHeatCool_VAVChangeoverBypass": "unitary_system.png",			 
+        "OS_AirLoopHVAC_ReturnPlenum": "mixer.png",
+        "OS_AirLoopHVAC_SupplyPlenum": "splitter.png",
+        "OS_AirLoopHVAC_ZoneMixer": "mixer.png",
+        "OS_AirLoopHVAC_ZoneSplitter": "splitter.png",
+        "OS_AirTerminal_DualDuct_VAV": "airterminal_dualduct_vav.png",
+        "OS_AirTerminal_DualDuct_ConstantVolume": "airterminal_dualduct_constantvolume.png",
+        "OS_AirTerminal_DualDuct_VAV_OutdoorAir": "airterminal_dualduct_vav_outdoorair.png",
+        "OS_AirTerminal_SingleDuct_ConstantVolume_CooledBeam": "chilled_beam.png",
+        "OS_AirTerminal_SingleDuct_ConstantVolume_Reheat": "cav_reheat.png",
+        "OS_AirTerminal_SingleDuct_ConstantVolume_FourPipeInduction": "single_ducts_constant_vol_4pipe.png",
+        "OS_AirTerminal_SingleDuct_ConstantVolume_FourPipeBeam": "airterminal_fourpipebeam.png",
+        "OS_AirTerminal_SingleDuct_ParallelPIU_Reheat": "parallel_fan_terminal.png",
+        "OS_AirTerminal_SingleDuct_SeriesPIU_Reheat": "series_fan_terminal.png",
+        "OS_AirTerminal_SingleDuct_ConstantVolume_NoReheat": "direct-air.png",
+        "OS_AirTerminal_SingleDuct_VAV_NoReheat": "vav_noreheat.png",
+        "OS_AirTerminal_SingleDuct_VAV_Reheat": "vav-reheat.png",
+        "OS_AirTerminal_SingleDuct_InletSideMixer": "air_terminal_inlet_mixer.png",
+        "OS_AirTerminal_SingleDuct_VAV_HeatAndCool_NoReheat": "vav_noreheat.png",
+        "OS_AirTerminal_SingleDuct_VAV_HeatAndCool_Reheat": "vav-reheat.png",
+        "OS_Boiler_HotWater": "boiler.png",
+        "OS_Boiler_Steam": "boiler_steam.png",
+        "OS_CentralHeatPumpSystem": "centralheatpumpsystem.png",
+        "OS_Chiller_Electric_EIR": "chiller_air.png",
+        "OS_Chiller_Absorption_Indirect": "chiller_absorption_indirect.png",
+        "OS_Chiller_Absorption": "chiller_absorption_direct.png",
+        "OS_Coil_Cooling_DX_SingleSpeed": "dxcoolingcoil_singlespeed.png",
+        "OS_Coil_Cooling_DX_TwoSpeed": "dxcoolingcoil_2speed.png",
+        "OS_Coil_Cooling_DX_MultiSpeed": "dx_cooling_multispeed.png",
+        "OS_Coil_Cooling_DX_VariableSpeed": "cool_coil_dx_vari_speed.png",
+        "OS_Coil_Cooling_LowTemperatureRadiant_ConstantFlow": "coilcoolinglowtemprad_constflow.png",
+        "OS_Coil_Cooling_LowTemperatureRadiant_VariableFlow": "coilcoolinglowtemprad_varflow.png",
+        "OS_Coil_Cooling_WaterToAirHeatPump_EquationFit": "wahpDXCC.png",
+        "OS_Coil_Cooling_WaterToAirHeatPump_VariableSpeedEquationFit": "Coil_Cooling_WaterToAirHeatPump_VariableSpeedEquationFit.png",
+        "OS_Coil_Cooling_Water": "cool_coil.png",
+        "OS_Coil_Cooling_Water_Panel_Radiant": "coilcooling_water_panel_radiant.png",
+        "OS_Coil_Heating_DX_SingleSpeed": "coil_ht_dx_singlespeed.png",									 
+        "OS_Coil_Heating_DX_VariableSpeed": "ht_coil_dx_vari.png",
+        "OS_Coil_Heating_Electric": "electric_furnace.png",
+        "OS_Coil_Heating_Gas": "furnace.png",
+        "OS_Coil_Heating_Gas_MultiStage": "furnace_multi_stage.png",
+        "OS_Coil_Heating_Water": "heat_coil.png",
+        "OS_Coil_Heating_LowTemperatureRadiant_ConstantFlow": "coilheatinglowtemprad_constflow.png",											  
+        "OS_Coil_Heating_LowTemperatureRadiant_VariableFlow": "coilheatinglowtemprad_varflow.png",											
+        "OS_Coil_Heating_WaterToAirHeatPump_EquationFit": "wahpDXHC.png",																	
+        "OS_Coil_Heating_WaterToAirHeatPump_VariableSpeedEquationFit": "Coil_Heating_WaterToAirHeatPump_VariableSpeedEquationFit.png",
+        "OS_CoolingTower_SingleSpeed": "cooling_tower.png",
+        "OS_CoolingTower_TwoSpeed": "cooling_tower_2speed.png",
+        "OS_CoolingTower_VariableSpeed": "cooling_tower_variable.png",
+        "OS_Connector_Mixer": "mixer.png",
+        "OS_Connector_Splitter": "splitter.png",
+        "OS_DistrictCooling": "districtcooling.png",
+        "OS_DistrictHeating_Water": "districtheating.png",
+        "OS_Duct": "duct.png",
+        "OS_EvaporativeCooler_Direct_ResearchSpecial": "directEvap.png",
+        "OS_EvaporativeCooler_Indirect_ResearchSpecial": "indirectEvap.png",
+        "OS_Fan_ComponentModel": "fan_componentmodel.png",
+        "OS_Fan_ConstantVolume": "fan_constant.png",
+        "OS_Fan_OnOff": "fan_on_off.png",
+        "OS_Fan_SystemModel": "fan_systemmodel.png",
+        "OS_Fan_VariableVolume": "fan_variable.png",
+        "OS_Fan_ZoneExhaust": "fan_zoneexhaust.png",
+        "OS_FluidCooler_SingleSpeed": "fluid_cooler_single.png",
+        "OS_FluidCooler_TwoSpeed": "fluid_cooler_two.png",		
+        "OS_GroundHeatExchanger_Vertical": "ground_heat_exchanger_vertical.png",
+        "OS_GroundHeatExchanger_HorizontalTrench": "ground_heat_exchanger_horizontal.png",
+        "OS_HeaderedPumps_ConstantSpeed": "headered_pumps_constant.png",
+        "OS_HeaderedPumps_VariableSpeed": "headered_pumps_variable.png",
+        "OS_HeatExchanger_AirToAir_SensibleAndLatent": "heat_transfer_outdoorair.png",
+        "OS_HeatExchanger_FluidToFluid": "fluid_hx.png",
+        "OS_HeatPump_WaterToWater_EquationFit_Cooling": "heatpump_watertowater_equationfit_cooling.png",
+        "OS_HeatPump_WaterToWater_EquationFit_Heating": "heatpump_watertowater_equationfit_heating.png",
+        "OS_Humidifier_Steam_Electric": "electric_humidifier.png",
+        "OS_Humidifier_Steam_Gas": "gas_humidifier.png",
+        "OS_EvaporativeFluidCooler_SingleSpeed": "evap_fluid_cooler.png",
+        "OS_EvaporativeFluidCooler_TwoSpeed": "evap_fluid_cooler_two_speed.png",
+        "OS_Generator_FuelCell_ExhaustGasToWaterHeatExchanger": "generator_fuelcell_exhaustgastowaterheatexchanger.png",
+        "OS_Generator_MicroTurbine_HeatRecovery": "generator_microturbine_heatrecovery.png",
+        "OS_LoadProfile_Plant": "plant_profile.png",
+        "OS_Pipe_Adiabatic": "pipe.png",
+        "OS_Pipe_Indoor": "pipe_indoor.png",
+        "OS_Pipe_Outdoor": "pipe_outdoor.png",
+        "OS_PlantComponent_TemperatureSource": "plant_temp_source.png",
+        "OS_PlantComponent_UserDefined": "user_defined.png",
+        "OS_Pump_ConstantSpeed": "pump_constant.png",
+        "OS_Pump_VariableSpeed": "pump_variable.png",
+        "OS_Refrigeration_Condenser_AirCooled": "air_cooled.png",
+        "OS_Refrigeration_Condenser_Cascade": "condenser_cascade.png",
+        "OS_Refrigeration_Condenser_EvaporativeCooled": "evap_cooled.png",
+        "OS_Refrigeration_Condenser_WaterCooled": "water_cooled.png",
+        "OS_SolarCollector_FlatPlate_PhotovoltaicThermal": "solarcollector_flatplate_photovoltaicthermal.png",
+        "OS_SolarCollector_FlatPlate_Water": "solarcollector_flatplate_water.png",
+        "OS_SolarCollector_IntegralCollectorStorage": "solarcollector_integralstorage.png",
+        "OS_SwimmingPool_Indoor": "swimming_pool.png",
+        "OS_TemperingValve": "tempering_valve.png",
+        "OS_ThermalZone": "zone.png",
+        "OS_ThermalStorage_Ice_Detailed": "thermal_storage_ice.png",
+        "OS_ThermalStorage_ChilledWater_Stratified": "thermal_storage_strat.png",
+        "OS_WaterHeater_HeatPump": "water_heater.png",
+        "OS_WaterHeater_Mixed": "water_heater_mixed.png",
+        "OS_WaterHeater_Stratified": "water_heater_stratified.png",
+        "OS_WaterUse_Connections": "water_connection.png",
+        "OS_WaterUse_Equipment": "sink.png",
+        "OS_ZoneHVAC_Baseboard_RadiantConvective_Electric": "baseboard_rad_convect_electric.png",
+        "OS_ZoneHVAC_Baseboard_RadiantConvective_Water": "baseboard_rad_convect_water.png",
+        "OS_ZoneHVAC_Baseboard_Convective_Electric": "baseboard_electric.png",
+        "OS_ZoneHVAC_Baseboard_Convective_Water": "baseboard_water.png",
+        "OS_ZoneHVAC_CoolingPanel_RadiantConvective_Water": "zonehvac_coolingpanel_radiantconvective_water.png",
+        "OS_ZoneHVAC_Dehumidifier_DX": "dehumidifier_dx.png",
+        "OS_ZoneHVAC_EnergyRecoveryVentilator": "energy_recov_vent.png",
+        "OS_Coil_Heating_Water_Baseboard": "coilheatingwater_baseboard.png",
+        "OS_Coil_Heating_Water_Baseboard_Radiant": "Coil_Heating_Water_Baseboard_Radiant.png",
+        "OS_Coil_Cooling_CooledBeam": "coilcoolingchilledbeam.png",
+        "OS_Coil_Cooling_FourPipeBeam": "coilcoolingfourpipebeam.png",
+        "OS_Coil_Heating_FourPipeBeam": "coilheatingfourpipebeam.png",
+        "OS_Coil_Heating_Desuperheater": "coilheatingdesuperheater.png",
+        "OS_Coil_Cooling_DX_TwoStageWithHumidityControlMode": "dxcoolingcoil_2stage_humidity.png",
+        "OS_CoilSystem_Cooling_Water_HeatExchangerAssisted": "coil_system_coolingwater_heat_exchanger.png",
+        "OS_CoilSystem_Cooling_DX_HeatExchangerAssisted": "coilsystem_cooling_dx.png",
+        "OS_ZoneHVAC_FourPipeFanCoil": "four_pipe_fan_coil.png",
+        "OS_ZoneHVAC_HighTemperatureRadiant": "hightempradiant.png",
+        "OS_ZoneHVAC_LowTemperatureRadiant_VariableFlow": "lowtempradiant_varflow.png",
+        "OS_ZoneHVAC_LowTemperatureRadiant_ConstantFlow": "lowtempradiant_constflow.png",
+        "OS_ZoneHVAC_PackagedTerminalAirConditioner": "system_type_1.png",
+        "OS_ZoneHVAC_PackagedTerminalHeatPump": "system_type_2.png",
+        "OS_ZoneHVAC_TerminalUnit_VariableRefrigerantFlow": "vrf_unit.png",
+        "OS_ZoneHVAC_WaterToAirHeatPump": "watertoairHP.png",
+        "OS_ZoneHVAC_UnitHeater": "heat_coil-uht.png",
+        "OS_ZoneHVAC_UnitVentilator": "unit_ventilator.png",
+        // placeholder icons until unique icons available
+        "OS_AvailabilityManager_Scheduled": "hvac-icon.png",
+        "OS_AvailabilityManager_ScheduledOn": "hvac-icon.png",
+        "OS_AvailabilityManager_ScheduledOff": "hvac-icon.png",
+        "OS_AvailabilityManager_LowTemperatureTurnOn": "hvac-icon.png",
+        "OS_AvailabilityManager_LowTemperatureTurnOff": "hvac-icon.png",
+        "OS_AvailabilityManager_HighTemperatureTurnOn": "hvac-icon.png",
+        "OS_AvailabilityManager_HighTemperatureTurnOff": "hvac-icon.png",
+        "OS_AvailabilityManager_DifferentialThermostat": "hvac-icon.png",
+        "OS_AvailabilityManager_OptimumStart": "hvac-icon.png",
+        "OS_AvailabilityManager_NightCycle": "hvac-icon.png",
+        "OS_AvailabilityManager_NightVentilation": "hvac-icon.png",
+        "OS_AvailabilityManager_HybridVentilation": "hvac-icon.png",
+      };		
+
+      const activeNodes = {};
+      function clearActiveNodes() {
+        Object.keys(activeNodes).forEach(function(key) {
+          delete activeNodes[key];
+        });
+}
+
+      function cleanObjectReferences(arr) {
+          // Extract all valid object names
+          const validObjectNames = new Set(arr.map(obj => obj.object_name));
+
+          // Function to clean an array of object references
+          function cleanArray(references) {
+              return references.filter(ref => validObjectNames.has(ref));
+          }
+
+          // Iterate through each object in the array
+          arr.forEach(obj => {
+              if (Array.isArray(obj.before_objects)) {
+                  obj.before_objects = cleanArray(obj.before_objects);
+              }
+              if (Array.isArray(obj.after_objects)) {
+                  obj.after_objects = cleanArray(obj.after_objects);
+              }
+          });
+
+          return arr
+      }
+
+      // search for image directories until one of them works
+      function assignImage(obj) {
+        const img = document.createElement("img");
+        const image_sources = [
+                "../../measures/detailed_hvac_viewer/resources/images/",
+                "../../../resources/images/"
+              ];
+        let index = 0
+
+        function tryNextSource() {
+          if (index < image_sources.length) {
+            img.src = image_sources[index] + (obj.object_type in imageDict ? imageDict[obj.object_type] : "missing_icon.png");
+            index++;
+          } else {
+            console.log("Image not found in directory");
+          }
+        }
+
+        img.onerror = function () {
+          tryNextSource();
+        };
+
+        tryNextSource();
+
+        return img.src;
+      }
+
+
+      function populateLoopDropdown() {
+        const dropdown = document.getElementById("airLoopDropdown");
+        const attributes = new Set();
+        hvac_data.forEach((loop) => attributes.add(loop.loop_name));
+
+        attributes.forEach((attribute) => {
+          const option = document.createElement("option");
+          option.value = option.textContent = attribute;
+          dropdown.appendChild(option);
+        });
+      }
+      populateLoopDropdown();
+
+      function populateNodeAttributeDropdown() {
+        const dropdown = document.getElementById("nodeAttributeDropdown");
+        const attributes = new Set();
+
+        hvac_data.forEach((airLoop) => {
+          airLoop.components.forEach((component) => {
+            Object.keys(component).forEach((key) => {
+              if (key.startsWith("system_node")) {
+                attributes.add(key);
+              }
+            });
+          });
+        });
+
+        attributes.forEach((attribute) => {
+          const option = document.createElement("option");
+          option.value = option.textContent = attribute;
+          dropdown.appendChild(option);
+        });
+      }
+      populateNodeAttributeDropdown();
+
+      function findComponent(comps, objName) {
+        const component = comps.find(comp => comp.object_name === objName);
+        if (!component) {
+          throw new Error(objName + " component not found");
+        }
+        return component;
+      }
+
+      function findType(comps, objType) {
+        const component = comps.find(comp => comp.object_type === objType);
+        if (!component) {
+          throw new Error(objType + " component not found");
+        }
+        return component;
+      }
+
+      function setLinks(linkList, defaultPort, specialPorts = {}) {
+        let links = [];
+        for (let name of linkList) {
+          let port = specialPorts[name] !== undefined ? specialPorts[name] : defaultPort;
+          let linkDict = { 'name': name, 'port': port };
+          links.push(linkDict);
+        }
+        return links;
+      }
+      function makeComponent(comp, compType, row, col, imageFile = null, specialPorts = {}, side = null) {
+        return {
+          'name': comp['object_name'],
+          'type': compType,
+          'side': (side !== null) ? side : comp['component_side'],
+          'row': row,
+          'column': col,
+          'before_objects': setLinks(comp['before_objects'], 'in', specialPorts),
+          'after_objects': setLinks(comp['after_objects'], 'out', specialPorts),
+          'image': imageFile
+        };
+      }
+
+      function makeNode(comp, row, col, side = null) {
+        return makeComponent(comp, 'node', row, col, null, {}, side);
+      }
+
+      function makeEquipment(comp, row, col, imageFile) {
+        return makeComponent(comp, 'equipment', row, col, imageFile);
+      }
+
+      function makeOASystem(comp, row, col, imageFile, outdoorName, reliefName) {
+        let specialPorts = { [outdoorName]: "outdoor", [reliefName]: "relief" };
+        return makeComponent(comp, 'oa_system', row, col, imageFile, specialPorts);
+      }
+
+      function loopDimensions(components) {
+        const dimension = {
+          numSupplyComponents: 0,
+          numOutdoorComponents: 0,
+          numReliefComponents: 0,
+          numZones: 0,
+          numZoneComponents: 0,
+          supplyRow: -2
+        };
+
+        components.forEach(comp => {
+          switch (comp['component_side']) {
+            case "supply":
+              dimension.numSupplyComponents++;
+              if (comp["object_type"] === "OS_AirLoopHVAC_OutdoorAirSystem") {
+                dimension.reliefCol = dimension.numSupplyComponents;
+                dimension.outdoorCol = dimension.numSupplyComponents + 1;
+              }
+              break;
+            case "outdoor":
+              dimension.numOutdoorComponents++;
+              break;
+            case "relief":
+              dimension.numReliefComponents++;
+              break;
+            default:
+              if (comp['object_type'] === "OS_ThermalZone") {
+                dimension.numZones++;
+              }
+          }
+        });
+
+        dimension.demandRows = Array.from({ length: dimension.numZones }, (_, i) => 2 * (i + 1));
+        const mid = Math.floor(dimension.demandRows.length / 2);
+        dimension.splitterRow = dimension.demandRows.length % 2 !== 0 ? dimension.demandRows[mid] : (dimension.demandRows[mid - 1] + dimension.demandRows[mid]) / 2;
+
+        // Find the number of components in each zone system between the spitter and mixer
+        let splitter = findType(components, "OS_AirLoopHVAC_ZoneSplitter");
+        let mixer = findType(components, "OS_AirLoopHVAC_ZoneMixer");
+        let comp = findComponent(components, splitter['after_objects'][0]);
+        while (comp !== mixer) {
+            comp = findComponent(components, comp['after_objects'][0]);
+            dimension.numZoneComponents++;
+        }
+
+        dimension.width = Math.max(dimension.numSupplyComponents, dimension.numZoneComponents + 6);
+        dimension.supplyHeight = -1 * (Math.max(dimension.numOutdoorComponents, dimension.numReliefComponents) + 2);
+        dimension.demandHeight = dimension.numZones * 2;
+
+        return dimension;
+      }
+
+      function defineGridData(loop) {
+        let boundary = loop['boundary_nodes'];
+        let components = loop["components"];
+        let dimensions = loopDimensions(components)
+        let gridData = [];
+
+        // set Supply Inlet Node
+        let currentComp = findComponent(components, boundary['supply_inlet']);
+        let currentCompName = currentComp['after_objects'][0];
+        gridData.push(makeNode(currentComp, -1, 1, 'supply_inlet'))
+        let column = 2;
+
+        // set rest of the components until supply outlet node
+        while (currentCompName !== boundary['supply_outlet']) {
+          currentComp = findComponent(components, currentCompName)
+
+          switch (currentComp['object_type']) {
+            // set node object
+            case "OS_Node":
+              gridData.push(makeNode(currentComp, dimensions['supplyRow'], column));
+              currentCompName = currentComp['after_objects'][0];
+              column++;
+              break;
+
+            // set OA System. Need to expand to allow for components like HX on the system
+            case "OS_AirLoopHVAC_OutdoorAirSystem":
+              let outdoorName='';
+              let reliefName='';
+              for (let objName of currentComp['before_objects']) {
+                let obj = findComponent(components, objName);
+                if (obj['component_side'] === 'outdoor') {
+                  gridData.push(makeNode(obj, dimensions['supplyHeight'], dimensions['outdoorCol']));
+                  outdoorName = obj['object_name'];
+                }
+              }
+              for (let objName of currentComp['after_objects']) {
+                let obj = findComponent(components, objName);
+                if (obj['component_side'] === 'supply') {
+                  currentCompName = obj['object_name'];
+                } else if (obj['component_side'] === 'relief') {
+                  gridData.push(makeNode(obj, dimensions['supplyHeight'], dimensions['reliefCol']));
+                  reliefName = obj['object_name']
+                }
+              }
+              gridData.push(makeOASystem(currentComp, dimensions['supplyRow'], column, assignImage(currentComp), outdoorName, reliefName));
+              column += 2;
+              break;
+
+            // set other equipments
+            default:
+              gridData.push(makeEquipment(currentComp, dimensions['supplyRow'], column, assignImage(currentComp)));
+              currentCompName = currentComp['after_objects'][0];
+              column ++;
+          }
+        }
+
+        // add supply outlet
+        currentComp = findComponent(components, currentCompName);
+        gridData.push(makeNode(currentComp, -1, dimensions['width'], 'supply_outlet'))
+        return gridData
+      }
+
+      // Create a JointJS graph
+      const graph = new joint.dia.Graph();
+
+      // Create a JointJS paper
+      const paper = new joint.dia.Paper({
+        el: document.getElementById('paper'),
+        model: graph,
+        width: 1300,
+        height: 1400,
+        gridSize: 100,
+        drawGrid: true,
+        snapLinks: true,
+        embeddingMode: true,
+        interactive: function(cellView) {
+          if (cellView.model.isElement()) {
+            return { elementMove: false }; // Disable element movement
+          }
+          return true;
+        }
+      });
+
+      function changePaperDimensions(dimensions) {
+        let width = dimensions.width * 100
+        let height = ( -1 * (dimensions.supplyHeight) + dimensions.demandHeight ) * 100
+        paper.setDimensions(width, height)
+        paper.translate(-100, (-1 * (dimensions.supplyHeight)) * 100)
+      }
+
+      const topPort= {position: { name: 'top' },markup: [{ tagName: 'rect' }]};
+      const bottomPort= {position: { name: 'bottom' },markup: [{ tagName: 'rect' }]};
+      const leftPort= {position: { name: 'left' },markup: [{ tagName: 'rect' }]};
+      const rightPort= {position: { name: 'right' },markup: [{ tagName: 'rect' }]};
+      const relativePort= {position: { name: 'relative' },markup: [{ tagName: 'rect' }]};
+
+      function setPortConfig(comp) {
+        let groups, items;
+        if (comp.side === "relief" || comp.side === "supply_inlet" || comp.side === "demand_outlet") {
+            groups = {"top": topPort, "bottom": bottomPort};
+            items = [{id: 'in', group: "bottom"},{id: 'out', group: "top"}];
+        } else if (comp.side === "outdoor" || comp.side === "supply_outlet" || comp.side === "demand_inlet") {
+            groups = {"top": topPort,"bottom": bottomPort};
+            items = [{id: 'in', group: "top"},{id: 'out', group: "bottom"}];
+        } else if (comp.side === "supply") {
+            groups = {"left": leftPort,"right": rightPort};
+            items = [{id: 'in', group: "left"},{id: 'out', group: "right"}];
+        } else if (comp.side === "demand") {
+            groups = {"left": leftPort,"right": rightPort};
+            items = [{id: 'in', group: "right"},{id: 'out', group: "left"}];
+        } else {
+          return null;
+        }
+        return {groups, items};
+      }
+
+      function createNode(comp) {
+        const portConfig = setPortConfig(comp.side)
+        let node = new joint.shapes.standard.Ellipse({
+          id: comp.name,
+          size: {width: 25, height: 25},
+          position: {x: comp.column * 100 + 37.5, y: comp.row * 100 + 37.5},
+          attrs: {body: {fill: 'white'}},
+          ports: portConfig
+        });
+        node.addTo(graph);
+        return node;
+      }
+
+      function createEquipment(comp) {
+        const portConfig = setPortConfig(comp.side)
+        let equipment = new joint.shapes.standard.Image({
+          id: comp.name,
+          position: {x: comp.column * 100, y: comp.row * 100},
+          size: {width: 100, height: 100},
+          attrs: {image: {'xlink:href': comp.image}},
+          ports: portConfig
+        });
+        equipment.addTo(graph);
+        return equipment;
+      }
+
+      function createOASystem(comp) {
+        let oa_sys = new joint.shapes.standard.Image({
+          id: comp.name,
+          position: {x: comp.column * 100, y: comp.row * 100},
+          size: {width: 200, height: 100},
+          attrs: {image: {'xlink:href': comp.image}},
+          ports: {
+            groups: {"relative":relativePort},
+            items: [
+              {id: 'in',group: "relative",args: {x: '0%', y: '50%'}},
+              {id: 'relief',group: "relative",args: {x: '25%', y: '0%'}},
+              {id: 'outdoor',group: "relative",args: {x: '75%', y: '0%'}},
+              {id: 'out',group: "relative",args: {x: '100%', y: '50%'}}
+            ]
+          }
+        });
+        oa_sys.addTo(graph);
+        return oa_sys;
+      }
+
+      // Create elements from json
+      function createElements(gridData) {
+        const elements = {}
+        gridData.forEach(function (component) {
+          let element;
+          if (component.type === 'node') {
+            element = createNode(component)
+          } else if (component.type === 'equipment') {
+            element = createEquipment(component)
+          } else if (component.type === 'oa_system') {
+            element = createOASystem(component)
+          }
+          elements[component.name] = element;
+        });
+
+
+        // Link elements from json
+        gridData.forEach(function (component) {
+          if (component.after_objects) {
+            component.after_objects.forEach(function (afterComponent) {
+              const targetComponent = gridData.find(comp => comp.name === afterComponent.name);
+              if (targetComponent && targetComponent.before_objects) {
+                const targetPort = targetComponent.before_objects.find(before => before && before.name === component.name);
+                if (targetPort) {
+                  const link = new joint.shapes.standard.Link();
+                  link.source({id: elements[component.name], port: afterComponent.port});
+                  link.target({id: elements[afterComponent.name], port: targetPort.port});
+                  // Calculate the midpoint between the source and target. need to add this for zone splitter/merger
+                  // const sourceElement = elements[component.name];
+                  // const targetElement = elements[afterComponent.name];
+                  // const sourceBBox = sourceElement.getBBox();
+                  // const targetBBox = targetElement.getBBox();
+                  // const sourceCenter = sourceBBox.center();
+                  // const targetCenter = targetBBox.center();
+                  // const midPoint = {
+                  //   x: (sourceCenter.x + targetCenter.x) / 2,
+                  //   y: (sourceCenter.y + targetCenter.y) / 2
+                  // };
+                  // link.vertices([midPoint]);
+                  link.router('manhattan');
+                  link.addTo(graph);
+                }
+              }
+            });
+          }
+        });
+      }
+	  
+      // plot activeNodes on click
+      paper.on('element:pointerclick', function(elementView) {
+        const element = elementView.model;
+        let loopName = document.getElementById("airLoopDropdown").value;
+        let attributeName = document.getElementById("nodeAttributeDropdown").value;
+        let NodeValues = getNodeValues(
+          hvac_data,
+          loopName,
+          element.id,
+          attributeName
+        );
+        if (NodeValues) {
+          if (activeNodes[element.id]) {
+            delete activeNodes[element.id];
+            element.attr('body/fill','white');
+          } else {
+          let color = getRandomColor()
+            activeNodes[element.id] = {"nodeName": element.id, NodeValues, color}
+            element.attr('body/fill', color);
+          }
+          plotNodeValues(activeNodes);
+        }
+      });
+
+      function getNodeValues(hvac_data, loopName, nodeName, selectedKey) {
+        selectedLoopData = hvac_data.find(
+          (hash) => hash.loop_name === loopName
+        );
+        selectedNode = selectedLoopData.components.find(
+          (hash) => hash.object_name === nodeName
+        );
+        return selectedNode[selectedKey];
+      }
+
+      // set initial loop and plot
+      let loopName = document.getElementById("airLoopDropdown").value
+      let selectedLoopData = hvac_data.find((hash) => hash.loop_name === loopName);
+      plotNodeValues(activeNodes)
+      let dimensions = loopDimensions(selectedLoopData['components'])
+      changePaperDimensions(dimensions)
+      let gridData = defineGridData(selectedLoopData)
+      createElements(gridData)
+
+      function selectLoopEvent() {
+        var dropdown = document.getElementById("airLoopDropdown");
+
+        // Add change event listener to the dropdown
+        dropdown.addEventListener("change", function () {
+		  // clear previous loop
+		  graph.clear();
+		  
+          // Get the selected option value
+          var selectedOption = dropdown.options[dropdown.selectedIndex].value;
+          console.log("Regenerating grid with option value:", selectedOption);
+
+          // Clear the content of activeNodes
+          clearActiveNodes()
+          plotNodeValues(activeNodes)
+
+          // Call function to regenerate the grid
+          let selectedLoopData = hvac_data.find((hash) => hash.loop_name === selectedOption)
+          let dimensions = loopDimensions(selectedLoopData['components'])
+          changePaperDimensions(dimensions)
+          let gridData = defineGridData(selectedLoopData)
+          createElements(gridData)
+        });
+      }
+      function selectAttributeEvent() {
+        var dropdown = document.getElementById("nodeAttributeDropdown");
+
+        // Add change event listener to the dropdown
+        dropdown.addEventListener("change", function () {
+          clearActiveNodes()
+          plotNodeValues(activeNodes)
+        });
+      }
+      function plotNodeValues(data) {
+        let data_array = Object.values(data);
+
+        // Using lower snake case for D3 selection elements
+
+        /* SETUP PLOT DIMENSIONS */
+
+        const svgWidth = 1000;
+        const svgHeight = 400;
+
+        const margin = { top: 20, right: 50, bottom: 20, left: 50 };
+        const contextPadding = 50;
+
+        const contextHeight = 50;
+        const plotHeight =
+          svgHeight -
+          margin.top -
+          margin.bottom -
+          contextHeight -
+          contextPadding;
+
+        const plotWidth = svgWidth - margin.left - margin.right;
+
+        /* FUNCTIONS AND MISC SETUP */
+        function bindD3Element(parent, childtype, classname) {
+          let selection;
+          if (typeof parent.querySelectorAll === "function") {
+            selection = d3.select(parent);
+          } else {
+            selection = parent;
+          }
+          return selection
+            .selectAll(`.${classname}`)
+            .data([0])
+            .join(childtype)
+            .attr("class", classname);
+        }
+        // Define the start and end dates for one year starting on January 1st
+
+        const startDate = new Date(2023, 0, 1);
+        const endDate = new Date(2024, 0, 1);
+
+        const clipid = Math.floor(Math.random() * 1e6) + "-clip";
+
+        const xScale = d3
+          .scaleTime()
+          .domain([startDate, endDate])
+          .range([0, plotWidth]);
+
+        const contextXScale = d3
+          .scaleTime()
+          .domain([startDate, endDate])
+          .range([0, plotWidth]);
+
+        const yMax = d3.max(data_array, (d) => d3.max(d.NodeValues));
+        const yMin = d3.min(data_array, (d) => d3.min(d.NodeValues));
+
+        const contextYScale = d3
+          .scaleLinear()
+          .domain([yMin, yMax])
+          .range([contextHeight, 0]);
+
+        const yScale = d3
+          .scaleLinear()
+          .domain([yMin, yMax])
+          .range([plotHeight, 0]);
+
+        // Create svg structure
+        const plot_container = d3.select("#plot");
+
+        const svg = bindD3Element(plot_container, "svg", "svg")
+          .attr("width", svgWidth)
+          .attr("height", svgHeight);
+
+        const defs = bindD3Element(svg, "defs", "defs");
+
+        const plot_g = bindD3Element(svg, "g", "plot-g").attr(
+          "transform",
+          `translate(${margin.left},${margin.top})`
+        );
+
+        const plot_lines_g = bindD3Element(plot_g, "g", "lines-g").attr(
+          "clip-path",
+          `url(#${clipid})`
+        );
+
+        const plot_axis_g = bindD3Element(plot_g, "g", "axis-g");
+
+        const context_plot_g = bindD3Element(svg, "g", "context-plot-g").attr(
+          "transform",
+          `translate(${margin.left},${
+            margin.top + plotHeight + contextPadding
+          })`
+        );
+
+        const context_plot_lines_g = bindD3Element(
+          context_plot_g,
+          "g",
+          "context-lines-g"
+        ).attr("pointer-events", "none");
+
+        const context_plot_axis_g = bindD3Element(
+          context_plot_g,
+          "g",
+          "context-axis-g"
+        );
+
+        const x_line = bindD3Element(plot_g, "line", "x-line")
+          .attr("class", "x-line")
+          .attr("stroke", "black")
+          .attr("stroke-dasharray", "4, 4")
+          .attr("y1", 0)
+          .attr("y2", plotHeight)
+          .style("opacity", 0);
+
+        const hover_g = bindD3Element(plot_g, "g", "hover-g").style(
+          "opacity",
+          0
+        );
+        const hover_rect = bindD3Element(hover_g, "rect", "hover-rect")
+          .attr("width", plotWidth)
+          .attr("height", plotHeight);
+
+        const tooltip_div = bindD3Element(plot_container, "div", "tooltip-div")
+          .style("opacity", 0)
+          .style("background-color", "rgba(255,255,255,0.95)")
+          .style("padding", "15px")
+          .style("position", "absolute");
+
+        const x_axis_g = bindD3Element(plot_axis_g, "g", "x-axis-g").attr(
+          "transform",
+          `translate(${0},${plotHeight})`
+        );
+        const y_axis_g = bindD3Element(plot_axis_g, "g", "y-axis-g");
+
+        const context_x_axis_g = bindD3Element(
+          context_plot_axis_g,
+          "g",
+          "context-x-axis-g"
+        ).attr("transform", `translate(${0},${contextHeight})`);
+
+        const context_y_axis_g = bindD3Element(
+          context_plot_axis_g,
+          "g",
+          "context-y-axis-g"
+        );
+
+
+        const context_brush_g = bindD3Element(context_plot_g, "g", "brush");
+
+        const clip_path = bindD3Element(defs, "clipPath", "clip-path").attr(
+          "id",
+          clipid
+        );
+
+        const clip_rect = bindD3Element(clip_path, "rect", "clip-rect")
+          .join("rect")
+          .attr("width", plotWidth)
+          .attr("height", plotHeight)
+          .attr("x", 0)
+          .attr("y", 0);
+
+        /* CALL AXIS FUNCTIONS */
+        x_axis_g.call(
+          d3
+            .axisBottom(xScale)
+            .ticks(d3.timeMonth.every(1))
+            .tickFormat(d3.timeFormat("%b"))
+        );
+        y_axis_g.call(d3.axisLeft(yScale));
+
+        context_x_axis_g.call(
+          d3
+            .axisBottom(xScale)
+            .ticks(d3.timeMonth.every(1))
+            .tickFormat(d3.timeFormat("%b"))
+        );
+
+        /* LINE FUNCTIONS */
+
+        const createLine = function () {
+          plot_lines_g
+            .selectAll(".series-line")
+            .data(data_array)
+            .join("path")
+            .attr("class", "series-line")
+            .attr("d", (d, i) => {
+              return d3
+                .line()
+                .x((d, i) => xScale(new Date(2023, 0, 1, i + 1)))
+                .y((d) => yScale(d))(d.NodeValues);
+            })
+            .style("stroke-width", "2px")
+            .style("fill", "none")
+            .style("stroke", (d, i) => d.color);
+        };
+
+        const createContextLine = function () {
+          context_plot_lines_g
+            .selectAll(".series-line")
+            .data(data_array)
+            .join("path")
+            .attr("class", "series-line")
+            .attr("d", (d, i) => {
+              return d3
+                .line()
+                .x((d, i) => xScale(new Date(2023, 0, 1, i + 1)))
+                .y((d) => contextYScale(d))(d.NodeValues);
+            })
+            .style("stroke-width", "2px")
+            .style("fill", "none")
+            .style("stroke", (d, i) => d.color);
+        };
+
+        createLine();
+        createContextLine();
+
+        /* HANDLE HOVER */
+
+        function mouseOut() {
+          x_line.style("opacity", 0);
+          tooltip_div.style("opacity", 0);
+        }
+
+        function mouseOver(e) {
+          x_line.style("opacity", 1);
+          tooltip_div.style("opacity", 1);
+        }
+
+        function mouseMove(e) {
+          let xdate = xScale.invert(d3.pointer(e)[0]);
+
+          // hack to get closest index from 8760 hour. probably a much better way to do this.
+
+          let [start, end] = xScale.domain();
+
+          let domain_fraction =
+            (xdate.getTime() - start.getTime()) /
+            (end.getTime() - start.getTime());
+
+          let selected_date = new Date(
+            startDate.getTime() +
+              (start.getTime() - startDate.getTime()) +
+              domain_fraction * (end.getTime() - start.getTime())
+          );
+
+          let annual_fraction =
+            (selected_date.getTime() - startDate.getTime()) /
+            (endDate.getTime() - startDate.getTime());
+
+          let closest_idx = Math.round(annual_fraction * 8760);
+
+          let closest_date = new Date(
+            startDate.getTime() + closest_idx * 3.6e6
+          );
+
+          let pointarray = [];
+
+          data_array.forEach((d, i) => {
+            pointarray.push(d.NodeValues[closest_idx]);
+          });
+
+          x_line
+            .style("opacity", 1)
+            .attr("x1", xScale(xdate))
+            .attr("x2", xScale(xdate));
+
+          tooltip_div
+            .style(
+              "left",
+              20 + event.pageX / window.innerWidth + event.pageX + "px"
+            )
+            .style("top", 20 + event.pageY + "px")
+            .style("transition", "left 100ms, top 100ms")
+            .style("z-index", 999)
+            .style("opacity", 0.9).html(`
+                        <div>
+                            <div style="
+                            padding: 5px;
+                            margin-left: 5px;
+                            ">
+                                ${d3.timeFormat("%B %d %H:%M")(closest_date)}
+                            </div>
+                            ${pointarray
+                              .map((d, i) => {
+                                let node_name = data_array[i].nodeName;
+                                let node_val = d;
+
+                                return `
+                                <div
+                                style="
+                                opacity: 1.0;
+
+                                overflow: hidden;
+                                white-space: nowrap';
+                                ">
+                                    <div class='tooltip-rect' style=
+                                    "
+                                    display: inline-block;
+                                    width: 20px;
+                                    background-color: ${data_array[i].color};
+                                    height: 20px;
+                                    margin-left: 10px;
+                                    margin-right: 10px;
+                                    transition: opacity 200ms;
+                                    box-sizing: border-box;
+                                    border-radius: 2px;
+                                    position: relative;
+                                    top: 5px
+                                    "
+                                    ></div>
+                                    <div style="display: inline-block">${node_name}: ${node_val} </div>
+                              </div>`;
+                              })
+                              .join("")}
+                          </div>`);
+        }
+
+        hover_rect.on("mouseover", mouseOver);
+        hover_rect.on("mouseout", mouseOut);
+        hover_rect.on("mousemove", mouseMove);
+
+        /* HANDLE ZOOM & BRUSH */
+
+        const brush = d3
+          .brushX()
+          .extent([
+            [0, 0],
+            [plotWidth, contextHeight],
+          ])
+          .on("brush end", brushed);
+
+        const zoomFunc = d3
+          .zoom()
+          .scaleExtent([1, Infinity])
+          .translateExtent([
+            [0, 0],
+            [plotWidth, plotHeight],
+          ])
+          .extent([
+            [0, 0],
+            [plotWidth, plotHeight],
+          ])
+          .on("zoom", zoomed);
+
+        let idleTimeout;
+        let idleDelay = 350;
+
+        function idled() {
+          idleTimeout = null;
+        }
+
+        function brushed(event) {
+          if (event.sourceEvent && event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
+          var s = event.selection || contextXScale.range();
+
+          let xdomain = s.map(contextXScale.invert, contextXScale);
+          xScale.domain(xdomain);
+
+          createLine(xdomain);
+          x_axis_g.call(d3.axisBottom(xScale));
+        }
+
+        function zoomed(event) {
+          if (event.sourceEvent && event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
+          var t = event.transform;
+          let xdomain = t.rescaleX(contextXScale).domain();
+          xScale.domain(xdomain);
+          createLine(xdomain);
+          x_axis_g.call(d3.axisBottom(xScale));
+          context_plot_g
+            .select(".brush")
+            .call(brush.move, xScale.range().map(t.invertX, t));
+        }
+
+        context_brush_g.call(brush);
+
+        x_axis_g.call(d3.axisBottom(xScale));
+
+        hover_g.call(zoomFunc);
+      }
+
+      /* END D3 MULTILINE PLOT */
+
+      function getRandomColor() {
+        const letters = "0123456789ABCDEF";
+        let color = "#";
+        for (let i = 0; i < 6; i++) {
+          color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+      }
+      // Call function to attach event listener when the DOM is fully loaded
+      document.addEventListener("DOMContentLoaded", selectLoopEvent);
+      document.addEventListener("DOMContentLoaded", selectAttributeEvent);
+    </script>
+  </body>
+</html>
