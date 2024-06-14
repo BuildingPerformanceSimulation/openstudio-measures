@@ -339,6 +339,7 @@
         }
         return links;
       }
+
       function makeComponent(comp, compType, row, col, imageFile = null, specialPorts = {}, side = null) {
         return {
           'name': comp['object_name'],
@@ -511,7 +512,7 @@
             } else {
               throw new Error("Mixer not found");
             }
-            
+
             console.log(mixer_type)
 
             gridData.push(makeConnector(currentComp, dimensions.demandDimensions.mainBranch, column));
@@ -702,13 +703,16 @@
                   const link = new joint.shapes.standard.Link();
                   link.source({id: elements[component.name], port: afterComponent.port});
                   link.target({id: elements[afterComponent.name], port: targetPort.port});
-                  link.router('rightAngle',{margin:1});
-                  link.attr({line:{stroke:'black',strokeWidth:4, targetMarker:null, shapeRendering: 'crispEdges'}})
+                  link.router('rightAngle', {margin: 1});
+                  link.attr({line: {stroke: 'black', strokeWidth: 4, targetMarker: null, shapeRendering: 'crispEdges'}})
                   link.addTo(graph);
                 }
               }
             });
           }
+        });
+      }
+
       const activeNodes = {};
       let usedIndices = [];
       function clearActiveNodes() {
@@ -717,7 +721,7 @@
         });
         usedIndices = [];
       }
-	  
+
       // plot activeNodes on click
       paper.on('element:pointerclick', function(elementView) {
         const element = elementView.model;
@@ -735,7 +739,7 @@
             const nodeInfo = activeNodes[element.id];
             delete activeNodes[element.id];
             element.attr('body/fill', 'white');
-            
+
             // Release the index to be reused
             if (nodeInfo && nodeInfo.hasOwnProperty('index')) {
               const index = nodeInfo.index;
@@ -792,7 +796,7 @@
         dropdown.addEventListener("change", function () {
 		  // clear previous loop
 		  graph.clear();
-		  
+
           // Get the selected option value
           var selectedOption = dropdown.options[dropdown.selectedIndex].value;
           console.log("Regenerating grid with option value:", selectedOption);
