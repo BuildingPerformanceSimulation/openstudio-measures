@@ -218,7 +218,8 @@
         "OS_AvailabilityManager_NightVentilation": "hvac-icon.png",
         "OS_AvailabilityManager_HybridVentilation": "hvac-icon.png",
       };
-
+      
+      //Search for valid image source that contains "missing_icon.png" before main code
       const image_sources = [
         "../../../resources/images/",
         "../../measures/detailed_hvac_viewer/resources/images/"
@@ -255,7 +256,8 @@
           console.error(error);
         }
       }
-
+       
+      // Main Code
       function main() {      
 
       function cleanObjectReferences(arr) {
