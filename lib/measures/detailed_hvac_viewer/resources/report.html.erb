@@ -217,7 +217,48 @@
         "OS_AvailabilityManager_NightCycle": "hvac-icon.png",
         "OS_AvailabilityManager_NightVentilation": "hvac-icon.png",
         "OS_AvailabilityManager_HybridVentilation": "hvac-icon.png",
-      };		
+      };
+      
+      //Search for valid image source that contains "missing_icon.png" before main code
+      const image_sources = [
+        "../../../resources/images/",
+        "../../measures/detailed_hvac_viewer/resources/images/"
+      ];
+
+      async function checkImageSource(src) {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(src);
+          img.onerror = () => reject(src);
+          img.src = src + "missing_icon.png";
+        });
+      }
+
+      async function findValidImageSource(sources) {
+        for (let i = 0; i < sources.length; i++) {
+          try {
+            const validSrc = await checkImageSource(sources[i]);
+            return validSrc;
+          } catch (e) {
+            continue;
+          }
+        }
+        throw new Error("No valid image source found");
+      }
+
+      let img_src = "";
+
+      async function initialize() {
+        try {
+          img_src = await findValidImageSource(image_sources);
+          main();
+        } catch (error) {
+          console.error(error);
+        }
+      }
+       
+      // Main Code
+      function main() {      
 
       function cleanObjectReferences(arr) {
           // Extract all valid object names
@@ -243,31 +284,13 @@
 
       // search for image directories until one of them works
       function assignImage(obj) {
-        const img = document.createElement("img");
-        const image_sources = [
-                "../../../resources/images/",
-                "../../measures/detailed_hvac_viewer/resources/images/"
-              ];
-        let index = 0
-
-        function tryNextSource() {
-          if (index < image_sources.length) {
-            img.src = image_sources[index] + (obj.object_type in imageDict ? imageDict[obj.object_type] : "missing_icon.png");
-            index++;
-          } else {
-            console.log("Image not found in directory");
-          }
+        if (obj.object_type in imageDict) {
+          return img_src + imageDict[obj.object_type];
+        } else {
+          return img_src + "missing_icon.png";
         }
-
-        img.onerror = function () {
-          tryNextSource();
-        };
-
-        tryNextSource();
-
-        return img.src;
       }
-
+        
       function populateLoopDropdown() {
         const dropdown = document.getElementById("airLoopDropdown");
         const attributes = new Set();
@@ -829,8 +852,8 @@
 
         // Add change event listener to the dropdown
         dropdown.addEventListener("change", function () {
-		  // clear previous loop
-		  graph.clear();
+          // clear previous loop
+          graph.clear();
 
           // Get the selected option value
           var selectedOption = dropdown.options[dropdown.selectedIndex].value;
@@ -1259,6 +1282,11 @@
       // Call function to attach event listener when the DOM is fully loaded
       document.addEventListener("DOMContentLoaded", selectLoopEvent);
       document.addEventListener("DOMContentLoaded", selectAttributeEvent);
+      }
+       
+      // Run script
+      initialize();
+       
     </script>
   </body>
 </html>
