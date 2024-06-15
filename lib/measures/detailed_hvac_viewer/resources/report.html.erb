@@ -217,1048 +217,1074 @@
         "OS_AvailabilityManager_NightCycle": "hvac-icon.png",
         "OS_AvailabilityManager_NightVentilation": "hvac-icon.png",
         "OS_AvailabilityManager_HybridVentilation": "hvac-icon.png",
-      };		
+      };
 
-      function cleanObjectReferences(arr) {
-          // Extract all valid object names
-          const validObjectNames = new Set(arr.map(obj => obj.object_name));
+      const image_sources = [
+        "../../../resources/images/",
+        "../../measures/detailed_hvac_viewer/resources/images/"
+      ];
 
-          // Function to clean an array of object references
-          function cleanArray(references) {
-              return references.filter(ref => validObjectNames.has(ref));
-          }
-
-          // Iterate through each object in the array
-          arr.forEach(obj => {
-              if (Array.isArray(obj.before_objects)) {
-                  obj.before_objects = cleanArray(obj.before_objects);
-              }
-              if (Array.isArray(obj.after_objects)) {
-                  obj.after_objects = cleanArray(obj.after_objects);
-              }
-          });
-
-          return arr
+      async function checkImageSource(src) {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(src);
+          img.onerror = () => reject(src);
+          img.src = src + "missing_icon.png";
+        });
       }
 
-      // search for image directories until one of them works
-      function assignImage(obj) {
-        const img = document.createElement("img");
-        const image_sources = [
-                "../../../resources/images/",
-                "../../measures/detailed_hvac_viewer/resources/images/"
-              ];
-        let index = 0
-
-        function tryNextSource() {
-          if (index < image_sources.length) {
-            img.src = image_sources[index] + (obj.object_type in imageDict ? imageDict[obj.object_type] : "missing_icon.png");
-            index++;
-          } else {
-            console.log("Image not found in directory");
+      async function findValidImageSource(sources) {
+        for (let i = 0; i < sources.length; i++) {
+          try {
+            const validSrc = await checkImageSource(sources[i]);
+            return validSrc;
+          } catch (e) {
+            continue;
           }
         }
-
-        img.onerror = function () {
-          tryNextSource();
-        };
-
-        tryNextSource();
-
-        return img.src;
+        throw new Error("No valid image source found");
       }
 
-      function populateLoopDropdown() {
-        const dropdown = document.getElementById("airLoopDropdown");
-        const attributes = new Set();
-        hvac_data.forEach((loop) => attributes.add(loop.loop_name));
+      let img_src = "";
 
-        attributes.forEach((attribute) => {
-          const option = document.createElement("option");
-          option.value = option.textContent = attribute;
-          dropdown.appendChild(option);
-        });
-      }
-      populateLoopDropdown();
-
-      function populateNodeAttributeDropdown() {
-        const dropdown = document.getElementById("nodeAttributeDropdown");
-        const attributes = new Set();
-
-        hvac_data.forEach((airLoop) => {
-          airLoop.components.forEach((component) => {
-            Object.keys(component).forEach((key) => {
-              if (key.startsWith("system_node")) {
-                attributes.add(key);
-              }
-            });
-          });
-        });
-
-        attributes.forEach((attribute) => {
-          const option = document.createElement("option");
-          option.value = option.textContent = attribute;
-          dropdown.appendChild(option);
-        });
-      }
-      populateNodeAttributeDropdown();
-
-      function findComponent(comps, objName) {
-        const component = comps.find(comp => comp.object_name === objName);
-        if (!component) {
-          console.log(objName + " component not found");
+      async function initialize() {
+        try {
+          img_src = await findValidImageSource(image_sources);
+          main();
+        } catch (error) {
+          console.error(error);
         }
-        return component;
       }
 
-      // returns the first before/after object in the same loop
-      function validObjectInLoop(comps, component, order='after_objects') {
-        let check_component;
-        let valid_component_name;
-        let i = 0;
-        while (!valid_component_name) {
-            check_component = comps.some(comp => comp.object_name === component.after_objects[i]);
-            if (check_component) {
-                valid_component_name = component.after_objects[i];
+      function main() {      
+
+        function cleanObjectReferences(arr) {
+            // Extract all valid object names
+            const validObjectNames = new Set(arr.map(obj => obj.object_name));
+
+            // Function to clean an array of object references
+            function cleanArray(references) {
+                return references.filter(ref => validObjectNames.has(ref));
             }
-            i++
+
+            // Iterate through each object in the array
+            arr.forEach(obj => {
+                if (Array.isArray(obj.before_objects)) {
+                    obj.before_objects = cleanArray(obj.before_objects);
+                }
+                if (Array.isArray(obj.after_objects)) {
+                    obj.after_objects = cleanArray(obj.after_objects);
+                }
+            });
+
+            return arr
         }
-        if (!valid_component_name) {
-            console.log(`No objects in ${order} for ${component.object_name} found in this loop`);
-        } else{
-            return valid_component_name;
+
+        // search for image directories until one of them works
+        function assignImage(obj) {
+          if (obj.object_type in imageDict) {
+            return img_src + imageDict[obj.object_type];
+          } else {
+            return img_src + "missing_icon.png";
+          }
         }
-      }
-      
-      function setLinks(linkList, defaultPort, specialPorts = {}) {
-        let links = [];
-        for (let name of linkList) {
-          let port = specialPorts[name] !== undefined ? specialPorts[name] : defaultPort;
-          let linkDict = { 'name': name, 'port': port };
-          links.push(linkDict);
+          
+        function populateLoopDropdown() {
+          const dropdown = document.getElementById("airLoopDropdown");
+          const attributes = new Set();
+          hvac_data.forEach((loop) => attributes.add(loop.loop_name));
+
+          attributes.forEach((attribute) => {
+            const option = document.createElement("option");
+            option.value = option.textContent = attribute;
+            dropdown.appendChild(option);
+          });
         }
-        return links;
-      }
+        populateLoopDropdown();
 
-      function makeComponent(comp, compType, row, col, imageFile = null, specialPorts = {}, side = null) {
-        return {
-          'name': comp['object_name'],
-          'type': compType,
-          'side': (side !== null) ? side : comp['component_side'],
-          'row': row,
-          'column': col,
-          'before_objects': setLinks(comp['before_objects'], 'in', specialPorts),
-          'after_objects': setLinks(comp['after_objects'], 'out', specialPorts),
-          'image': imageFile
-        };
-      }
+        function populateNodeAttributeDropdown() {
+          const dropdown = document.getElementById("nodeAttributeDropdown");
+          const attributes = new Set();
 
-      function makeNode(comp, row, col, side = null) {
-        return makeComponent(comp, 'node', row, col, null, {}, side);
-      }
-
-      function makeEquipment(comp, row, col) {
-        return makeComponent(comp, 'equipment', row, col, assignImage(comp));
-      }
-
-      function makeOASystem(comp, row, col, outdoorName, reliefName) {
-        let specialPorts = { [outdoorName]: "outdoor", [reliefName]: "relief" };
-        return makeComponent(comp, 'oa_system', row, col, assignImage(comp), specialPorts);
-      }
-
-      function makeConnector(comp, row, col) {
-        return makeComponent(comp, 'connector', row, col);
-      }
-
-      function loopDimensions(loop) {
-        let boundary = loop['boundary_nodes'];
-        let components = loop["components"];
-
-        function calcDimensions(side) {
-          const scalar = side === "supply" ? -1 : 1;
-          let dimension = {
-            width: 0,
-            height:2 * scalar,
-            rows: [],
-            mainBranch: 0,
-          };
-
-          let comp = findComponent(components, boundary[`${side}_inlet`]);
-          let end_comp = findComponent(components, boundary[`${side}_outlet`]);
-          let afterObjectName;
-          dimension.width++;
-          while (comp !== end_comp) {
-            if (comp.object_type === 'OS_AirLoopHVAC_ZoneSplitter' || comp.object_type === 'OS_Connector_Splitter') {
-              dimension.rows = Array.from({ length: comp.after_objects.length }, (_, i) => 2 * (i + 1)).map(x => x * scalar);
-              const mid = Math.floor(dimension.rows.length / 2);
-              dimension.mainBranch = dimension.rows.length % 2 !== 0 ? dimension.rows[mid]: (dimension.rows[mid - 1] + dimension.rows[mid]) / 2;
-              dimension.height = dimension.rows[dimension.rows.length - 1];
-              afterObjectName = validObjectInLoop(components, comp, 'after_objects')
-            } else if (comp.object_type === 'OS_AirLoopHVAC_OutdoorAirSystem') {
-              dimension.reliefCol = dimension.width;
-              dimension.outdoorCol = dimension.width + 1;
-              dimension.numOutdoorComponents = 0;
-              dimension.numReliefComponents = 0;
-              components.forEach(comp => {
-                if (comp['component_side'] === "outdoor") {
-                    dimension.numOutdoorComponents++;
-                } else if (comp['component_side'] === "relief") {
-                    dimension.numReliefComponents++;
+          hvac_data.forEach((airLoop) => {
+            airLoop.components.forEach((component) => {
+              Object.keys(component).forEach((key) => {
+                if (key.startsWith("system_node")) {
+                  attributes.add(key);
                 }
               });
-              for (let objName of comp['after_objects']) {
-                let obj = findComponent(components, objName);
-                if (obj['component_side'] === 'supply') {
-                  afterObjectName = obj['object_name'];
-                }
-              }
-              dimension.width++;
-              dimension.mainBranch = -2;
-              dimension.height = (Math.max(dimension.numOutdoorComponents, dimension.numReliefComponents) + 2) * scalar;
-            } else {
-              afterObjectName = validObjectInLoop(components, comp, 'after_objects')
-            }
-            comp = findComponent(components, afterObjectName);
-            dimension.width++;
-
-
-          }
-          return dimension
-        }
-
-        let supplyDimensions = calcDimensions('supply')
-        let demandDimensions = calcDimensions('demand')
-        demandDimensions.height += 1
-        return {
-          totalWidth: Math.max(supplyDimensions.width, demandDimensions.width),
-          supplyDimensions,
-          demandDimensions
-        };
-      }
-
-      function defineGridData(loop) {
-        let boundary = loop['boundary_nodes'];
-        let components = loop["components"];
-        let dimensions = loopDimensions(loop)
-        let gridData = [];
-
-        // set Supply Inlet Node
-        let currentComp = findComponent(components, boundary['supply_inlet']);
-        let currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
-        gridData.push(makeNode(currentComp, -1, 1, 'supply_inlet'))
-        let column = 2;
-
-        // set rest of the components until supply outlet node
-        while (currentCompName !== boundary['supply_outlet']) {
-          currentComp = findComponent(components, currentCompName)
-
-          if (currentComp['object_type'] === "OS_Node") {
-            gridData.push(makeNode(currentComp, dimensions.supplyDimensions.mainBranch, column));
-            currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
-            column++;
-          } else if (currentComp['object_type'] === "OS_AirLoopHVAC_ZoneSplitter" || currentComp['object_type'] === "OS_Connector_Splitter") {
-            let mixer_type;
-            if (currentComp['object_type'] === "OS_AirLoopHVAC_ZoneSplitter") {
-              mixer_type = "OS_AirLoopHVAC_ZoneMixer";
-            } else if (currentComp['object_type'] === "OS_Connector_Splitter") {
-              mixer_type = "OS_Connector_Mixer";
-            }
-            gridData.push(makeConnector(currentComp, dimensions.supplyDimensions.mainBranch, column));
-            let finalBranchColumn = column;
-            let finalBranchObject;
-            for (let i = 0; i < currentComp.after_objects.length; i++) {
-              let branchObjectName = currentComp.after_objects[i];
-              let branchObject = findComponent(components, branchObjectName)
-              let branchColumn = column + 1
-              let mixer_reached = true
-              while (mixer_reached || branchColumn === 0) {
-                if (branchObject['object_type'] === mixer_type) {
-                  mixer_reached = false;
-                } else if (branchObject['object_type'] === "OS_Node") {
-                  gridData.push(makeNode(branchObject, dimensions.supplyDimensions.rows[i], branchColumn));
-                  branchObjectName = validObjectInLoop(components, branchObject, 'after_objects');
-                  branchObject = findComponent(components, branchObjectName);
-                  branchColumn ++;
-                } else {
-                  gridData.push(makeEquipment(branchObject, dimensions.supplyDimensions.rows[i], branchColumn, assignImage(branchObject)));
-                  branchObjectName = validObjectInLoop(components, branchObject, 'after_objects');
-                  branchObject = findComponent(components, branchObjectName);
-                  branchColumn ++;
-                }
-              }
-              finalBranchColumn = branchColumn
-              finalBranchObject = branchObject
-            }
-            column = finalBranchColumn;
-            currentComp = finalBranchObject;
-            gridData.push(makeConnector(currentComp, dimensions.supplyDimensions.mainBranch, column));
-            currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
-            column ++;
-          } else if (currentComp['object_type'] === "OS_AirLoopHVAC_OutdoorAirSystem") {
-            let outdoorName = '';
-            let reliefName = '';
-            for (let objName of currentComp['before_objects']) {
-              let obj = findComponent(components, objName);
-              if (obj['component_side'] === 'outdoor') {
-                gridData.push(makeNode(obj, dimensions.supplyDimensions.height, dimensions.supplyDimensions.outdoorCol));
-                outdoorName = obj['object_name'];
-              }
-            }
-            for (let objName of currentComp['after_objects']) {
-              let obj = findComponent(components, objName);
-              if (obj['component_side'] === 'supply') {
-                currentCompName = obj['object_name'];
-              } else if (obj['component_side'] === 'relief') {
-                gridData.push(makeNode(obj, dimensions.supplyDimensions.height, dimensions.supplyDimensions.reliefCol));
-                reliefName = obj['object_name']
-              }
-            }
-            gridData.push(makeOASystem(currentComp, dimensions.supplyDimensions.mainBranch, column, outdoorName, reliefName));
-            column += 2;
-          } else {
-            gridData.push(makeEquipment(currentComp, dimensions.supplyDimensions.mainBranch, column));
-            currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
-            column++;
-          }
-        }
-
-        // add supply outlet
-        column = dimensions.totalWidth;
-        currentComp = findComponent(components, currentCompName);
-        gridData.push(makeNode(currentComp, -1, column, 'supply_outlet'))
-
-        // set Demand Inlet Node
-        currentComp = findComponent(components, boundary['demand_inlet']);
-        currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
-        gridData.push(makeNode(currentComp, 1, column, 'demand_inlet'))
-        column --;
-
-        // set rest of the components until demand outlet node
-        while (currentCompName !== boundary['demand_outlet']) {
-          currentComp = findComponent(components, currentCompName)
-
-          if (currentComp['object_type'] === "OS_Node") {
-            gridData.push(makeNode(currentComp, dimensions.demandDimensions.mainBranch, column));
-            currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
-            column--;
-          } else if (currentComp['object_type'] === "OS_AirLoopHVAC_ZoneSplitter" || currentComp['object_type'] === "OS_Connector_Splitter") {
-            let mixer_type;
-            if (currentComp['object_type'] === "OS_AirLoopHVAC_ZoneSplitter") {
-              mixer_type = "OS_AirLoopHVAC_ZoneMixer";
-            } else if (currentComp['object_type'] === "OS_Connector_Splitter") {
-              mixer_type = "OS_Connector_Mixer";
-            }
-
-            gridData.push(makeConnector(currentComp, dimensions.demandDimensions.mainBranch, column));
-            let finalBranchColumn = column;
-            let finalBranchObject;
-            for (let i = 0; i < currentComp.after_objects.length; i++) {
-              let branchObjectName = currentComp.after_objects[i];
-              let branchObject = findComponent(components, branchObjectName)
-              let branchColumn = column - 1
-              let mixer_reached = true
-              while (mixer_reached || branchColumn === 0) {
-                if (branchObject['object_type'] === mixer_type) {
-                  mixer_reached = false;
-                } else if (branchObject['object_type'] === "OS_Node") {
-                  gridData.push(makeNode(branchObject, dimensions.demandDimensions.rows[i], branchColumn));
-                  branchObjectName = validObjectInLoop(components, branchObject, 'after_objects');
-                  branchObject = findComponent(components, branchObjectName);
-                  branchColumn --;
-                } else {
-                  gridData.push(makeEquipment(branchObject, dimensions.demandDimensions.rows[i], branchColumn, assignImage(branchObject)));
-                  branchObjectName = validObjectInLoop(components, branchObject, 'after_objects');
-                  branchObject = findComponent(components, branchObjectName);
-                  branchColumn --;
-                }
-              }
-              finalBranchColumn = branchColumn
-              finalBranchObject = branchObject
-            }
-            column = finalBranchColumn;
-            currentComp = finalBranchObject;
-            gridData.push(makeConnector(currentComp, dimensions.demandDimensions.mainBranch, column));
-            currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
-            column--;
-          } else {
-            gridData.push(makeEquipment(currentComp, dimensions.demandDimensions.mainBranch, column, assignImage(currentComp)));
-            currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
-            column--;
-          }
-        }
-
-        // add demand outlet
-        currentComp = findComponent(components, currentCompName);
-        gridData.push(makeNode(currentComp, 1, 1, 'demand_outlet'))
-
-        return gridData
-      }
-
-      // Create a JointJS graph
-      const graph = new joint.dia.Graph();
-
-      // Create a JointJS paper
-      const paper = new joint.dia.Paper({
-        el: document.getElementById('paper'),
-        model: graph,
-        width: 800,
-        height: 60,
-        // snapLinks: true,
-        embeddingMode: true,
-        background: {
-          color: '#F0F0F0'
-        },
-        interactive: function(cellView) {
-          if (cellView.model.isElement()) {
-            return { elementMove: false }; // Disable element movement
-          }
-          return true;
-        }
-      });
-
-      function changePaperDimensions(dimensions) {
-        let width = dimensions.totalWidth * 100
-        let height = ( -1 * (dimensions.supplyDimensions.height) + dimensions.demandDimensions.height ) * 100
-        paper.setDimensions(width, height)
-        paper.translate(-100, (-1 * (dimensions.supplyDimensions.height)) * 100)
-      }
-
-      const topPort= {position: { name: 'top' },markup: [{ tagName: 'rect' }]};
-      const bottomPort= {position: { name: 'bottom' },markup: [{ tagName: 'rect' }]};
-      const leftPort= {position: { name: 'left' },markup: [{ tagName: 'rect' }]};
-      const rightPort= {position: { name: 'right' },markup: [{ tagName: 'rect' }]};
-      const relativePort= {position: { name: 'relative' },markup: [{ tagName: 'rect' }]};
-
-      function setPortConfig(comp) {
-        let groups, items;
-        if (comp.side === "relief" || comp.side === "supply_inlet" || comp.side === "demand_outlet") {
-            groups = {"top": topPort, "bottom": bottomPort};
-            items = [{id: 'in', group: "bottom"},{id: 'out', group: "top"}];
-        } else if (comp.side === "outdoor" || comp.side === "supply_outlet" || comp.side === "demand_inlet") {
-            groups = {"top": topPort,"bottom": bottomPort};
-            items = [{id: 'in', group: "top"},{id: 'out', group: "bottom"}];
-        } else if (comp.side === "supply") {
-            groups = {"left": leftPort,"right": rightPort};
-            items = [{id: 'in', group: "left"},{id: 'out', group: "right"}];
-        } else if (comp.side === "demand") {
-            groups = {"left": leftPort,"right": rightPort};
-            items = [{id: 'in', group: "right"},{id: 'out', group: "left"}];
-        } else {
-          console.log("side not found")
-          return null;
-        }
-        return {groups, items};
-      }
-
-      function createNode(comp) {
-        const portConfig = setPortConfig(comp)
-        let node = new joint.shapes.standard.Ellipse({
-          id: comp.name,
-          size: {width: 25.5, height: 25.5},
-          position: {x: comp.column * 100 + 37.5, y: comp.row * 100 + 37.5},
-          attrs: {body: {fill: 'white'}},
-          ports: portConfig
-        });
-        node.addTo(graph);
-        return node;
-      }
-
-      function createEquipment(comp) {
-        const portConfig = setPortConfig(comp)
-        let equipment = new joint.shapes.standard.Image({
-          id: comp.name,
-          position: {x: comp.column * 100, y: comp.row * 100},
-          size: {width: 100, height: 100},
-          attrs: {image: {'xlink:href': comp.image}},
-          ports: portConfig
-        });
-        equipment.addTo(graph);
-        return equipment;
-      }
-
-      function createOASystem(comp) {
-        let oa_sys = new joint.shapes.standard.Image({
-          id: comp.name,
-          position: {x: comp.column * 100, y: comp.row * 100},
-          size: {width: 200, height: 100},
-          attrs: {image: {'xlink:href': comp.image}},
-          ports: {
-            groups: {"relative":relativePort},
-            items: [
-              {id: 'in',group: "relative",args: {x: '0%', y: '50%'}},
-              {id: 'relief',group: "relative",args: {x: '25%', y: '0%'}},
-              {id: 'outdoor',group: "relative",args: {x: '75%', y: '0%'}},
-              {id: 'out',group: "relative",args: {x: '100%', y: '50%'}}
-            ]
-          }
-        });
-        oa_sys.addTo(graph);
-        return oa_sys;
-      }
-
-      function createConnector(comp) {
-        const portConfig = setPortConfig(comp)
-        let connector = new joint.shapes.standard.Rectangle({
-          id: comp.name,
-          size: {width: 2, height: 2},
-          position: {x: comp.column * 100 + 48, y: comp.row * 100 + 48},
-          attrs: {body: {fill: 'black'}},
-          ports: portConfig
-        });
-        connector.addTo(graph);
-        return connector;
-      }
-
-      // Create elements from json
-      function createElements(gridData) {
-        const elements = {}
-        gridData.forEach(function (component) {
-          let element;
-          if (component.type === 'node') {
-            element = createNode(component)
-          } else if (component.type === 'equipment') {
-            element = createEquipment(component)
-          } else if (component.type === 'connector') {
-            element = createConnector(component)
-          } else if (component.type === 'oa_system') {
-            element = createOASystem(component)
-          }
-          elements[component.name] = element;
-        });
-
-
-        // Link elements from json, connecting to the referenced ports
-        gridData.forEach(function (component) {
-          if (component.after_objects) {
-            component.after_objects.forEach(function (afterComponent) {
-              const targetComponent = gridData.find(comp => comp.name === afterComponent.name);
-              if (targetComponent && targetComponent.before_objects) {
-                const targetPort = targetComponent.before_objects.find(before => before && before.name === component.name);
-                if (targetPort) {
-                  const link = new joint.shapes.standard.Link();
-                  link.source({id: elements[component.name], port: afterComponent.port});
-                  link.target({id: elements[afterComponent.name], port: targetPort.port});
-                  link.router('rightAngle', {margin: 1});
-                  link.attr({line: {stroke: 'black', strokeWidth: 4, targetMarker: null, shapeRendering: 'crispEdges'}})
-                  link.addTo(graph);
-                }
-              }
             });
-          }
-        });
-      }
-
-      const activeNodes = {};
-      let usedIndices = [];
-      function clearActiveNodes() {
-        Object.keys(activeNodes).forEach(function(key) {
-          delete activeNodes[key];
-        });
-        usedIndices = [];
-      }
-
-      // plot activeNodes on click
-      paper.on('element:pointerclick', function(elementView) {
-        const element = elementView.model;
-        let loopName = document.getElementById("airLoopDropdown").value;
-        let attributeName = document.getElementById("nodeAttributeDropdown").value;
-        let NodeValues = getNodeValues(
-          hvac_data,
-          loopName,
-          element.id,
-          attributeName
-        );
-        if (NodeValues) {
-          if (activeNodes[element.id]) {
-            // Node is active, deactivate it
-            const nodeInfo = activeNodes[element.id];
-            delete activeNodes[element.id];
-            element.attr('body/fill', 'white');
-
-            // Release the index to be reused
-            if (nodeInfo && nodeInfo.hasOwnProperty('index')) {
-              const index = nodeInfo.index;
-              const indexPos = usedIndices.indexOf(index);
-              if (indexPos !== -1) {
-                usedIndices.splice(indexPos, 1);
-              }
-            }
-          } else {
-            const index = getNextUnusedIndex();
-            const color = getColorById(index)
-            activeNodes[element.id] = {"nodeName": element.id, NodeValues, color, index}
-            element.attr('body/fill', color);
-            // Mark index as used
-            usedIndices.push(index);
-          }
-          plotNodeValues(activeNodes);
-          console.log(usedIndices)
-        }
-      });
-
-      function getNodeValues(hvac_data, loopName, nodeName, selectedKey) {
-        selectedLoopData = hvac_data.find(
-          (hash) => hash.loop_name === loopName
-        );
-        selectedNode = selectedLoopData.components.find(
-          (hash) => hash.object_name === nodeName
-        );
-        return selectedNode[selectedKey];
-      }
-
-      // Function to get the next available index
-      function getNextUnusedIndex() {
-        let index = 0;
-        while (usedIndices.includes(index)) {
-          index++;
-        }
-        return index;
-      }
-
-      // set initial loop and plot
-      let loopName = document.getElementById("airLoopDropdown").value
-      let selectedLoopData = hvac_data.find((hash) => hash.loop_name === loopName);
-      plotNodeValues(activeNodes)
-      let dimensions = loopDimensions(selectedLoopData)
-      changePaperDimensions(dimensions)
-      let gridData = defineGridData(selectedLoopData)
-      createElements(gridData)
-
-      function selectLoopEvent() {
-        var dropdown = document.getElementById("airLoopDropdown");
-
-        // Add change event listener to the dropdown
-        dropdown.addEventListener("change", function () {
-		  // clear previous loop
-		  graph.clear();
-
-          // Get the selected option value
-          var selectedOption = dropdown.options[dropdown.selectedIndex].value;
-          console.log("Regenerating grid with option value:", selectedOption);
-
-          // Clear the content of activeNodes
-          clearActiveNodes();
-          plotNodeValues(activeNodes)
-
-          // Call function to regenerate the grid
-          let selectedLoopData = hvac_data.find((hash) => hash.loop_name === selectedOption);
-          let dimensions = loopDimensions(selectedLoopData);
-          // console.log(dimensions);
-          changePaperDimensions(dimensions);
-          let gridData = defineGridData(selectedLoopData);
-          createElements(gridData);
-        });
-      }
-      function selectAttributeEvent() {
-        var dropdown = document.getElementById("nodeAttributeDropdown");
-
-        // Add change event listener to the dropdown
-        dropdown.addEventListener("change", function () {
-          clearActiveNodes()
-          plotNodeValues(activeNodes)
-        });
-      }
-      function plotNodeValues(data) {
-        let data_array = Object.values(data);
-
-        // Using lower snake case for D3 selection elements
-
-        /* SETUP PLOT DIMENSIONS */
-
-        const svgWidth = 1000;
-        const svgHeight = 400;
-
-        const margin = { top: 20, right: 50, bottom: 20, left: 50 };
-        const contextPadding = 50;
-
-        const contextHeight = 50;
-        const plotHeight =
-          svgHeight -
-          margin.top -
-          margin.bottom -
-          contextHeight -
-          contextPadding;
-
-        const plotWidth = svgWidth - margin.left - margin.right;
-
-        /* FUNCTIONS AND MISC SETUP */
-        function bindD3Element(parent, childtype, classname) {
-          let selection;
-          if (typeof parent.querySelectorAll === "function") {
-            selection = d3.select(parent);
-          } else {
-            selection = parent;
-          }
-          return selection
-            .selectAll(`.${classname}`)
-            .data([0])
-            .join(childtype)
-            .attr("class", classname);
-        }
-        // Define the start and end dates for one year starting on January 1st
-
-        const startDate = new Date(2023, 0, 1);
-        const endDate = new Date(2024, 0, 1);
-
-        const clipid = Math.floor(Math.random() * 1e6) + "-clip";
-
-        const xScale = d3
-          .scaleTime()
-          .domain([startDate, endDate])
-          .range([0, plotWidth]);
-
-        const contextXScale = d3
-          .scaleTime()
-          .domain([startDate, endDate])
-          .range([0, plotWidth]);
-
-        const yMax = d3.max(data_array, (d) => d3.max(d.NodeValues));
-        const yMin = d3.min(data_array, (d) => d3.min(d.NodeValues));
-
-        const contextYScale = d3
-          .scaleLinear()
-          .domain([yMin, yMax])
-          .range([contextHeight, 0]);
-
-        const yScale = d3
-          .scaleLinear()
-          .domain([yMin, yMax])
-          .range([plotHeight, 0]);
-
-        // Create svg structure
-        const plot_container = d3.select("#plot");
-
-        const svg = bindD3Element(plot_container, "svg", "svg")
-          .attr("width", svgWidth)
-          .attr("height", svgHeight);
-
-        const defs = bindD3Element(svg, "defs", "defs");
-
-        const plot_g = bindD3Element(svg, "g", "plot-g").attr(
-          "transform",
-          `translate(${margin.left},${margin.top})`
-        );
-
-        const plot_lines_g = bindD3Element(plot_g, "g", "lines-g").attr(
-          "clip-path",
-          `url(#${clipid})`
-        );
-
-        const plot_axis_g = bindD3Element(plot_g, "g", "axis-g");
-
-        const context_plot_g = bindD3Element(svg, "g", "context-plot-g").attr(
-          "transform",
-          `translate(${margin.left},${
-            margin.top + plotHeight + contextPadding
-          })`
-        );
-
-        const context_plot_lines_g = bindD3Element(
-          context_plot_g,
-          "g",
-          "context-lines-g"
-        ).attr("pointer-events", "none");
-
-        const context_plot_axis_g = bindD3Element(
-          context_plot_g,
-          "g",
-          "context-axis-g"
-        );
-
-        const x_line = bindD3Element(plot_g, "line", "x-line")
-          .attr("class", "x-line")
-          .attr("stroke", "black")
-          .attr("stroke-dasharray", "4, 4")
-          .attr("y1", 0)
-          .attr("y2", plotHeight)
-          .style("opacity", 0);
-
-        const hover_g = bindD3Element(plot_g, "g", "hover-g").style(
-          "opacity",
-          0
-        );
-        const hover_rect = bindD3Element(hover_g, "rect", "hover-rect")
-          .attr("width", plotWidth)
-          .attr("height", plotHeight);
-
-        const tooltip_div = bindD3Element(plot_container, "div", "tooltip-div")
-          .style("opacity", 0)
-          .style("background-color", "rgba(255,255,255,0.95)")
-          .style("padding", "15px")
-          .style("position", "absolute");
-
-        const x_axis_g = bindD3Element(plot_axis_g, "g", "x-axis-g").attr(
-          "transform",
-          `translate(${0},${plotHeight})`
-        );
-        const y_axis_g = bindD3Element(plot_axis_g, "g", "y-axis-g");
-
-        const context_x_axis_g = bindD3Element(
-          context_plot_axis_g,
-          "g",
-          "context-x-axis-g"
-        ).attr("transform", `translate(${0},${contextHeight})`);
-
-        const context_y_axis_g = bindD3Element(
-          context_plot_axis_g,
-          "g",
-          "context-y-axis-g"
-        );
-
-
-        const context_brush_g = bindD3Element(context_plot_g, "g", "brush");
-
-        const clip_path = bindD3Element(defs, "clipPath", "clip-path").attr(
-          "id",
-          clipid
-        );
-
-        const clip_rect = bindD3Element(clip_path, "rect", "clip-rect")
-          .join("rect")
-          .attr("width", plotWidth)
-          .attr("height", plotHeight)
-          .attr("x", 0)
-          .attr("y", 0);
-
-        /* CALL AXIS FUNCTIONS */
-        x_axis_g.call(
-          d3
-            .axisBottom(xScale)
-            .ticks(d3.timeMonth.every(1))
-            .tickFormat(d3.timeFormat("%b"))
-        );
-        y_axis_g.call(d3.axisLeft(yScale));
-
-        context_x_axis_g.call(
-          d3
-            .axisBottom(xScale)
-            .ticks(d3.timeMonth.every(1))
-            .tickFormat(d3.timeFormat("%b"))
-        );
-
-        /* LINE FUNCTIONS */
-
-        const createLine = function () {
-          plot_lines_g
-            .selectAll(".series-line")
-            .data(data_array)
-            .join("path")
-            .attr("class", "series-line")
-            .attr("d", (d, i) => {
-              return d3
-                .line()
-                .x((d, i) => xScale(new Date(2023, 0, 1, i + 1)))
-                .y((d) => yScale(d))(d.NodeValues);
-            })
-            .style("stroke-width", "2px")
-            .style("fill", "none")
-            .style("stroke", (d, i) => d.color);
-        };
-
-        const createContextLine = function () {
-          context_plot_lines_g
-            .selectAll(".series-line")
-            .data(data_array)
-            .join("path")
-            .attr("class", "series-line")
-            .attr("d", (d, i) => {
-              return d3
-                .line()
-                .x((d, i) => xScale(new Date(2023, 0, 1, i + 1)))
-                .y((d) => contextYScale(d))(d.NodeValues);
-            })
-            .style("stroke-width", "2px")
-            .style("fill", "none")
-            .style("stroke", (d, i) => d.color);
-        };
-
-        createLine();
-        createContextLine();
-
-        /* HANDLE HOVER */
-
-        function mouseOut() {
-          x_line.style("opacity", 0);
-          tooltip_div.style("opacity", 0);
-        }
-
-        function mouseOver(e) {
-          x_line.style("opacity", 1);
-          tooltip_div.style("opacity", 1);
-        }
-
-        function mouseMove(e) {
-          let xdate = xScale.invert(d3.pointer(e)[0]);
-
-          // hack to get closest index from 8760 hour. probably a much better way to do this.
-
-          let [start, end] = xScale.domain();
-
-          let domain_fraction =
-            (xdate.getTime() - start.getTime()) /
-            (end.getTime() - start.getTime());
-
-          let selected_date = new Date(
-            startDate.getTime() +
-              (start.getTime() - startDate.getTime()) +
-              domain_fraction * (end.getTime() - start.getTime())
-          );
-
-          let annual_fraction =
-            (selected_date.getTime() - startDate.getTime()) /
-            (endDate.getTime() - startDate.getTime());
-
-          let closest_idx = Math.round(annual_fraction * 8760);
-
-          let closest_date = new Date(
-            startDate.getTime() + closest_idx * 3.6e6
-          );
-
-          let pointarray = [];
-
-          data_array.forEach((d, i) => {
-            pointarray.push(d.NodeValues[closest_idx]);
           });
 
-          x_line
-            .style("opacity", 1)
-            .attr("x1", xScale(xdate))
-            .attr("x2", xScale(xdate));
+          attributes.forEach((attribute) => {
+            const option = document.createElement("option");
+            option.value = option.textContent = attribute;
+            dropdown.appendChild(option);
+          });
+        }
+        populateNodeAttributeDropdown();
 
-          tooltip_div
-            .style(
-              "left",
-              20 + event.pageX / window.innerWidth + event.pageX + "px"
-            )
-            .style("top", 20 + event.pageY + "px")
-            .style("transition", "left 100ms, top 100ms")
-            .style("z-index", 999)
-            .style("opacity", 0.9).html(`
-                        <div>
-                            <div style="
-                            padding: 5px;
-                            margin-left: 5px;
-                            ">
-                                ${d3.timeFormat("%B %d %H:%M")(closest_date)}
-                            </div>
-                            ${pointarray
-                              .map((d, i) => {
-                                let node_name = data_array[i].nodeName;
-                                let node_val = d;
-
-                                return `
-                                <div
-                                style="
-                                opacity: 1.0;
-
-                                overflow: hidden;
-                                white-space: nowrap';
-                                ">
-                                    <div class='tooltip-rect' style=
-                                    "
-                                    display: inline-block;
-                                    width: 20px;
-                                    background-color: ${data_array[i].color};
-                                    height: 20px;
-                                    margin-left: 10px;
-                                    margin-right: 10px;
-                                    transition: opacity 200ms;
-                                    box-sizing: border-box;
-                                    border-radius: 2px;
-                                    position: relative;
-                                    top: 5px
-                                    "
-                                    ></div>
-                                    <div style="display: inline-block">${node_name}: ${node_val} </div>
-                              </div>`;
-                              })
-                              .join("")}
-                          </div>`);
+        function findComponent(comps, objName) {
+          const component = comps.find(comp => comp.object_name === objName);
+          if (!component) {
+            console.log(objName + " component not found");
+          }
+          return component;
         }
 
-        hover_rect.on("mouseover", mouseOver);
-        hover_rect.on("mouseout", mouseOut);
-        hover_rect.on("mousemove", mouseMove);
-
-        /* HANDLE ZOOM & BRUSH */
-
-        const brush = d3
-          .brushX()
-          .extent([
-            [0, 0],
-            [plotWidth, contextHeight],
-          ])
-          .on("brush end", brushed);
-
-        const zoomFunc = d3
-          .zoom()
-          .scaleExtent([1, Infinity])
-          .translateExtent([
-            [0, 0],
-            [plotWidth, plotHeight],
-          ])
-          .extent([
-            [0, 0],
-            [plotWidth, plotHeight],
-          ])
-          .on("zoom", zoomed);
-
-        let idleTimeout;
-        let idleDelay = 350;
-
-        function idled() {
-          idleTimeout = null;
+        // returns the first before/after object in the same loop
+        function validObjectInLoop(comps, component, order='after_objects') {
+          let check_component;
+          let valid_component_name;
+          let i = 0;
+          while (!valid_component_name) {
+              check_component = comps.some(comp => comp.object_name === component.after_objects[i]);
+              if (check_component) {
+                  valid_component_name = component.after_objects[i];
+              }
+              i++
+          }
+          if (!valid_component_name) {
+              console.log(`No objects in ${order} for ${component.object_name} found in this loop`);
+          } else{
+              return valid_component_name;
+          }
+        }
+        
+        function setLinks(linkList, defaultPort, specialPorts = {}) {
+          let links = [];
+          for (let name of linkList) {
+            let port = specialPorts[name] !== undefined ? specialPorts[name] : defaultPort;
+            let linkDict = { 'name': name, 'port': port };
+            links.push(linkDict);
+          }
+          return links;
         }
 
-        function brushed(event) {
-          if (event.sourceEvent && event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
-          var s = event.selection || contextXScale.range();
+        function makeComponent(comp, compType, row, col, imageFile = null, specialPorts = {}, side = null) {
+          return {
+            'name': comp['object_name'],
+            'type': compType,
+            'side': (side !== null) ? side : comp['component_side'],
+            'row': row,
+            'column': col,
+            'before_objects': setLinks(comp['before_objects'], 'in', specialPorts),
+            'after_objects': setLinks(comp['after_objects'], 'out', specialPorts),
+            'image': imageFile
+          };
+        }
 
-          let xdomain = s.map(contextXScale.invert, contextXScale);
-          xScale.domain(xdomain);
+        function makeNode(comp, row, col, side = null) {
+          return makeComponent(comp, 'node', row, col, null, {}, side);
+        }
 
-          createLine(xdomain);
+        function makeEquipment(comp, row, col) {
+          return makeComponent(comp, 'equipment', row, col, assignImage(comp));
+        }
+
+        function makeOASystem(comp, row, col, outdoorName, reliefName) {
+          let specialPorts = { [outdoorName]: "outdoor", [reliefName]: "relief" };
+          return makeComponent(comp, 'oa_system', row, col, assignImage(comp), specialPorts);
+        }
+
+        function makeConnector(comp, row, col) {
+          return makeComponent(comp, 'connector', row, col);
+        }
+
+        function loopDimensions(loop) {
+          let boundary = loop['boundary_nodes'];
+          let components = loop["components"];
+
+          function calcDimensions(side) {
+            const scalar = side === "supply" ? -1 : 1;
+            let dimension = {
+              width: 0,
+              height:2 * scalar,
+              rows: [],
+              mainBranch: 0,
+            };
+
+            let comp = findComponent(components, boundary[`${side}_inlet`]);
+            let end_comp = findComponent(components, boundary[`${side}_outlet`]);
+            let afterObjectName;
+            dimension.width++;
+            while (comp !== end_comp) {
+              if (comp.object_type === 'OS_AirLoopHVAC_ZoneSplitter' || comp.object_type === 'OS_Connector_Splitter') {
+                dimension.rows = Array.from({ length: comp.after_objects.length }, (_, i) => 2 * (i + 1)).map(x => x * scalar);
+                const mid = Math.floor(dimension.rows.length / 2);
+                dimension.mainBranch = dimension.rows.length % 2 !== 0 ? dimension.rows[mid]: (dimension.rows[mid - 1] + dimension.rows[mid]) / 2;
+                dimension.height = dimension.rows[dimension.rows.length - 1];
+                afterObjectName = validObjectInLoop(components, comp, 'after_objects')
+              } else if (comp.object_type === 'OS_AirLoopHVAC_OutdoorAirSystem') {
+                dimension.reliefCol = dimension.width;
+                dimension.outdoorCol = dimension.width + 1;
+                dimension.numOutdoorComponents = 0;
+                dimension.numReliefComponents = 0;
+                components.forEach(comp => {
+                  if (comp['component_side'] === "outdoor") {
+                      dimension.numOutdoorComponents++;
+                  } else if (comp['component_side'] === "relief") {
+                      dimension.numReliefComponents++;
+                  }
+                });
+                for (let objName of comp['after_objects']) {
+                  let obj = findComponent(components, objName);
+                  if (obj['component_side'] === 'supply') {
+                    afterObjectName = obj['object_name'];
+                  }
+                }
+                dimension.width++;
+                dimension.mainBranch = -2;
+                dimension.height = (Math.max(dimension.numOutdoorComponents, dimension.numReliefComponents) + 2) * scalar;
+              } else {
+                afterObjectName = validObjectInLoop(components, comp, 'after_objects')
+              }
+              comp = findComponent(components, afterObjectName);
+              dimension.width++;
+
+
+            }
+            return dimension
+          }
+
+          let supplyDimensions = calcDimensions('supply')
+          let demandDimensions = calcDimensions('demand')
+          demandDimensions.height += 1
+          return {
+            totalWidth: Math.max(supplyDimensions.width, demandDimensions.width),
+            supplyDimensions,
+            demandDimensions
+          };
+        }
+
+        function defineGridData(loop) {
+          let boundary = loop['boundary_nodes'];
+          let components = loop["components"];
+          let dimensions = loopDimensions(loop)
+          let gridData = [];
+
+          // set Supply Inlet Node
+          let currentComp = findComponent(components, boundary['supply_inlet']);
+          let currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
+          gridData.push(makeNode(currentComp, -1, 1, 'supply_inlet'))
+          let column = 2;
+
+          // set rest of the components until supply outlet node
+          while (currentCompName !== boundary['supply_outlet']) {
+            currentComp = findComponent(components, currentCompName)
+
+            if (currentComp['object_type'] === "OS_Node") {
+              gridData.push(makeNode(currentComp, dimensions.supplyDimensions.mainBranch, column));
+              currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
+              column++;
+            } else if (currentComp['object_type'] === "OS_AirLoopHVAC_ZoneSplitter" || currentComp['object_type'] === "OS_Connector_Splitter") {
+              let mixer_type;
+              if (currentComp['object_type'] === "OS_AirLoopHVAC_ZoneSplitter") {
+                mixer_type = "OS_AirLoopHVAC_ZoneMixer";
+              } else if (currentComp['object_type'] === "OS_Connector_Splitter") {
+                mixer_type = "OS_Connector_Mixer";
+              }
+              gridData.push(makeConnector(currentComp, dimensions.supplyDimensions.mainBranch, column));
+              let finalBranchColumn = column;
+              let finalBranchObject;
+              for (let i = 0; i < currentComp.after_objects.length; i++) {
+                let branchObjectName = currentComp.after_objects[i];
+                let branchObject = findComponent(components, branchObjectName)
+                let branchColumn = column + 1
+                let mixer_reached = true
+                while (mixer_reached || branchColumn === 0) {
+                  if (branchObject['object_type'] === mixer_type) {
+                    mixer_reached = false;
+                  } else if (branchObject['object_type'] === "OS_Node") {
+                    gridData.push(makeNode(branchObject, dimensions.supplyDimensions.rows[i], branchColumn));
+                    branchObjectName = validObjectInLoop(components, branchObject, 'after_objects');
+                    branchObject = findComponent(components, branchObjectName);
+                    branchColumn ++;
+                  } else {
+                    gridData.push(makeEquipment(branchObject, dimensions.supplyDimensions.rows[i], branchColumn, assignImage(branchObject)));
+                    branchObjectName = validObjectInLoop(components, branchObject, 'after_objects');
+                    branchObject = findComponent(components, branchObjectName);
+                    branchColumn ++;
+                  }
+                }
+                finalBranchColumn = branchColumn
+                finalBranchObject = branchObject
+              }
+              column = finalBranchColumn;
+              currentComp = finalBranchObject;
+              gridData.push(makeConnector(currentComp, dimensions.supplyDimensions.mainBranch, column));
+              currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
+              column ++;
+            } else if (currentComp['object_type'] === "OS_AirLoopHVAC_OutdoorAirSystem") {
+              let outdoorName = '';
+              let reliefName = '';
+              for (let objName of currentComp['before_objects']) {
+                let obj = findComponent(components, objName);
+                if (obj['component_side'] === 'outdoor') {
+                  gridData.push(makeNode(obj, dimensions.supplyDimensions.height, dimensions.supplyDimensions.outdoorCol));
+                  outdoorName = obj['object_name'];
+                }
+              }
+              for (let objName of currentComp['after_objects']) {
+                let obj = findComponent(components, objName);
+                if (obj['component_side'] === 'supply') {
+                  currentCompName = obj['object_name'];
+                } else if (obj['component_side'] === 'relief') {
+                  gridData.push(makeNode(obj, dimensions.supplyDimensions.height, dimensions.supplyDimensions.reliefCol));
+                  reliefName = obj['object_name']
+                }
+              }
+              gridData.push(makeOASystem(currentComp, dimensions.supplyDimensions.mainBranch, column, outdoorName, reliefName));
+              column += 2;
+            } else {
+              gridData.push(makeEquipment(currentComp, dimensions.supplyDimensions.mainBranch, column));
+              currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
+              column++;
+            }
+          }
+
+          // add supply outlet
+          column = dimensions.totalWidth;
+          currentComp = findComponent(components, currentCompName);
+          gridData.push(makeNode(currentComp, -1, column, 'supply_outlet'))
+
+          // set Demand Inlet Node
+          currentComp = findComponent(components, boundary['demand_inlet']);
+          currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
+          gridData.push(makeNode(currentComp, 1, column, 'demand_inlet'))
+          column --;
+
+          // set rest of the components until demand outlet node
+          while (currentCompName !== boundary['demand_outlet']) {
+            currentComp = findComponent(components, currentCompName)
+
+            if (currentComp['object_type'] === "OS_Node") {
+              gridData.push(makeNode(currentComp, dimensions.demandDimensions.mainBranch, column));
+              currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
+              column--;
+            } else if (currentComp['object_type'] === "OS_AirLoopHVAC_ZoneSplitter" || currentComp['object_type'] === "OS_Connector_Splitter") {
+              let mixer_type;
+              if (currentComp['object_type'] === "OS_AirLoopHVAC_ZoneSplitter") {
+                mixer_type = "OS_AirLoopHVAC_ZoneMixer";
+              } else if (currentComp['object_type'] === "OS_Connector_Splitter") {
+                mixer_type = "OS_Connector_Mixer";
+              }
+
+              gridData.push(makeConnector(currentComp, dimensions.demandDimensions.mainBranch, column));
+              let finalBranchColumn = column;
+              let finalBranchObject;
+              for (let i = 0; i < currentComp.after_objects.length; i++) {
+                let branchObjectName = currentComp.after_objects[i];
+                let branchObject = findComponent(components, branchObjectName)
+                let branchColumn = column - 1
+                let mixer_reached = true
+                while (mixer_reached || branchColumn === 0) {
+                  if (branchObject['object_type'] === mixer_type) {
+                    mixer_reached = false;
+                  } else if (branchObject['object_type'] === "OS_Node") {
+                    gridData.push(makeNode(branchObject, dimensions.demandDimensions.rows[i], branchColumn));
+                    branchObjectName = validObjectInLoop(components, branchObject, 'after_objects');
+                    branchObject = findComponent(components, branchObjectName);
+                    branchColumn --;
+                  } else {
+                    gridData.push(makeEquipment(branchObject, dimensions.demandDimensions.rows[i], branchColumn, assignImage(branchObject)));
+                    branchObjectName = validObjectInLoop(components, branchObject, 'after_objects');
+                    branchObject = findComponent(components, branchObjectName);
+                    branchColumn --;
+                  }
+                }
+                finalBranchColumn = branchColumn
+                finalBranchObject = branchObject
+              }
+              column = finalBranchColumn;
+              currentComp = finalBranchObject;
+              gridData.push(makeConnector(currentComp, dimensions.demandDimensions.mainBranch, column));
+              currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
+              column--;
+            } else {
+              gridData.push(makeEquipment(currentComp, dimensions.demandDimensions.mainBranch, column, assignImage(currentComp)));
+              currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
+              column--;
+            }
+          }
+
+          // add demand outlet
+          currentComp = findComponent(components, currentCompName);
+          gridData.push(makeNode(currentComp, 1, 1, 'demand_outlet'))
+
+          return gridData
+        }
+
+        // Create a JointJS graph
+        const graph = new joint.dia.Graph();
+
+        // Create a JointJS paper
+        const paper = new joint.dia.Paper({
+          el: document.getElementById('paper'),
+          model: graph,
+          width: 800,
+          height: 60,
+          // snapLinks: true,
+          embeddingMode: true,
+          background: {
+            color: '#F0F0F0'
+          },
+          interactive: function(cellView) {
+            if (cellView.model.isElement()) {
+              return { elementMove: false }; // Disable element movement
+            }
+            return true;
+          }
+        });
+
+        function changePaperDimensions(dimensions) {
+          let width = dimensions.totalWidth * 100
+          let height = ( -1 * (dimensions.supplyDimensions.height) + dimensions.demandDimensions.height ) * 100
+          paper.setDimensions(width, height)
+          paper.translate(-100, (-1 * (dimensions.supplyDimensions.height)) * 100)
+        }
+
+        const topPort= {position: { name: 'top' },markup: [{ tagName: 'rect' }]};
+        const bottomPort= {position: { name: 'bottom' },markup: [{ tagName: 'rect' }]};
+        const leftPort= {position: { name: 'left' },markup: [{ tagName: 'rect' }]};
+        const rightPort= {position: { name: 'right' },markup: [{ tagName: 'rect' }]};
+        const relativePort= {position: { name: 'relative' },markup: [{ tagName: 'rect' }]};
+
+        function setPortConfig(comp) {
+          let groups, items;
+          if (comp.side === "relief" || comp.side === "supply_inlet" || comp.side === "demand_outlet") {
+              groups = {"top": topPort, "bottom": bottomPort};
+              items = [{id: 'in', group: "bottom"},{id: 'out', group: "top"}];
+          } else if (comp.side === "outdoor" || comp.side === "supply_outlet" || comp.side === "demand_inlet") {
+              groups = {"top": topPort,"bottom": bottomPort};
+              items = [{id: 'in', group: "top"},{id: 'out', group: "bottom"}];
+          } else if (comp.side === "supply") {
+              groups = {"left": leftPort,"right": rightPort};
+              items = [{id: 'in', group: "left"},{id: 'out', group: "right"}];
+          } else if (comp.side === "demand") {
+              groups = {"left": leftPort,"right": rightPort};
+              items = [{id: 'in', group: "right"},{id: 'out', group: "left"}];
+          } else {
+            console.log("side not found")
+            return null;
+          }
+          return {groups, items};
+        }
+
+        function createNode(comp) {
+          const portConfig = setPortConfig(comp)
+          let node = new joint.shapes.standard.Ellipse({
+            id: comp.name,
+            size: {width: 25.5, height: 25.5},
+            position: {x: comp.column * 100 + 37.5, y: comp.row * 100 + 37.5},
+            attrs: {body: {fill: 'white'}},
+            ports: portConfig
+          });
+          node.addTo(graph);
+          return node;
+        }
+
+        function createEquipment(comp) {
+          const portConfig = setPortConfig(comp)
+          let equipment = new joint.shapes.standard.Image({
+            id: comp.name,
+            position: {x: comp.column * 100, y: comp.row * 100},
+            size: {width: 100, height: 100},
+            attrs: {image: {'xlink:href': comp.image}},
+            ports: portConfig
+          });
+          equipment.addTo(graph);
+          return equipment;
+        }
+
+        function createOASystem(comp) {
+          let oa_sys = new joint.shapes.standard.Image({
+            id: comp.name,
+            position: {x: comp.column * 100, y: comp.row * 100},
+            size: {width: 200, height: 100},
+            attrs: {image: {'xlink:href': comp.image}},
+            ports: {
+              groups: {"relative":relativePort},
+              items: [
+                {id: 'in',group: "relative",args: {x: '0%', y: '50%'}},
+                {id: 'relief',group: "relative",args: {x: '25%', y: '0%'}},
+                {id: 'outdoor',group: "relative",args: {x: '75%', y: '0%'}},
+                {id: 'out',group: "relative",args: {x: '100%', y: '50%'}}
+              ]
+            }
+          });
+          oa_sys.addTo(graph);
+          return oa_sys;
+        }
+
+        function createConnector(comp) {
+          const portConfig = setPortConfig(comp)
+          let connector = new joint.shapes.standard.Rectangle({
+            id: comp.name,
+            size: {width: 2, height: 2},
+            position: {x: comp.column * 100 + 48, y: comp.row * 100 + 48},
+            attrs: {body: {fill: 'black'}},
+            ports: portConfig
+          });
+          connector.addTo(graph);
+          return connector;
+        }
+
+        // Create elements from json
+        function createElements(gridData) {
+          const elements = {}
+          gridData.forEach(function (component) {
+            let element;
+            if (component.type === 'node') {
+              element = createNode(component)
+            } else if (component.type === 'equipment') {
+              element = createEquipment(component)
+            } else if (component.type === 'connector') {
+              element = createConnector(component)
+            } else if (component.type === 'oa_system') {
+              element = createOASystem(component)
+            }
+            elements[component.name] = element;
+          });
+
+
+          // Link elements from json, connecting to the referenced ports
+          gridData.forEach(function (component) {
+            if (component.after_objects) {
+              component.after_objects.forEach(function (afterComponent) {
+                const targetComponent = gridData.find(comp => comp.name === afterComponent.name);
+                if (targetComponent && targetComponent.before_objects) {
+                  const targetPort = targetComponent.before_objects.find(before => before && before.name === component.name);
+                  if (targetPort) {
+                    const link = new joint.shapes.standard.Link();
+                    link.source({id: elements[component.name], port: afterComponent.port});
+                    link.target({id: elements[afterComponent.name], port: targetPort.port});
+                    link.router('rightAngle', {margin: 1});
+                    link.attr({line: {stroke: 'black', strokeWidth: 4, targetMarker: null, shapeRendering: 'crispEdges'}})
+                    link.addTo(graph);
+                  }
+                }
+              });
+            }
+          });
+        }
+
+        const activeNodes = {};
+        let usedIndices = [];
+        function clearActiveNodes() {
+          Object.keys(activeNodes).forEach(function(key) {
+            delete activeNodes[key];
+          });
+          usedIndices = [];
+        }
+
+        // plot activeNodes on click
+        paper.on('element:pointerclick', function(elementView) {
+          const element = elementView.model;
+          let loopName = document.getElementById("airLoopDropdown").value;
+          let attributeName = document.getElementById("nodeAttributeDropdown").value;
+          let NodeValues = getNodeValues(
+            hvac_data,
+            loopName,
+            element.id,
+            attributeName
+          );
+          if (NodeValues) {
+            if (activeNodes[element.id]) {
+              // Node is active, deactivate it
+              const nodeInfo = activeNodes[element.id];
+              delete activeNodes[element.id];
+              element.attr('body/fill', 'white');
+
+              // Release the index to be reused
+              if (nodeInfo && nodeInfo.hasOwnProperty('index')) {
+                const index = nodeInfo.index;
+                const indexPos = usedIndices.indexOf(index);
+                if (indexPos !== -1) {
+                  usedIndices.splice(indexPos, 1);
+                }
+              }
+            } else {
+              const index = getNextUnusedIndex();
+              const color = getColorById(index)
+              activeNodes[element.id] = {"nodeName": element.id, NodeValues, color, index}
+              element.attr('body/fill', color);
+              // Mark index as used
+              usedIndices.push(index);
+            }
+            plotNodeValues(activeNodes);
+            console.log(usedIndices)
+          }
+        });
+
+        function getNodeValues(hvac_data, loopName, nodeName, selectedKey) {
+          selectedLoopData = hvac_data.find(
+            (hash) => hash.loop_name === loopName
+          );
+          selectedNode = selectedLoopData.components.find(
+            (hash) => hash.object_name === nodeName
+          );
+          return selectedNode[selectedKey];
+        }
+
+        // Function to get the next available index
+        function getNextUnusedIndex() {
+          let index = 0;
+          while (usedIndices.includes(index)) {
+            index++;
+          }
+          return index;
+        }
+
+        // set initial loop and plot
+        let loopName = document.getElementById("airLoopDropdown").value
+        let selectedLoopData = hvac_data.find((hash) => hash.loop_name === loopName);
+        plotNodeValues(activeNodes)
+        let dimensions = loopDimensions(selectedLoopData)
+        changePaperDimensions(dimensions)
+        let gridData = defineGridData(selectedLoopData)
+        createElements(gridData)
+
+        function selectLoopEvent() {
+          var dropdown = document.getElementById("airLoopDropdown");
+
+          // Add change event listener to the dropdown
+          dropdown.addEventListener("change", function () {
+        // clear previous loop
+        graph.clear();
+
+            // Get the selected option value
+            var selectedOption = dropdown.options[dropdown.selectedIndex].value;
+            console.log("Regenerating grid with option value:", selectedOption);
+
+            // Clear the content of activeNodes
+            clearActiveNodes();
+            plotNodeValues(activeNodes)
+
+            // Call function to regenerate the grid
+            let selectedLoopData = hvac_data.find((hash) => hash.loop_name === selectedOption);
+            let dimensions = loopDimensions(selectedLoopData);
+            // console.log(dimensions);
+            changePaperDimensions(dimensions);
+            let gridData = defineGridData(selectedLoopData);
+            createElements(gridData);
+          });
+        }
+        function selectAttributeEvent() {
+          var dropdown = document.getElementById("nodeAttributeDropdown");
+
+          // Add change event listener to the dropdown
+          dropdown.addEventListener("change", function () {
+            clearActiveNodes()
+            plotNodeValues(activeNodes)
+          });
+        }
+        function plotNodeValues(data) {
+          let data_array = Object.values(data);
+
+          // Using lower snake case for D3 selection elements
+
+          /* SETUP PLOT DIMENSIONS */
+
+          const svgWidth = 1000;
+          const svgHeight = 400;
+
+          const margin = { top: 20, right: 50, bottom: 20, left: 50 };
+          const contextPadding = 50;
+
+          const contextHeight = 50;
+          const plotHeight =
+            svgHeight -
+            margin.top -
+            margin.bottom -
+            contextHeight -
+            contextPadding;
+
+          const plotWidth = svgWidth - margin.left - margin.right;
+
+          /* FUNCTIONS AND MISC SETUP */
+          function bindD3Element(parent, childtype, classname) {
+            let selection;
+            if (typeof parent.querySelectorAll === "function") {
+              selection = d3.select(parent);
+            } else {
+              selection = parent;
+            }
+            return selection
+              .selectAll(`.${classname}`)
+              .data([0])
+              .join(childtype)
+              .attr("class", classname);
+          }
+          // Define the start and end dates for one year starting on January 1st
+
+          const startDate = new Date(2023, 0, 1);
+          const endDate = new Date(2024, 0, 1);
+
+          const clipid = Math.floor(Math.random() * 1e6) + "-clip";
+
+          const xScale = d3
+            .scaleTime()
+            .domain([startDate, endDate])
+            .range([0, plotWidth]);
+
+          const contextXScale = d3
+            .scaleTime()
+            .domain([startDate, endDate])
+            .range([0, plotWidth]);
+
+          const yMax = d3.max(data_array, (d) => d3.max(d.NodeValues));
+          const yMin = d3.min(data_array, (d) => d3.min(d.NodeValues));
+
+          const contextYScale = d3
+            .scaleLinear()
+            .domain([yMin, yMax])
+            .range([contextHeight, 0]);
+
+          const yScale = d3
+            .scaleLinear()
+            .domain([yMin, yMax])
+            .range([plotHeight, 0]);
+
+          // Create svg structure
+          const plot_container = d3.select("#plot");
+
+          const svg = bindD3Element(plot_container, "svg", "svg")
+            .attr("width", svgWidth)
+            .attr("height", svgHeight);
+
+          const defs = bindD3Element(svg, "defs", "defs");
+
+          const plot_g = bindD3Element(svg, "g", "plot-g").attr(
+            "transform",
+            `translate(${margin.left},${margin.top})`
+          );
+
+          const plot_lines_g = bindD3Element(plot_g, "g", "lines-g").attr(
+            "clip-path",
+            `url(#${clipid})`
+          );
+
+          const plot_axis_g = bindD3Element(plot_g, "g", "axis-g");
+
+          const context_plot_g = bindD3Element(svg, "g", "context-plot-g").attr(
+            "transform",
+            `translate(${margin.left},${
+              margin.top + plotHeight + contextPadding
+            })`
+          );
+
+          const context_plot_lines_g = bindD3Element(
+            context_plot_g,
+            "g",
+            "context-lines-g"
+          ).attr("pointer-events", "none");
+
+          const context_plot_axis_g = bindD3Element(
+            context_plot_g,
+            "g",
+            "context-axis-g"
+          );
+
+          const x_line = bindD3Element(plot_g, "line", "x-line")
+            .attr("class", "x-line")
+            .attr("stroke", "black")
+            .attr("stroke-dasharray", "4, 4")
+            .attr("y1", 0)
+            .attr("y2", plotHeight)
+            .style("opacity", 0);
+
+          const hover_g = bindD3Element(plot_g, "g", "hover-g").style(
+            "opacity",
+            0
+          );
+          const hover_rect = bindD3Element(hover_g, "rect", "hover-rect")
+            .attr("width", plotWidth)
+            .attr("height", plotHeight);
+
+          const tooltip_div = bindD3Element(plot_container, "div", "tooltip-div")
+            .style("opacity", 0)
+            .style("background-color", "rgba(255,255,255,0.95)")
+            .style("padding", "15px")
+            .style("position", "absolute");
+
+          const x_axis_g = bindD3Element(plot_axis_g, "g", "x-axis-g").attr(
+            "transform",
+            `translate(${0},${plotHeight})`
+          );
+          const y_axis_g = bindD3Element(plot_axis_g, "g", "y-axis-g");
+
+          const context_x_axis_g = bindD3Element(
+            context_plot_axis_g,
+            "g",
+            "context-x-axis-g"
+          ).attr("transform", `translate(${0},${contextHeight})`);
+
+          const context_y_axis_g = bindD3Element(
+            context_plot_axis_g,
+            "g",
+            "context-y-axis-g"
+          );
+
+
+          const context_brush_g = bindD3Element(context_plot_g, "g", "brush");
+
+          const clip_path = bindD3Element(defs, "clipPath", "clip-path").attr(
+            "id",
+            clipid
+          );
+
+          const clip_rect = bindD3Element(clip_path, "rect", "clip-rect")
+            .join("rect")
+            .attr("width", plotWidth)
+            .attr("height", plotHeight)
+            .attr("x", 0)
+            .attr("y", 0);
+
+          /* CALL AXIS FUNCTIONS */
+          x_axis_g.call(
+            d3
+              .axisBottom(xScale)
+              .ticks(d3.timeMonth.every(1))
+              .tickFormat(d3.timeFormat("%b"))
+          );
+          y_axis_g.call(d3.axisLeft(yScale));
+
+          context_x_axis_g.call(
+            d3
+              .axisBottom(xScale)
+              .ticks(d3.timeMonth.every(1))
+              .tickFormat(d3.timeFormat("%b"))
+          );
+
+          /* LINE FUNCTIONS */
+
+          const createLine = function () {
+            plot_lines_g
+              .selectAll(".series-line")
+              .data(data_array)
+              .join("path")
+              .attr("class", "series-line")
+              .attr("d", (d, i) => {
+                return d3
+                  .line()
+                  .x((d, i) => xScale(new Date(2023, 0, 1, i + 1)))
+                  .y((d) => yScale(d))(d.NodeValues);
+              })
+              .style("stroke-width", "2px")
+              .style("fill", "none")
+              .style("stroke", (d, i) => d.color);
+          };
+
+          const createContextLine = function () {
+            context_plot_lines_g
+              .selectAll(".series-line")
+              .data(data_array)
+              .join("path")
+              .attr("class", "series-line")
+              .attr("d", (d, i) => {
+                return d3
+                  .line()
+                  .x((d, i) => xScale(new Date(2023, 0, 1, i + 1)))
+                  .y((d) => contextYScale(d))(d.NodeValues);
+              })
+              .style("stroke-width", "2px")
+              .style("fill", "none")
+              .style("stroke", (d, i) => d.color);
+          };
+
+          createLine();
+          createContextLine();
+
+          /* HANDLE HOVER */
+
+          function mouseOut() {
+            x_line.style("opacity", 0);
+            tooltip_div.style("opacity", 0);
+          }
+
+          function mouseOver(e) {
+            x_line.style("opacity", 1);
+            tooltip_div.style("opacity", 1);
+          }
+
+          function mouseMove(e) {
+            let xdate = xScale.invert(d3.pointer(e)[0]);
+
+            // hack to get closest index from 8760 hour. probably a much better way to do this.
+
+            let [start, end] = xScale.domain();
+
+            let domain_fraction =
+              (xdate.getTime() - start.getTime()) /
+              (end.getTime() - start.getTime());
+
+            let selected_date = new Date(
+              startDate.getTime() +
+                (start.getTime() - startDate.getTime()) +
+                domain_fraction * (end.getTime() - start.getTime())
+            );
+
+            let annual_fraction =
+              (selected_date.getTime() - startDate.getTime()) /
+              (endDate.getTime() - startDate.getTime());
+
+            let closest_idx = Math.round(annual_fraction * 8760);
+
+            let closest_date = new Date(
+              startDate.getTime() + closest_idx * 3.6e6
+            );
+
+            let pointarray = [];
+
+            data_array.forEach((d, i) => {
+              pointarray.push(d.NodeValues[closest_idx]);
+            });
+
+            x_line
+              .style("opacity", 1)
+              .attr("x1", xScale(xdate))
+              .attr("x2", xScale(xdate));
+
+            tooltip_div
+              .style(
+                "left",
+                20 + event.pageX / window.innerWidth + event.pageX + "px"
+              )
+              .style("top", 20 + event.pageY + "px")
+              .style("transition", "left 100ms, top 100ms")
+              .style("z-index", 999)
+              .style("opacity", 0.9).html(`
+                          <div>
+                              <div style="
+                              padding: 5px;
+                              margin-left: 5px;
+                              ">
+                                  ${d3.timeFormat("%B %d %H:%M")(closest_date)}
+                              </div>
+                              ${pointarray
+                                .map((d, i) => {
+                                  let node_name = data_array[i].nodeName;
+                                  let node_val = d;
+
+                                  return `
+                                  <div
+                                  style="
+                                  opacity: 1.0;
+
+                                  overflow: hidden;
+                                  white-space: nowrap';
+                                  ">
+                                      <div class='tooltip-rect' style=
+                                      "
+                                      display: inline-block;
+                                      width: 20px;
+                                      background-color: ${data_array[i].color};
+                                      height: 20px;
+                                      margin-left: 10px;
+                                      margin-right: 10px;
+                                      transition: opacity 200ms;
+                                      box-sizing: border-box;
+                                      border-radius: 2px;
+                                      position: relative;
+                                      top: 5px
+                                      "
+                                      ></div>
+                                      <div style="display: inline-block">${node_name}: ${node_val} </div>
+                                </div>`;
+                                })
+                                .join("")}
+                            </div>`);
+          }
+
+          hover_rect.on("mouseover", mouseOver);
+          hover_rect.on("mouseout", mouseOut);
+          hover_rect.on("mousemove", mouseMove);
+
+          /* HANDLE ZOOM & BRUSH */
+
+          const brush = d3
+            .brushX()
+            .extent([
+              [0, 0],
+              [plotWidth, contextHeight],
+            ])
+            .on("brush end", brushed);
+
+          const zoomFunc = d3
+            .zoom()
+            .scaleExtent([1, Infinity])
+            .translateExtent([
+              [0, 0],
+              [plotWidth, plotHeight],
+            ])
+            .extent([
+              [0, 0],
+              [plotWidth, plotHeight],
+            ])
+            .on("zoom", zoomed);
+
+          let idleTimeout;
+          let idleDelay = 350;
+
+          function idled() {
+            idleTimeout = null;
+          }
+
+          function brushed(event) {
+            if (event.sourceEvent && event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
+            var s = event.selection || contextXScale.range();
+
+            let xdomain = s.map(contextXScale.invert, contextXScale);
+            xScale.domain(xdomain);
+
+            createLine(xdomain);
+            x_axis_g.call(d3.axisBottom(xScale));
+          }
+
+          function zoomed(event) {
+            if (event.sourceEvent && event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
+            var t = event.transform;
+            let xdomain = t.rescaleX(contextXScale).domain();
+            xScale.domain(xdomain);
+            createLine(xdomain);
+            x_axis_g.call(d3.axisBottom(xScale));
+            context_plot_g
+              .select(".brush")
+              .call(brush.move, xScale.range().map(t.invertX, t));
+          }
+
+          context_brush_g.call(brush);
+
           x_axis_g.call(d3.axisBottom(xScale));
+
+          hover_g.call(zoomFunc);
         }
 
-        function zoomed(event) {
-          if (event.sourceEvent && event.sourceEvent.type === "brush") return; // ignore zoom-by-brush
-          var t = event.transform;
-          let xdomain = t.rescaleX(contextXScale).domain();
-          xScale.domain(xdomain);
-          createLine(xdomain);
-          x_axis_g.call(d3.axisBottom(xScale));
-          context_plot_g
-            .select(".brush")
-            .call(brush.move, xScale.range().map(t.invertX, t));
+        /* END D3 MULTILINE PLOT */
+        function getColorById(id, colorScale = "schemeTableau10") {
+          // should decide on how to approach series greater than 10. generating random values above 10.
+          if (id > d3[colorScale].length - 1) {
+            return getRandomColor();
+          }
+          return d3[colorScale][id];
         }
-
-        context_brush_g.call(brush);
-
-        x_axis_g.call(d3.axisBottom(xScale));
-
-        hover_g.call(zoomFunc);
+        function getRandomColor() {
+          const letters = "0123456789ABCDEF";
+          let color = "#";
+          for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+          }
+          return color;
+        }
+        // Call function to attach event listener when the DOM is fully loaded
+        document.addEventListener("DOMContentLoaded", selectLoopEvent);
+        document.addEventListener("DOMContentLoaded", selectAttributeEvent);
       }
-
-      /* END D3 MULTILINE PLOT */
-      function getColorById(id, colorScale = "schemeTableau10") {
-        // should decide on how to approach series greater than 10. generating random values above 10.
-        if (id > d3[colorScale].length - 1) {
-          return getRandomColor();
-        }
-        return d3[colorScale][id];
-      }
-      function getRandomColor() {
-        const letters = "0123456789ABCDEF";
-        let color = "#";
-        for (let i = 0; i < 6; i++) {
-          color += letters[Math.floor(Math.random() * 16)];
-        }
-        return color;
-      }
-      // Call function to attach event listener when the DOM is fully loaded
-      document.addEventListener("DOMContentLoaded", selectLoopEvent);
-      document.addEventListener("DOMContentLoaded", selectAttributeEvent);
+       
+      // Run script
+      initialize();
+       
     </script>
   </body>
 </html>
