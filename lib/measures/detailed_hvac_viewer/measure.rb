@@ -201,32 +201,36 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
     comp = comp.to_StraightComponent.get
     comp_data['object_name'] = comp.name.to_s
     comp_data['object_type'] = comp.iddObjectType.valueName.to_s
+    comp_data['before_objects'] = []
+    comp_data['after_objects'] = []
     if comp.inletModelObject.is_initialized
       if comp.inletModelObject.get.name.is_initialized
         inlet_object_name = comp.inletModelObject.get.name.get
         if comp.loop.get.name.get.to_s == inlet_object_name
           # don't log the air loop for the supply inlet node
-          comp_data['before_objects'] = []
         else
+          # use the component name as is
           comp_data['before_objects'] = [inlet_object_name]
         end
+      elsif comp.inletModelObject.get.iddObjectType.valueName.to_s == 'OS_PortList'
+        inlet_object_name = comp.inletModelObject.get.to_PortList.get.thermalZone.name.to_s
+        comp_data['before_objects'] = [inlet_object_name]
       end
-    else
-      comp_data['before_objects'] = []
     end
     if comp.outletModelObject.is_initialized
       if comp.outletModelObject.get.name.is_initialized
         outlet_object_name = comp.outletModelObject.get.name.get
         if comp.loop.get.name.get.to_s == outlet_object_name
           # don't log the air loop for the supply outlet node
-          comp_data['after_objects'] = []
         else
           comp_data['after_objects'] = [outlet_object_name]
         end
+      elsif comp.outletModelObject.get.iddObjectType.valueName.to_s == 'OS_PortList'
+        outlet_object_name = comp.outletModelObject.get.to_PortList.get.thermalZone.name.to_s
+        comp_data['after_objects'] = [outlet_object_name]
       end
-    else
-      comp_data['after_objects'] = []
     end
+
     if comp.to_Node.is_initialized && !variable_names.empty?
       sql = comp.model.sqlFile.get
       ann_env_pd = annual_run_period(sql)
@@ -241,6 +245,70 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
           comp_data["#{snake_case_name}"] = []
         end
       end
+    end
+
+    return comp_data
+  end
+
+  def hvac_component_data_hash(comp, reporting_frequency, variable_names, loop_data)
+    comp_data = {}
+    comp = comp.to_HVACComponent.get
+    comp_data['object_name'] = comp.name.to_s
+    comp_data['object_type'] = comp.iddObjectType.valueName.to_s
+    comp_data['before_objects'] = []
+    comp_data['after_objects'] = []
+
+    # capture outdoor air system properties
+    if comp.to_AirLoopHVACOutdoorAirSystem.is_initialized
+      comp = comp.to_AirLoopHVACOutdoorAirSystem.get
+      if comp.outboardOANode.is_initialized
+        oa_node = comp.outboardOANode.get
+        comp_data['before_objects'] << oa_node.name.get
+        temp_comp = straight_component_data_hash(oa_node, reporting_frequency, variable_names)
+        temp_comp['component_side'] = 'outdoor'
+        loop_data['components'] << temp_comp
+      end
+      if comp.returnAirModelObject.is_initialized
+        comp_data['before_objects'] << comp.returnAirModelObject.get.name.get
+      end
+      if comp.outboardReliefNode.is_initialized
+        relief_node = comp.outboardReliefNode.get
+        comp_data['after_objects'] << relief_node.name.get
+        temp_comp = straight_component_data_hash(relief_node, reporting_frequency, variable_names)
+        temp_comp['component_side'] = 'relief'
+        loop_data['components'] << temp_comp
+      end
+      if comp.mixedAirModelObject.is_initialized
+        comp_data['after_objects'] << comp.mixedAirModelObject.get.name.get
+      end
+    elsif comp.to_Splitter.is_initialized
+      # if the object is a splitter, log the inlet node and all outlet nodes
+      comp = comp.to_Splitter.get
+      comp_data['before_objects'] = [comp.inletModelObject.get.name.get] if comp.inletModelObject.is_initialized
+      comp.outletModelObjects.each { |obj| comp_data['after_objects'] << obj.name.get }
+    elsif comp.to_Mixer.is_initialized
+      # if the object is a mixer, log all inlet nodes and the outlet node
+      comp = comp.to_Mixer.get
+      comp.inletModelObjects.each { |obj| comp_data['before_objects'] << obj.name.get }
+      comp_data['after_objects'] = [comp.outletModelObject.get.name.get] if comp.outletModelObject.is_initialized
+    elsif comp.to_ThermalZone.is_initialized
+      comp = comp.to_ThermalZone.get
+      comp.inletPortList.modelObjects.each { |obj| comp_data['before_objects'] << obj.name.get }
+      comp.returnPortList.modelObjects.each { |obj| comp_data['after_objects'] << obj.name.get }
+    elsif comp.to_WaterToAirComponent.is_initialized
+      comp = comp.to_WaterToAirComponent.get
+      comp_data['before_objects'] << comp.airInletModelObject.get.name.get if comp.airInletModelObject.is_initialized
+      comp_data['before_objects'] << comp.waterInletModelObject.get.name.get if comp.waterInletModelObject.is_initialized
+      comp_data['after_objects'] << comp.airOutletModelObject.get.name.get if comp.airOutletModelObject.is_initialized
+      comp_data['after_objects'] << comp.waterOutletModelObject.get.name.get if comp.waterOutletModelObject.is_initialized
+    elsif comp.to_WaterToWaterComponent.is_initialized
+      comp = comp.to_WaterToWaterComponent.get
+      comp_data['before_objects'] << comp.demandInletModelObject.get.name.get if comp.demandInletModelObject.is_initialized
+      comp_data['before_objects'] << comp.supplyInletModelObject.get.name.get if comp.supplyInletModelObject.is_initialized
+      comp_data['before_objects'] << comp.tertiaryInletModelObject.get.name.get if comp.tertiaryInletModelObject.is_initialized
+      comp_data['after_objects'] << comp.demandOutletModelObject.get.name.get if comp.demandOutletModelObject.is_initialized
+      comp_data['after_objects'] << comp.supplyOutletModelObject.get.name.get if comp.supplyOutletModelObject.is_initialized
+      comp_data['after_objects'] << comp.tertiaryOutletModelObject.get.name.get if comp.tertiaryOutletModelObject.is_initialized
     end
 
     return comp_data
@@ -334,106 +402,49 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
       return false
     end
 
+    # log data from AirLoopHVACs and PlantLoops
     hvac_data = []
-    # get data from air loops
-    model.getAirLoopHVACs.each do |air_loop|
-      air_loop_data = {}
-      air_loop_data['loop_name'] = air_loop.name.to_s
-      air_loop_data['loop_type'] = air_loop.iddObjectType.valueName.to_s
-      air_loop_data['boundary_nodes'] = loop_boundary_nodes(air_loop)
-      air_loop_data['components'] = []
-      air_loop.supplyComponents.each do |comp|
+    model.getLoops.each do |hvac_loop|
+      loop_data = {}
+      loop_data['loop_name'] = hvac_loop.name.to_s
+      loop_data['loop_type'] = hvac_loop.iddObjectType.valueName.to_s
+      loop_data['boundary_nodes'] = loop_boundary_nodes(hvac_loop)
+      loop_data['components'] = []
+      # loop through supply side components and add them to components array
+      hvac_loop.supplyComponents.each do |comp|
         if comp.to_StraightComponent.is_initialized
           comp_data = straight_component_data_hash(comp, reporting_frequency, variable_names)
         else
-          comp_data = {}
+          comp_data = hvac_component_data_hash(comp, reporting_frequency, variable_names, loop_data)
         end
-
-        # capture outdoor air system properties
-        if comp.to_AirLoopHVACOutdoorAirSystem.is_initialized
-          comp_data['object_name'] = comp.name.to_s
-          comp_data['object_type'] = comp.iddObjectType.valueName.to_s
-          comp = comp.to_AirLoopHVACOutdoorAirSystem.get
-          comp_data['before_objects'] = []
-          comp_data['after_objects']  = []
-          if comp.outboardOANode.is_initialized
-            oa_node = comp.outboardOANode.get
-            comp_data['before_objects'] << oa_node.name.get
-            temp_comp = straight_component_data_hash(oa_node, reporting_frequency, variable_names)
-            temp_comp['component_side'] = 'supply'
-            air_loop_data['components'] << temp_comp
-          end
-          if comp.returnAirModelObject.is_initialized
-            comp_data['before_objects'] << comp.returnAirModelObject.get.name.get
-          end
-          if comp.outboardReliefNode.is_initialized
-            relief_node = comp.outboardReliefNode.get
-            comp_data['after_objects'] << relief_node.name.get
-            temp_comp = straight_component_data_hash(relief_node, reporting_frequency, variable_names)
-            temp_comp['component_side'] = 'supply'
-            air_loop_data['components'] << temp_comp
-          end
-          if comp.mixedAirModelObject.is_initialized
-            comp_data['after_objects'] << comp.mixedAirModelObject.get.name.get
-          end
-        end
-
         comp_data['component_side'] = 'supply'
-        air_loop_data['components'] << comp_data
+        loop_data['components'] << comp_data
       end
-
-      air_loop.demandComponents.each do |comp|
+      # loop through demand side components and add them to components array
+      hvac_loop.demandComponents.each do |comp|
         if comp.to_StraightComponent.is_initialized
-          if include_demand_nodes
-            comp_data = straight_component_data_hash(comp, reporting_frequency, variable_names)
-          else
-            comp_data = straight_component_data_hash(comp, reporting_frequency, [])
-          end
-        else
-          comp_data = {}
-        end
-
-        comp_data['component_side'] = 'demand'
-        air_loop_data['components'] << comp_data
-      end
-
-      hvac_data << air_loop_data
-    end
-
-    # get data from plant loops
-    model.getPlantLoops.each do |plant_loop|
-      plant_loop_data = {}
-      plant_loop_data['loop_name'] = plant_loop.name.to_s
-      plant_loop_data['loop_type'] = plant_loop.iddObjectType.valueName.to_s
-      plant_loop_data['boundary_nodes'] = loop_boundary_nodes(plant_loop)
-      plant_loop_data['components'] = []
-      plant_loop.supplyComponents.each do |comp|
-        if comp.to_StraightComponent.is_initialized
+          variable_names = [] unless include_demand_nodes
           comp_data = straight_component_data_hash(comp, reporting_frequency, variable_names)
         else
-          comp_data = {}
+          comp_data = hvac_component_data_hash(comp, reporting_frequency, variable_names, loop_data)
         end
-
-        comp_data['component_side'] = 'supply'
-        plant_loop_data['components'] << comp_data
-      end
-
-      plant_loop.demandComponents.each do |comp|
-        if comp.to_StraightComponent.is_initialized
-          if include_demand_nodes
-            comp_data = straight_component_data_hash(comp, reporting_frequency, variable_names)
-          else
-            comp_data = straight_component_data_hash(comp, reporting_frequency, [])
-          end
-        else
-          comp_data = {}
-        end
-
         comp_data['component_side'] = 'demand'
-        plant_loop_data['components'] << comp_data
+        loop_data['components'] << comp_data
       end
 
-      hvac_data << plant_loop_data
+      # connect supply outlet and demand inlet
+      supply_outlet = loop_data['components'].select { |comp|  comp['object_name'] == loop_data['boundary_nodes']['supply_outlet'] }[0]
+      demand_inlet = loop_data['components'].select { |comp|  comp['object_name'] == loop_data['boundary_nodes']['demand_inlet'] }[0]
+      supply_outlet['after_objects'] << loop_data['boundary_nodes']['demand_inlet']
+      demand_inlet['before_objects'] << loop_data['boundary_nodes']['supply_outlet']
+
+      # connect demand outlet and supply inlet
+      demand_outlet = loop_data['components'].select { |comp|  comp['object_name'] == loop_data['boundary_nodes']['demand_outlet'] }[0]
+      supply_inlet = loop_data['components'].select { |comp|  comp['object_name'] == loop_data['boundary_nodes']['supply_inlet'] }[0]
+      demand_outlet['after_objects'] << loop_data['boundary_nodes']['supply_inlet']
+      supply_inlet['before_objects'] << loop_data['boundary_nodes']['demand_outlet']
+
+      hvac_data << loop_data
     end
 
     # Convert the hash to a JSON string
