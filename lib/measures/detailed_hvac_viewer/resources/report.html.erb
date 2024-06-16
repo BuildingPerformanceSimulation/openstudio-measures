@@ -58,12 +58,10 @@
 
 
     <div id="plot"></div>
-	<div id="paper"></div>					  
+	  <div id="paper"></div>
 
     <script>
       var hvac_data = <%= hvac_data %>;
-
-
 
       // create image dictionary
       const imageDict = {
@@ -219,46 +217,66 @@
         "OS_AvailabilityManager_HybridVentilation": "hvac-icon.png",
       };
       
-      //Search for valid image source that contains "missing_icon.png" before main code
+      //Search for valid image sources
       const image_sources = [
         "../../../resources/images/",
         "../../measures/detailed_hvac_viewer/resources/images/"
       ];
 
-      async function checkImageSource(src) {
+      function checkImageSources(sources) {
         return new Promise((resolve, reject) => {
-          const img = new Image();
-          img.onload = () => resolve(src);
-          img.onerror = () => reject(src);
-          img.src = src + "missing_icon.png";
+          const checkNextSource = async (index) => {
+            if (index >= sources.length) {
+              console.error("No valid image sources found.")
+              resolve(null);
+              return;
+            }
+
+            const img = new Image();
+            img.onload = () => resolve(sources[index]);
+            img.onerror = () => checkNextSource(index + 1);
+            img.src = sources[index] + "missing_icon.png";
+          };
+
+          checkNextSource(0);
         });
       }
 
-      async function findValidImageSource(sources) {
-        for (let i = 0; i < sources.length; i++) {
-          try {
-            const validSrc = await checkImageSource(sources[i]);
-            return validSrc;
-          } catch (e) {
-            continue;
-          }
+      async function setImageSource() {
+        const validSource = await checkImageSources(image_sources);
+        if (!validSource) {
+          throw new Error("No valid image sources available. Check if image directory exists.");
         }
-        throw new Error("No valid image source found");
+        return validSource;
       }
 
-      let img_src = "";
-
-      async function initialize() {
+      function assignImage(obj) {
+        if (obj.object_type in imageDict) {
+          return img_src + imageDict[obj.object_type];
+        } else {
+          return img_src + "missing_icon.png";
+        }
+      }  
+      
+      let img_src;
+      
+      // Call initializeGridData to start initialization
+      async function initializeGridData() {
         try {
-          img_src = await findValidImageSource(image_sources);
-          main();
+          img_src = await setImageSource();
+          let loopName = document.getElementById("airLoopDropdown").value
+          let selectedLoopData = hvac_data.find((hash) => hash.loop_name === loopName);
+          plotNodeValues(activeNodes)
+          let dimensions = loopDimensions(selectedLoopData)
+          changePaperDimensions(dimensions)
+          let activeGridData = defineGridData(selectedLoopData)
+          createElements(activeGridData)
+          console.log(activeGridData)
         } catch (error) {
-          console.error(error);
+          console.error("Error initializing grid data:", error);
         }
       }
-       
-      // Main Code
-      function main() {      
+      initializeGridData();   
 
       function cleanObjectReferences(arr) {
           // Extract all valid object names
@@ -281,16 +299,8 @@
 
           return arr
       }
-
-      // search for image directories until one of them works
-      function assignImage(obj) {
-        if (obj.object_type in imageDict) {
-          return img_src + imageDict[obj.object_type];
-        } else {
-          return img_src + "missing_icon.png";
-        }
-      }
-        
+      
+      // Populate dropdown menus
       function populateLoopDropdown() {
         const dropdown = document.getElementById("airLoopDropdown");
         const attributes = new Set();
@@ -307,7 +317,6 @@
       function populateNodeAttributeDropdown() {
         const dropdown = document.getElementById("nodeAttributeDropdown");
         const attributes = new Set();
-
         hvac_data.forEach((airLoop) => {
           airLoop.components.forEach((component) => {
             Object.keys(component).forEach((key) => {
@@ -317,7 +326,6 @@
             });
           });
         });
-
         attributes.forEach((attribute) => {
           const option = document.createElement("option");
           option.value = option.textContent = attribute;
@@ -326,15 +334,19 @@
       }
       populateNodeAttributeDropdown();
 
+
+      // ------- PARSE HVAC_DATA TO POPULATE GRIDDATA -------
+      
+      // Returns components with matching name
       function findComponent(comps, objName) {
         const component = comps.find(comp => comp.object_name === objName);
         if (!component) {
-          console.log(objName + " component not found");
+          console.log(objName + " component not found in current loop");
         }
         return component;
       }
 
-      // returns the first before/after object in the same loop
+      // returns the first before/after object in the same loop. prevents cases where linked objects are in different loops.
       function validObjectInLoop(comps, component, order='after_objects') {
         let check_component;
         let valid_component_name;
@@ -353,6 +365,7 @@
         }
       }
       
+      // set up ports for JointJS
       function setLinks(linkList, defaultPort, specialPorts = {}) {
         let links = [];
         for (let name of linkList) {
@@ -362,7 +375,8 @@
         }
         return links;
       }
-
+       
+      // Functions to set up components in selected loop to griddata
       function makeComponent(comp, compType, row, col, imageFile = null, specialPorts = {}, side = null) {
         return {
           'name': comp['object_name'],
@@ -393,31 +407,36 @@
         return makeComponent(comp, 'connector', row, col);
       }
 
+      // Calcuates the necessary size of the loop and sets the row/cols for branches.
+      // Supply side is in the negative y direction (upwards) and demand side is in the positive y direction (downwards)
       function loopDimensions(loop) {
         let boundary = loop['boundary_nodes'];
         let components = loop["components"];
 
         function calcDimensions(side) {
           const scalar = side === "supply" ? -1 : 1;
+          // set minimum dimensions
           let dimension = {
             width: 0,
             height:2 * scalar,
-            rows: [],
-            mainBranch: 0,
+            mainBranch: 2 * scalar,
           };
-
+          
+          // starting at the inlet node, count the number of objects
           let comp = findComponent(components, boundary[`${side}_inlet`]);
           let end_comp = findComponent(components, boundary[`${side}_outlet`]);
           let afterObjectName;
           dimension.width++;
           while (comp !== end_comp) {
             if (comp.object_type === 'OS_AirLoopHVAC_ZoneSplitter' || comp.object_type === 'OS_Connector_Splitter') {
+              // sets the branches and the overall height when a splitter is found.
               dimension.rows = Array.from({ length: comp.after_objects.length }, (_, i) => 2 * (i + 1)).map(x => x * scalar);
               const mid = Math.floor(dimension.rows.length / 2);
               dimension.mainBranch = dimension.rows.length % 2 !== 0 ? dimension.rows[mid]: (dimension.rows[mid - 1] + dimension.rows[mid]) / 2;
               dimension.height = dimension.rows[dimension.rows.length - 1];
               afterObjectName = validObjectInLoop(components, comp, 'after_objects')
             } else if (comp.object_type === 'OS_AirLoopHVAC_OutdoorAirSystem') {
+              // sets the OA system and any relief/outdoor nodes. Need to expand to allow equipment on outdoor side like HX
               dimension.reliefCol = dimension.width;
               dimension.outdoorCol = dimension.width + 1;
               dimension.numOutdoorComponents = 0;
@@ -443,12 +462,11 @@
             }
             comp = findComponent(components, afterObjectName);
             dimension.width++;
-
-
           }
           return dimension
         }
-
+        
+        // get the dimensions for the supply and demand side, and return the overall dimensions
         let supplyDimensions = calcDimensions('supply')
         let demandDimensions = calcDimensions('demand')
         demandDimensions.height += 1
@@ -458,7 +476,8 @@
           demandDimensions
         };
       }
-
+      
+      // populate grid data for the selected loop.
       function defineGridData(loop) {
         let boundary = loop['boundary_nodes'];
         let components = loop["components"];
@@ -476,27 +495,27 @@
           currentComp = findComponent(components, currentCompName)
 
           if (currentComp['object_type'] === "OS_Node") {
+            // Set node objects
             gridData.push(makeNode(currentComp, dimensions.supplyDimensions.mainBranch, column));
             currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
             column++;
-          } else if (currentComp['object_type'] === "OS_AirLoopHVAC_ZoneSplitter" || currentComp['object_type'] === "OS_Connector_Splitter") {
-            let mixer_type;
-            if (currentComp['object_type'] === "OS_AirLoopHVAC_ZoneSplitter") {
-              mixer_type = "OS_AirLoopHVAC_ZoneMixer";
-            } else if (currentComp['object_type'] === "OS_Connector_Splitter") {
-              mixer_type = "OS_Connector_Mixer";
-            }
+            
+          } else if (currentComp['object_type'] === "OS_Connector_Splitter") {
+            // set the splitter object
             gridData.push(makeConnector(currentComp, dimensions.supplyDimensions.mainBranch, column));
+            let mixer_type = "OS_Connector_Mixer";
+            
+            // set objects in each branch until the mixer is reached
             let finalBranchColumn = column;
             let finalBranchObject;
             for (let i = 0; i < currentComp.after_objects.length; i++) {
               let branchObjectName = currentComp.after_objects[i];
               let branchObject = findComponent(components, branchObjectName)
               let branchColumn = column + 1
-              let mixer_reached = true
-              while (mixer_reached || branchColumn === 0) {
+              let mixer_not_reached = true
+              while (mixer_not_reached) {
                 if (branchObject['object_type'] === mixer_type) {
-                  mixer_reached = false;
+                  mixer_not_reached = false;
                 } else if (branchObject['object_type'] === "OS_Node") {
                   gridData.push(makeNode(branchObject, dimensions.supplyDimensions.rows[i], branchColumn));
                   branchObjectName = validObjectInLoop(components, branchObject, 'after_objects');
@@ -512,14 +531,20 @@
               finalBranchColumn = branchColumn
               finalBranchObject = branchObject
             }
+            
+            // set the mixer object
             column = finalBranchColumn;
             currentComp = finalBranchObject;
             gridData.push(makeConnector(currentComp, dimensions.supplyDimensions.mainBranch, column));
             currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
             column ++;
+            
           } else if (currentComp['object_type'] === "OS_AirLoopHVAC_OutdoorAirSystem") {
+            // Set up OA system. Need to expand for equipment on outdoor loop like HX.
             let outdoorName = '';
             let reliefName = '';
+            
+            // set outdoor side
             for (let objName of currentComp['before_objects']) {
               let obj = findComponent(components, objName);
               if (obj['component_side'] === 'outdoor') {
@@ -527,6 +552,8 @@
                 outdoorName = obj['object_name'];
               }
             }
+            
+            // set relief side and get mixer node
             for (let objName of currentComp['after_objects']) {
               let obj = findComponent(components, objName);
               if (obj['component_side'] === 'supply') {
@@ -538,19 +565,21 @@
             }
             gridData.push(makeOASystem(currentComp, dimensions.supplyDimensions.mainBranch, column, outdoorName, reliefName));
             column += 2;
+            
           } else {
+            // set equipments
             gridData.push(makeEquipment(currentComp, dimensions.supplyDimensions.mainBranch, column));
             currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
             column++;
           }
         }
 
-        // add supply outlet
+        // Set supply outlet
         column = dimensions.totalWidth;
         currentComp = findComponent(components, currentCompName);
         gridData.push(makeNode(currentComp, -1, column, 'supply_outlet'))
 
-        // set Demand Inlet Node
+        // Set demand inlet node
         currentComp = findComponent(components, boundary['demand_inlet']);
         currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
         gridData.push(makeNode(currentComp, 1, column, 'demand_inlet'))
@@ -565,24 +594,25 @@
             currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
             column--;
           } else if (currentComp['object_type'] === "OS_AirLoopHVAC_ZoneSplitter" || currentComp['object_type'] === "OS_Connector_Splitter") {
+            gridData.push(makeConnector(currentComp, dimensions.demandDimensions.mainBranch, column));
+
+            // set the mixer type to look for
             let mixer_type;
             if (currentComp['object_type'] === "OS_AirLoopHVAC_ZoneSplitter") {
               mixer_type = "OS_AirLoopHVAC_ZoneMixer";
             } else if (currentComp['object_type'] === "OS_Connector_Splitter") {
               mixer_type = "OS_Connector_Mixer";
             }
-
-            gridData.push(makeConnector(currentComp, dimensions.demandDimensions.mainBranch, column));
             let finalBranchColumn = column;
             let finalBranchObject;
             for (let i = 0; i < currentComp.after_objects.length; i++) {
               let branchObjectName = currentComp.after_objects[i];
               let branchObject = findComponent(components, branchObjectName)
               let branchColumn = column - 1
-              let mixer_reached = true
-              while (mixer_reached || branchColumn === 0) {
+              let mixer_not_reached = true
+              while (mixer_not_reached) {
                 if (branchObject['object_type'] === mixer_type) {
-                  mixer_reached = false;
+                  mixer_not_reached = false;
                 } else if (branchObject['object_type'] === "OS_Node") {
                   gridData.push(makeNode(branchObject, dimensions.demandDimensions.rows[i], branchColumn));
                   branchObjectName = validObjectInLoop(components, branchObject, 'after_objects');
@@ -617,6 +647,9 @@
         return gridData
       }
 
+
+      // ------- DRAW JOINTJS DIAGRAM BASED ON GRID DATA -------
+
       // Create a JointJS graph
       const graph = new joint.dia.Graph();
 
@@ -625,8 +658,7 @@
         el: document.getElementById('paper'),
         model: graph,
         width: 800,
-        height: 60,
-        // snapLinks: true,
+        height: 600,
         embeddingMode: true,
         background: {
           color: '#F0F0F0'
@@ -638,21 +670,82 @@
           return true;
         }
       });
+      
+      function drawBoundaryLine() {
+        let paperWidth = paper.$el.width();
 
-      function changePaperDimensions(dimensions) {
-        let width = dimensions.totalWidth * 100
-        let height = ( -1 * (dimensions.supplyDimensions.height) + dimensions.demandDimensions.height ) * 100
-        paper.setDimensions(width, height)
-        paper.translate(-100, (-1 * (dimensions.supplyDimensions.height)) * 100)
+        let boundaryLine = new joint.shapes.standard.Link({
+          source: {x: 0, y:50},
+          target: {x: paperWidth+100, y: 50},
+          attrs: {
+            line: {stroke: 'black', strokeWidth: 2, strokeDasharray: '2 2', targetMarker: null, }
+          }
+        });
+
+        let supplyArrow = new joint.shapes.standard.Link({
+          source: {x: paperWidth+50, y:0},
+          target: {x: paperWidth+50, y:50},
+          attrs: {
+            line: {
+              stroke: 'black',
+              targetMarker: { 'd': 'M 20 -10 L 0 0 L 20 10 Z' }
+            }
+          }
+        });
+
+        let demandArrow = new joint.shapes.standard.Link({
+          source: {x: 150, y:100},
+          target: {x: 150, y:50},
+          attrs: {
+            line: {
+              stroke: 'black',
+              targetMarker: { 'd': 'M 20 -10 L 0 0 L 20 10 Z' }
+            }
+          }
+        });
+
+        let supplyText = new joint.shapes.standard.TextBlock({
+          id: "Supply Text",
+          position: { x: 125, y: 25 },
+          size: { width: 250, height: 25 },
+          attrs: {
+            label: {
+              text: 'Supply Equipment',
+              style: { 'font-size': '16px', 'text-align': 'left' }
+            },
+            body: { fill: 'transparent', stroke: 'none', }
+          }
+        });
+
+        let demandText = new joint.shapes.standard.TextBlock({
+          id: "Demand Text",
+          position: { x: 125, y: 55 },
+          size: { width: 250, height: 25 },
+          attrs: {
+            label: {
+              text: 'Demand Equipment',
+              style: { 'font-size': '16px', 'text-align': 'left' }
+            },
+            body: { fill: 'transparent', stroke: 'none' }
+          }
+        });
+
+        graph.addCells([boundaryLine, supplyArrow, demandArrow, supplyText, demandText])
       }
 
-      const topPort= {position: { name: 'top' },markup: [{ tagName: 'rect' }]};
-      const bottomPort= {position: { name: 'bottom' },markup: [{ tagName: 'rect' }]};
-      const leftPort= {position: { name: 'left' },markup: [{ tagName: 'rect' }]};
-      const rightPort= {position: { name: 'right' },markup: [{ tagName: 'rect' }]};
-      const relativePort= {position: { name: 'relative' },markup: [{ tagName: 'rect' }]};
+      function changePaperDimensions(dimensions) {
+        const width = dimensions.totalWidth * 100
+        const height = ( -1 * (dimensions.supplyDimensions.height) + dimensions.demandDimensions.height ) * 100
+        paper.setDimensions(width, height)
+        paper.translate(-100, (-1 * (dimensions.supplyDimensions.height)) * 100)
+        drawBoundaryLine();
+      }
 
-      function setPortConfig(comp) {
+      function setPortConfig(comp) {                                    
+        const topPort= {position: { name: 'top' },markup: [{ tagName: 'rect' }]};
+        const bottomPort= {position: { name: 'bottom' },markup: [{ tagName: 'rect' }]};
+        const leftPort= {position: { name: 'left' },markup: [{ tagName: 'rect' }]};
+        const rightPort= {position: { name: 'right' },markup: [{ tagName: 'rect' }]};
         let groups, items;
         if (comp.side === "relief" || comp.side === "supply_inlet" || comp.side === "demand_outlet") {
             groups = {"top": topPort, "bottom": bottomPort};
@@ -700,6 +793,7 @@
       }
 
       function createOASystem(comp) {
+        const relativePort= {position: { name: 'relative' },markup: [{ tagName: 'rect' }]};
         let oa_sys = new joint.shapes.standard.Image({
           id: comp.name,
           position: {x: comp.column * 100, y: comp.row * 100},
@@ -724,7 +818,7 @@
         let connector = new joint.shapes.standard.Rectangle({
           id: comp.name,
           size: {width: 2, height: 2},
-          position: {x: comp.column * 100 + 48, y: comp.row * 100 + 48},
+          position: {x: comp.column * 100 + 49, y: comp.row * 100 + 49},
           attrs: {body: {fill: 'black'}},
           ports: portConfig
         });
@@ -732,9 +826,9 @@
         return connector;
       }
 
-      // Create elements from json
+      // Create all jointJS elements from gridData
       function createElements(gridData) {
-        const elements = {}
+        let elements = {}
         gridData.forEach(function (component) {
           let element;
           if (component.type === 'node') {
@@ -771,21 +865,97 @@
         });
       }
 
-      const activeNodes = {};
+
+      // -------- Interactions -------
+
+      // Redraw grid and clear plot on new loop selection
+      function selectLoopEvent() {
+        const dropdown = document.getElementById("airLoopDropdown");
+
+        // Add change event listener to the dropdown
+        dropdown.addEventListener("change", function () {
+          // clear previous loop
+          graph.clear();
+
+          // Get the selected option value
+          const selectedOption = dropdown.options[dropdown.selectedIndex].value;
+          console.log("Regenerating grid with option value:", selectedOption);
+
+          // Clear the content of activeNodes
+          clearActiveNodes();
+          plotNodeValues(activeNodes)
+
+          // Call function to regenerate the grid
+          const selectedLoopData = hvac_data.find((hash) => hash.loop_name === selectedOption);
+          const dimensions = loopDimensions(selectedLoopData);
+          // console.log(dimensions);
+          changePaperDimensions(dimensions);
+          const activeGridData = defineGridData(selectedLoopData);
+          createElements(activeGridData);
+        });
+      }
+
+      // change node values and clear plot
+      function selectAttributeEvent() {
+        const dropdown = document.getElementById("nodeAttributeDropdown");
+
+        // Add change event listener to the dropdown
+        dropdown.addEventListener("change", function () {
+          clearActiveNodes()
+          plotNodeValues(activeNodes)
+        });
+      }
+
+      // Call function to attach event listener when the DOM is fully loaded
+      document.addEventListener("DOMContentLoaded", selectLoopEvent);
+      document.addEventListener("DOMContentLoaded", selectAttributeEvent);
+
+      // --- Plotting node values ---
+
+      // Store active nodes that were clicked on for plot generation.
+      let activeNodes = {};
+
+      // Store indices to color the plot in the order of the color scheme
       let usedIndices = [];
+
+      // Function to get the next available index
+      function getNextUnusedIndex() {
+        let index = 0;
+        while (usedIndices.includes(index)) {index++;}
+        return index;
+      }
+      
+      // clear all active nodes, reset body fill color, and clear color indices
       function clearActiveNodes() {
         Object.keys(activeNodes).forEach(function(key) {
-          delete activeNodes[key];
+            const elementId = activeNodes[key].nodeName;
+            const elementView = paper.findViewByModel(elementId);
+            if (elementView) {
+                const element = elementView.model;
+                element.attr('body/fill', 'white');
+            }
+            delete activeNodes[key];
         });
         usedIndices = [];
       }
 
-      // plot activeNodes on click
+      // get selected node values
+      function getNodeValues(hvac_data, loopName, nodeName, selectedKey) {
+        const selectedLoopData = hvac_data.find(
+          (hash) => hash.loop_name === loopName
+        );
+        const selectedNode = selectedLoopData.components.find(
+          (hash) => hash.object_name === nodeName
+        );
+        return selectedNode[selectedKey];
+      }
+
+      // plot activeNodes on click, deactivate if clicked again
       paper.on('element:pointerclick', function(elementView) {
         const element = elementView.model;
-        let loopName = document.getElementById("airLoopDropdown").value;
-        let attributeName = document.getElementById("nodeAttributeDropdown").value;
-        let NodeValues = getNodeValues(
+        const loopName = document.getElementById("airLoopDropdown").value;
+        const attributeName = document.getElementById("nodeAttributeDropdown").value;
+        const NodeValues = getNodeValues(
           hvac_data,
           loopName,
           element.id,
@@ -793,12 +963,9 @@
         );
         if (NodeValues) {
           if (activeNodes[element.id]) {
-            // Node is active, deactivate it
             const nodeInfo = activeNodes[element.id];
             delete activeNodes[element.id];
             element.attr('body/fill', 'white');
-
-            // Release the index to be reused
             if (nodeInfo && nodeInfo.hasOwnProperty('index')) {
               const index = nodeInfo.index;
               const indexPos = usedIndices.indexOf(index);
@@ -811,76 +978,14 @@
             const color = getColorById(index)
             activeNodes[element.id] = {"nodeName": element.id, NodeValues, color, index}
             element.attr('body/fill', color);
-            // Mark index as used
             usedIndices.push(index);
           }
           plotNodeValues(activeNodes);
-          console.log(usedIndices)
         }
       });
 
-      function getNodeValues(hvac_data, loopName, nodeName, selectedKey) {
-        selectedLoopData = hvac_data.find(
-          (hash) => hash.loop_name === loopName
-        );
-        selectedNode = selectedLoopData.components.find(
-          (hash) => hash.object_name === nodeName
-        );
-        return selectedNode[selectedKey];
-      }
+      // --------- D3.js plot for node values ---------
 
-      // Function to get the next available index
-      function getNextUnusedIndex() {
-        let index = 0;
-        while (usedIndices.includes(index)) {
-          index++;
-        }
-        return index;
-      }
-
-      // set initial loop and plot
-      let loopName = document.getElementById("airLoopDropdown").value
-      let selectedLoopData = hvac_data.find((hash) => hash.loop_name === loopName);
-      plotNodeValues(activeNodes)
-      let dimensions = loopDimensions(selectedLoopData)
-      changePaperDimensions(dimensions)
-      let gridData = defineGridData(selectedLoopData)
-      createElements(gridData)
-
-      function selectLoopEvent() {
-        var dropdown = document.getElementById("airLoopDropdown");
-
-        // Add change event listener to the dropdown
-        dropdown.addEventListener("change", function () {
-          // clear previous loop
-          graph.clear();
-
-          // Get the selected option value
-          var selectedOption = dropdown.options[dropdown.selectedIndex].value;
-          console.log("Regenerating grid with option value:", selectedOption);
-
-          // Clear the content of activeNodes
-          clearActiveNodes();
-          plotNodeValues(activeNodes)
-
-          // Call function to regenerate the grid
-          let selectedLoopData = hvac_data.find((hash) => hash.loop_name === selectedOption);
-          let dimensions = loopDimensions(selectedLoopData);
-          // console.log(dimensions);
-          changePaperDimensions(dimensions);
-          let gridData = defineGridData(selectedLoopData);
-          createElements(gridData);
-        });
-      }
-      function selectAttributeEvent() {
-        var dropdown = document.getElementById("nodeAttributeDropdown");
-
-        // Add change event listener to the dropdown
-        dropdown.addEventListener("change", function () {
-          clearActiveNodes()
-          plotNodeValues(activeNodes)
-        });
-      }
       function plotNodeValues(data) {
         let data_array = Object.values(data);
 
@@ -1279,14 +1384,6 @@
         }
         return color;
       }
-      // Call function to attach event listener when the DOM is fully loaded
-      document.addEventListener("DOMContentLoaded", selectLoopEvent);
-      document.addEventListener("DOMContentLoaded", selectAttributeEvent);
-      }
-       
-      // Run script
-      initialize();
-       
     </script>
   </body>
 </html>
