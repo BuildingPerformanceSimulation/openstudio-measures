@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>detailed_hvac_viewer</name>
   <uid>416a484f-bd28-4db8-8926-7d70740390eb</uid>
-  <version_id>9c4ffef1-fd2b-4192-a076-4f0daee02913</version_id>
-  <version_modified>2024-06-14T15:36:43Z</version_modified>
+  <version_id>87083f77-433c-47c8-8f11-2d9b5e48a243</version_id>
+  <version_modified>2024-06-17T16:34:25Z</version_modified>
   <xml_checksum>C068F366</xml_checksum>
   <class_name>DetailedHVACViewer</class_name>
   <display_name>Detailed HVAC Viewer</display_name>
@@ -488,7 +488,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>747820BC</checksum>
+      <checksum>FC24ADA7</checksum>
     </file>
     <file>
       <filename>README.md</filename>
@@ -1115,6 +1115,12 @@
       <checksum>97E7427D</checksum>
     </file>
     <file>
+      <filename>images/return_plenum.png</filename>
+      <filetype>png</filetype>
+      <usage_type>resource</usage_type>
+      <checksum>3C51DD67</checksum>
+    </file>
+    <file>
       <filename>images/series_fan_terminal.png</filename>
       <filetype>png</filetype>
       <usage_type>resource</usage_type>
@@ -1191,6 +1197,12 @@
       <filetype>png</filetype>
       <usage_type>resource</usage_type>
       <checksum>5691AF65</checksum>
+    </file>
+    <file>
+      <filename>images/supply_plenum.png</filename>
+      <filetype>png</filetype>
+      <usage_type>resource</usage_type>
+      <checksum>A04A870B</checksum>
     </file>
     <file>
       <filename>images/supply_splitter.png</filename>
@@ -1382,7 +1394,7 @@
       <filename>report.html.erb</filename>
       <filetype>erb</filetype>
       <usage_type>resource</usage_type>
-      <checksum>6A0BF67E</checksum>
+      <checksum>9A444B61</checksum>
     </file>
     <file>
       <filename>USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw</filename>
@@ -1406,7 +1418,7 @@
       <filename>office_chicago_pvav.osm</filename>
       <filetype>osm</filetype>
       <usage_type>test</usage_type>
-      <checksum>08429D17</checksum>
+      <checksum>695E7C12</checksum>
     </file>
   </files>
 </measure>
