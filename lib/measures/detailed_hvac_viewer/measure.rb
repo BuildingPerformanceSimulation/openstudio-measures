@@ -424,9 +424,9 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
       hvac_loop.demandComponents.each do |comp|
         if comp.to_StraightComponent.is_initialized
           # variable_names = [] unless include_demand_nodes
-          comp_data = straight_component_data_hash(comp, reporting_frequency, variable_names)
+          comp_data = straight_component_data_hash(comp, reporting_frequency, include_demand_nodes ? variable_names : [])
         else
-          comp_data = hvac_component_data_hash(comp, reporting_frequency, variable_names, loop_data)
+          comp_data = hvac_component_data_hash(comp, reporting_frequency, include_demand_nodes ? variable_names : [], loop_data)
         end
         comp_data['component_side'] = 'demand'
         loop_data['components'] << comp_data

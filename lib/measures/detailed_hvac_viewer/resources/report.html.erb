@@ -218,12 +218,11 @@
       };
       
       //Search for valid image sources
-      const image_sources = [
-        "../../../resources/images/",
-        "../../measures/detailed_hvac_viewer/resources/images/"
-      ];
-
       async function setImageSource() {
+        const image_sources = [
+          "../../../resources/images/",
+          "../../measures/detailed_hvac_viewer/resources/images/"
+        ];
         function checkImageSources(sources) {
           return new Promise((resolve, reject) => {
             const checkNextSource = async (index) => {
@@ -262,7 +261,6 @@
           changePaperDimensions(dimensions)
           let activeGridData = defineGridData(selectedLoopData)
           createElements(activeGridData)
-          console.log(activeGridData)
         } catch (error) {
           console.error("Error initializing grid data:", error);
         }
@@ -844,25 +842,25 @@
           elements[component.name] = element;
         });
 
-
         // Link elements from json, connecting to the referenced ports
-        gridData.forEach(function (component) {
-          if (component.after_objects) {
-            component.after_objects.forEach(function (afterComponent) {
-              const targetComponent = gridData.find(comp => comp.name === afterComponent.name);
-              if (targetComponent && targetComponent.before_objects) {
-                const targetPort = targetComponent.before_objects.find(before => before && before.name === component.name);
-                if (targetPort) {
-                  const link = new joint.shapes.standard.Link();
-                  link.source({id: elements[component.name], port: afterComponent.port});
-                  link.target({id: elements[afterComponent.name], port: targetPort.port});
-                  link.router('rightAngle', {margin: 1});
-                  link.attr({line: {stroke: 'black', strokeWidth: 4, targetMarker: null, shapeRendering: 'crispEdges'}})
-                  link.addTo(graph);
-                }
-              }
+        gridData.forEach(function (sourceComponent) {
+          if (!sourceComponent.after_objects) return;
+
+          sourceComponent.after_objects.forEach(function (afterComponent) {
+            const targetComponent = gridData.find(comp => comp.name === afterComponent.name);
+            if (!targetComponent || !targetComponent.before_objects) return; // check for valid target component
+
+            const targetPort = targetComponent.before_objects.find(before => before && before.name === sourceComponent.name);
+            if (!targetPort) return; // check for valid target port
+
+            const link = new joint.shapes.standard.Link({
+              source: { id: elements[sourceComponent.name], port: afterComponent.port },
+              target: { id: elements[afterComponent.name], port: targetPort.port },
+              router: { name: 'rightAngle', args: { margin: 1 } },
+              attr: {line: {stroke: 'black', strokeWidth: 4, targetMarker: null, shapeRendering: 'crispEdges'}}
             });
-          }
+            link.addTo(graph);
+          });
         });
       }
 
