@@ -74,8 +74,8 @@
         "OS_AirLoopHVAC_UnitaryHeatPump_AirToAir_MultiSpeed": "heat_pump3.png",					 
         "OS_AirLoopHVAC_UnitarySystem": "unitary_system.png",
         "OS_AirLoopHVAC_UnitaryHeatCool_VAVChangeoverBypass": "unitary_system.png",			 
-        "OS_AirLoopHVAC_ReturnPlenum": "mixer.png",
-        "OS_AirLoopHVAC_SupplyPlenum": "splitter.png",
+        "OS_AirLoopHVAC_ReturnPlenum": "return_plenum.png",
+        "OS_AirLoopHVAC_SupplyPlenum": "supply_plenum.png",
         "OS_AirLoopHVAC_ZoneMixer": "mixer.png",
         "OS_AirLoopHVAC_ZoneSplitter": "splitter.png",
         "OS_AirTerminal_DualDuct_VAV": "airterminal_dualduct_vav.png",
@@ -223,40 +223,31 @@
         "../../measures/detailed_hvac_viewer/resources/images/"
       ];
 
-      function checkImageSources(sources) {
-        return new Promise((resolve, reject) => {
-          const checkNextSource = async (index) => {
-            if (index >= sources.length) {
-              console.error("No valid image sources found.")
-              resolve(null);
-              return;
-            }
-
-            const img = new Image();
-            img.onload = () => resolve(sources[index]);
-            img.onerror = () => checkNextSource(index + 1);
-            img.src = sources[index] + "missing_icon.png";
-          };
-
-          checkNextSource(0);
-        });
-      }
-
       async function setImageSource() {
+        function checkImageSources(sources) {
+          return new Promise((resolve, reject) => {
+            const checkNextSource = async (index) => {
+              if (index >= sources.length) {
+                console.error("No valid image sources found.")
+                resolve(null);
+                return;
+              }
+
+              const img = new Image();
+              img.onload = () => resolve(sources[index]);
+              img.onerror = () => checkNextSource(index + 1);
+              img.src = sources[index] + "missing_icon.png";
+            };
+
+            checkNextSource(0);
+          });
+        }
         const validSource = await checkImageSources(image_sources);
         if (!validSource) {
           throw new Error("No valid image sources available. Check if image directory exists.");
         }
         return validSource;
       }
-
-      function assignImage(obj) {
-        if (obj.object_type in imageDict) {
-          return img_src + imageDict[obj.object_type];
-        } else {
-          return img_src + "missing_icon.png";
-        }
-      }  
       
       let img_src;
       
@@ -364,48 +355,6 @@
             return valid_component_name;
         }
       }
-      
-      // set up ports for JointJS
-      function setLinks(linkList, defaultPort, specialPorts = {}) {
-        let links = [];
-        for (let name of linkList) {
-          let port = specialPorts[name] !== undefined ? specialPorts[name] : defaultPort;
-          let linkDict = { 'name': name, 'port': port };
-          links.push(linkDict);
-        }
-        return links;
-      }
-       
-      // Functions to set up components in selected loop to griddata
-      function makeComponent(comp, compType, row, col, imageFile = null, specialPorts = {}, side = null) {
-        return {
-          'name': comp['object_name'],
-          'type': compType,
-          'side': (side !== null) ? side : comp['component_side'],
-          'row': row,
-          'column': col,
-          'before_objects': setLinks(comp['before_objects'], 'in', specialPorts),
-          'after_objects': setLinks(comp['after_objects'], 'out', specialPorts),
-          'image': imageFile
-        };
-      }
-
-      function makeNode(comp, row, col, side = null) {
-        return makeComponent(comp, 'node', row, col, null, {}, side);
-      }
-
-      function makeEquipment(comp, row, col) {
-        return makeComponent(comp, 'equipment', row, col, assignImage(comp));
-      }
-
-      function makeOASystem(comp, row, col, outdoorName, reliefName) {
-        let specialPorts = { [outdoorName]: "outdoor", [reliefName]: "relief" };
-        return makeComponent(comp, 'oa_system', row, col, assignImage(comp), specialPorts);
-      }
-
-      function makeConnector(comp, row, col) {
-        return makeComponent(comp, 'connector', row, col);
-      }
 
       // Calcuates the necessary size of the loop and sets the row/cols for branches.
       // Supply side is in the negative y direction (upwards) and demand side is in the positive y direction (downwards)
@@ -484,6 +433,57 @@
         let dimensions = loopDimensions(loop)
         let gridData = [];
 
+                // assigns image matching component type
+        function assignImage(obj) {
+          if (obj.object_type in imageDict) {
+            return img_src + imageDict[obj.object_type];
+          } else {
+            return img_src + "missing_icon.png";
+          }
+        }
+
+        // set up ports for JointJS
+        function setLinks(linkList, defaultPort, specialPorts = {}) {
+          let links = [];
+          for (let name of linkList) {
+            let port = specialPorts[name] !== undefined ? specialPorts[name] : defaultPort;
+            let linkDict = { 'name': name, 'port': port };
+            links.push(linkDict);
+          }
+          return links;
+        }
+
+        // Functions to set up components in selected loop to griddata
+        function makeComponent(comp, compType, row, col, imageFile = null, specialPorts = {}, side = null) {
+          return {
+            'name': comp['object_name'],
+            'type': compType,
+            'side': (side !== null) ? side : comp['component_side'],
+            'row': row,
+            'column': col,
+            'before_objects': setLinks(comp['before_objects'], 'in', specialPorts),
+            'after_objects': setLinks(comp['after_objects'], 'out', specialPorts),
+            'image': imageFile
+          };
+        }
+
+        function makeNode(comp, row, col, side = null) {
+          return makeComponent(comp, 'node', row, col, null, {}, side);
+        }
+
+        function makeEquipment(comp, row, col) {
+          return makeComponent(comp, 'equipment', row, col, assignImage(comp));
+        }
+
+        function makeOASystem(comp, row, col, outdoorName, reliefName) {
+          let specialPorts = { [outdoorName]: "outdoor", [reliefName]: "relief" };
+          return makeComponent(comp, 'oa_system', row, col, assignImage(comp), specialPorts);
+        }
+
+        function makeConnector(comp, row, col) {
+          return makeComponent(comp, 'connector', row, col);
+        }
+
         // set Supply Inlet Node
         let currentComp = findComponent(components, boundary['supply_inlet']);
         let currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
@@ -522,7 +522,7 @@
                   branchObject = findComponent(components, branchObjectName);
                   branchColumn ++;
                 } else {
-                  gridData.push(makeEquipment(branchObject, dimensions.supplyDimensions.rows[i], branchColumn, assignImage(branchObject)));
+                  gridData.push(makeEquipment(branchObject, dimensions.supplyDimensions.rows[i], branchColumn));
                   branchObjectName = validObjectInLoop(components, branchObject, 'after_objects');
                   branchObject = findComponent(components, branchObjectName);
                   branchColumn ++;
@@ -574,8 +574,9 @@
           }
         }
 
+        column = dimensions.totalWidth;  // set column to right edge
+
         // Set supply outlet
-        column = dimensions.totalWidth;
         currentComp = findComponent(components, currentCompName);
         gridData.push(makeNode(currentComp, -1, column, 'supply_outlet'))
 
@@ -619,7 +620,7 @@
                   branchObject = findComponent(components, branchObjectName);
                   branchColumn --;
                 } else {
-                  gridData.push(makeEquipment(branchObject, dimensions.demandDimensions.rows[i], branchColumn, assignImage(branchObject)));
+                  gridData.push(makeEquipment(branchObject, dimensions.demandDimensions.rows[i], branchColumn));
                   branchObjectName = validObjectInLoop(components, branchObject, 'after_objects');
                   branchObject = findComponent(components, branchObjectName);
                   branchColumn --;
@@ -634,7 +635,7 @@
             currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
             column--;
           } else {
-            gridData.push(makeEquipment(currentComp, dimensions.demandDimensions.mainBranch, column, assignImage(currentComp)));
+            gridData.push(makeEquipment(currentComp, dimensions.demandDimensions.mainBranch, column));
             currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
             column--;
           }
@@ -741,93 +742,93 @@
         drawBoundaryLine();
       }
 
-      function setPortConfig(comp) {                                    
-        const topPort= {position: { name: 'top' },markup: [{ tagName: 'rect' }]};
-        const bottomPort= {position: { name: 'bottom' },markup: [{ tagName: 'rect' }]};
-        const leftPort= {position: { name: 'left' },markup: [{ tagName: 'rect' }]};
-        const rightPort= {position: { name: 'right' },markup: [{ tagName: 'rect' }]};
-        let groups, items;
-        if (comp.side === "relief" || comp.side === "supply_inlet" || comp.side === "demand_outlet") {
-            groups = {"top": topPort, "bottom": bottomPort};
-            items = [{id: 'in', group: "bottom"},{id: 'out', group: "top"}];
-        } else if (comp.side === "outdoor" || comp.side === "supply_outlet" || comp.side === "demand_inlet") {
-            groups = {"top": topPort,"bottom": bottomPort};
-            items = [{id: 'in', group: "top"},{id: 'out', group: "bottom"}];
-        } else if (comp.side === "supply") {
-            groups = {"left": leftPort,"right": rightPort};
-            items = [{id: 'in', group: "left"},{id: 'out', group: "right"}];
-        } else if (comp.side === "demand") {
-            groups = {"left": leftPort,"right": rightPort};
-            items = [{id: 'in', group: "right"},{id: 'out', group: "left"}];
-        } else {
-          console.log("side not found")
-          return null;
-        }
-        return {groups, items};
-      }
-
-      function createNode(comp) {
-        const portConfig = setPortConfig(comp)
-        let node = new joint.shapes.standard.Ellipse({
-          id: comp.name,
-          size: {width: 25, height: 25},
-          position: {x: comp.column * 100 + 37, y: comp.row * 100 + 37},
-          attrs: {body: {fill: 'white'}},
-          ports: portConfig
-        });
-        node.addTo(graph);
-        return node;
-      }
-
-      function createEquipment(comp) {
-        const portConfig = setPortConfig(comp)
-        let equipment = new joint.shapes.standard.Image({
-          id: comp.name,
-          position: {x: comp.column * 100, y: comp.row * 100},
-          size: {width: 100, height: 100},
-          attrs: {image: {'xlink:href': comp.image}},
-          ports: portConfig
-        });
-        equipment.addTo(graph);
-        return equipment;
-      }
-
-      function createOASystem(comp) {
-        const relativePort= {position: { name: 'relative' },markup: [{ tagName: 'rect' }]};
-        let oa_sys = new joint.shapes.standard.Image({
-          id: comp.name,
-          position: {x: comp.column * 100, y: comp.row * 100},
-          size: {width: 200, height: 100},
-          attrs: {image: {'xlink:href': comp.image}},
-          ports: {
-            groups: {"relative":relativePort},
-            items: [
-              {id: 'in',group: "relative",args: {x: '0%', y: '50%'}},
-              {id: 'relief',group: "relative",args: {x: '25%', y: '0%'}},
-              {id: 'outdoor',group: "relative",args: {x: '75%', y: '0%'}},
-              {id: 'out',group: "relative",args: {x: '100%', y: '50%'}}
-            ]
-          }
-        });
-        oa_sys.addTo(graph);
-        return oa_sys;
-      }
-
-      function createConnector(comp) {
-        const portConfig = setPortConfig(comp)
-        let connector = new joint.shapes.standard.Rectangle({
-          id: comp.name,
-          size: {width: 2, height: 2},
-          position: {x: comp.column * 100 + 49, y: comp.row * 100 + 49},
-          attrs: {body: {fill: 'black'}},
-          ports: portConfig
-        });
-        connector.addTo(graph);
-        return connector;
-      }
-
       // Create all jointJS elements from gridData
       function createElements(gridData) {
+        function setPortConfig(comp) {
+          const topPort= {position: { name: 'top' },markup: [{ tagName: 'rect' }]};
+          const bottomPort= {position: { name: 'bottom' },markup: [{ tagName: 'rect' }]};
+          const leftPort= {position: { name: 'left' },markup: [{ tagName: 'rect' }]};
+          const rightPort= {position: { name: 'right' },markup: [{ tagName: 'rect' }]};
+          let groups, items;
+          if (comp.side === "relief" || comp.side === "supply_inlet" || comp.side === "demand_outlet") {
+              groups = {"top": topPort, "bottom": bottomPort};
+              items = [{id: 'in', group: "bottom"},{id: 'out', group: "top"}];
+          } else if (comp.side === "outdoor" || comp.side === "supply_outlet" || comp.side === "demand_inlet") {
+              groups = {"top": topPort,"bottom": bottomPort};
+              items = [{id: 'in', group: "top"},{id: 'out', group: "bottom"}];
+          } else if (comp.side === "supply") {
+              groups = {"left": leftPort,"right": rightPort};
+              items = [{id: 'in', group: "left"},{id: 'out', group: "right"}];
+          } else if (comp.side === "demand") {
+              groups = {"left": leftPort,"right": rightPort};
+              items = [{id: 'in', group: "right"},{id: 'out', group: "left"}];
+          } else {
+            console.log("side not found")
+            return null;
+          }
+          return {groups, items};
+        }
+
+        function createNode(comp) {
+          const portConfig = setPortConfig(comp)
+          let node = new joint.shapes.standard.Ellipse({
+            id: comp.name,
+            size: {width: 25, height: 25},
+            position: {x: comp.column * 100 + 37, y: comp.row * 100 + 37},
+            attrs: {body: {fill: 'white'}},
+            ports: portConfig
+          });
+          node.addTo(graph);
+          return node;
+        }
+
+        function createEquipment(comp) {
+          const portConfig = setPortConfig(comp)
+          let equipment = new joint.shapes.standard.Image({
+            id: comp.name,
+            position: {x: comp.column * 100, y: comp.row * 100},
+            size: {width: 100, height: 100},
+            attrs: {image: {'xlink:href': comp.image}},
+            ports: portConfig
+          });
+          equipment.addTo(graph);
+          return equipment;
+        }
+
+        function createOASystem(comp) {
+          const relativePort= {position: { name: 'relative' },markup: [{ tagName: 'rect' }]};
+          let oa_sys = new joint.shapes.standard.Image({
+            id: comp.name,
+            position: {x: comp.column * 100, y: comp.row * 100},
+            size: {width: 200, height: 100},
+            attrs: {image: {'xlink:href': comp.image}},
+            ports: {
+              groups: {"relative":relativePort},
+              items: [
+                {id: 'in',group: "relative",args: {x: '0%', y: '50%'}},
+                {id: 'relief',group: "relative",args: {x: '25%', y: '0%'}},
+                {id: 'outdoor',group: "relative",args: {x: '75%', y: '0%'}},
+                {id: 'out',group: "relative",args: {x: '100%', y: '50%'}}
+              ]
+            }
+          });
+          oa_sys.addTo(graph);
+          return oa_sys;
+        }
+
+        function createConnector(comp) {
+          const portConfig = setPortConfig(comp)
+          let connector = new joint.shapes.standard.Rectangle({
+            id: comp.name,
+            size: {width: 2, height: 2},
+            position: {x: comp.column * 100 + 49, y: comp.row * 100 + 49},
+            attrs: {body: {fill: 'black'}},
+            ports: portConfig
+          });
+          connector.addTo(graph);
+          return connector;
+        }
+
         let elements = {}
         gridData.forEach(function (component) {
           let element;
