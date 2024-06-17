@@ -857,7 +857,7 @@
               source: { id: elements[sourceComponent.name], port: afterComponent.port },
               target: { id: elements[afterComponent.name], port: targetPort.port },
               router: { name: 'rightAngle', args: { margin: 1 } },
-              attr: {line: {stroke: 'black', strokeWidth: 4, targetMarker: null, shapeRendering: 'crispEdges'}}
+              attrs: { line: {stroke: 'black', strokeWidth: 4, targetMarker: null, shapeRendering: 'crispEdges'}}
             });
             link.addTo(graph);
           });
