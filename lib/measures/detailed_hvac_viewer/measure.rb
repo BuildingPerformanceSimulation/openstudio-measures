@@ -475,7 +475,7 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
     html_out = renderer.result(binding)
 
     # write html file
-    html_out_path = './detailed_hvac_report.html'
+    html_out_path = './report.html'
     File.open(html_out_path, 'w') do |file|
       file << html_out
       # make sure data is written to the disk one way or the other
