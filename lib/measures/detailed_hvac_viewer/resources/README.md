@@ -7,15 +7,19 @@ Example schema:
 ```
 [
   {
-    "object_name": "5 Zone PVAV",
-    "object_type": "OS_AirLoopHVAC",
+    "loop_name": "5 Zone PVAV",
+    "loop_type": "OS_AirLoopHVAC",
+    "boundary_nodes": {
+      "supply_inlet": "5 Zone PVAV Supply Inlet Node",
+      "supply_outlet": "5 Zone PVAV Supply Outlet Node",
+      "demand_inlet": "5 Zone PVAV Demand Inlet Node",
+      "demand_outlet": "5 Zone PVAV Demand Outlet Node"
+    },
     "components": [
       {
         "object_name": "5 Zone PVAV Supply Inlet Node",
         "object_type": "OS_Node",
-        "before_objects": [
-          "5 Zone PVAV"
-        ],
+        "before_objects": ["5 Zone PVAV"],
         "after_objects": ["5 Zone PVAV OA System"],
         "system_node_temperature": [17.1,17.1],
         "system_node_mass_flow_rate": [0.0,0.0],
@@ -24,9 +28,7 @@ Example schema:
       {
         "object_name": "5 Zone PVAV Outdoor Air Node",
         "object_type": "OS_Node",
-        "after_objects": [
-          "5 Zone PVAV OA System"
-        ],
+        "after_objects": ["5 Zone PVAV OA System"],
         "system_node_temperature": [-3.5, -5.2],
         "system_node_mass_flow_rate": [0.0, 0.0]
       },

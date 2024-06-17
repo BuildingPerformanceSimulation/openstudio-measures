@@ -2117,8 +2117,8 @@ OS:RunPeriod,
   Run Period 1,                           !- Name
   1,                                      !- Begin Month
   1,                                      !- Begin Day of Month
-  1,                                      !- End Month
-  2,                                      !- End Day of Month
+  12,                                     !- End Month
+  31,                                     !- End Day of Month
   No,                                     !- Use Weather File Holidays and Special Days
   No,                                     !- Use Weather File Daylight Saving Period
   No,                                     !- Apply Weekend Holiday Rule
@@ -5128,7 +5128,7 @@ OS:ThermalZone,
   ,                                       !- Secondary Daylighting Control Name
   ,                                       !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {f8bbb07e-98a9-4d6d-914b-b191d88e3227}, !- Group Rendering Name
   {147d1408-d5f7-4923-a703-0a6ddb367317}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -5230,7 +5230,7 @@ OS:ThermalZone,
   ,                                       !- Secondary Daylighting Control Name
   ,                                       !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {3832f401-d8c5-4ec2-80f4-c34d52ddcd1d}, !- Group Rendering Name
   {9627167c-0fb9-4ef9-81cc-6855b034077f}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -5332,7 +5332,7 @@ OS:ThermalZone,
   ,                                       !- Secondary Daylighting Control Name
   ,                                       !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {a3bdd0d9-c615-4c89-9a59-a023befd688d}, !- Group Rendering Name
   {cb7eb79c-30a5-41f5-bacd-5fbc04506d75}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -5434,7 +5434,7 @@ OS:ThermalZone,
   ,                                       !- Secondary Daylighting Control Name
   ,                                       !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {5ebf591c-83f3-45f4-9041-0a5447c2a852}, !- Group Rendering Name
   {c68122a7-d824-4b5f-a969-231c01bc3d61}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -5526,7 +5526,7 @@ OS:ThermalZone,
   ,                                       !- Secondary Daylighting Control Name
   ,                                       !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {a8ea670e-58c1-49eb-9759-3131f37c03b2}, !- Group Rendering Name
   {028291f8-c067-43bb-860b-981e30a17723}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -5618,7 +5618,7 @@ OS:ThermalZone,
   {aca844b2-66c0-4848-bedf-a6190b06fa45}, !- Secondary Daylighting Control Name
   0.1395,                                 !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {ecb8064c-f304-4a57-aac6-36632ae29ea6}, !- Group Rendering Name
   {30b0b0fd-6fe5-4097-a53e-4bce226a2a94}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -5720,7 +5720,7 @@ OS:ThermalZone,
   {ae2d164b-88d0-4503-8241-a4b47205a198}, !- Secondary Daylighting Control Name
   0.1395,                                 !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {a0738413-23af-4cf1-870e-f502073015ae}, !- Group Rendering Name
   {d2fb9ff8-7550-4333-a764-0154a00b6619}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -5822,7 +5822,7 @@ OS:ThermalZone,
   {c25b4fd8-8783-4be1-a3ac-cb041be0dfa0}, !- Secondary Daylighting Control Name
   0.1395,                                 !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {9263ccbb-44e3-42de-a68c-0e34689bc3db}, !- Group Rendering Name
   {72f4131b-b8ba-4f44-864a-915ea41d7357}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -5924,7 +5924,7 @@ OS:ThermalZone,
   {e0b77ca0-4c12-4419-b9f6-f19105fb5416}, !- Secondary Daylighting Control Name
   0.1395,                                 !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {7a547cc9-6048-4ad3-93e2-12ec2de6649e}, !- Group Rendering Name
   {3cc97a43-8e41-489a-aa87-ea1fa6dd16d8}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -6026,7 +6026,7 @@ OS:ThermalZone,
   {276444f5-110d-400b-b00f-d920f1d2faa9}, !- Secondary Daylighting Control Name
   0.1395,                                 !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {34179be4-7096-4665-af86-57706f37dd72}, !- Group Rendering Name
   {5a63b4ab-cb66-44b5-ac29-3bf917ceb1b3}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -6128,7 +6128,7 @@ OS:ThermalZone,
   {f2cc9f29-e32b-424b-a2eb-3d9ce2ef651f}, !- Secondary Daylighting Control Name
   0.1395,                                 !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {35a32010-e39f-4442-9f91-36f47ea07cfa}, !- Group Rendering Name
   {6551ab4f-e283-4b5d-ab37-6a8e9c402671}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -6230,7 +6230,7 @@ OS:ThermalZone,
   {947e0bf1-5da0-470b-a958-e8f741daaef6}, !- Secondary Daylighting Control Name
   0.1395,                                 !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {f2835d5f-0eea-4b4e-a97e-699fb3a8fbae}, !- Group Rendering Name
   {16f5fb7f-0c97-4cc0-a1fe-fb0d809be069}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -6332,7 +6332,7 @@ OS:ThermalZone,
   {b1be412c-e0e7-4c86-bd49-fb012cc9d78d}, !- Secondary Daylighting Control Name
   0.1395,                                 !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {91e060e7-c098-4eef-af66-1a9fc8a0298d}, !- Group Rendering Name
   {845e1b8d-97c0-4d4a-9c16-5562348aacd9}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -6434,7 +6434,7 @@ OS:ThermalZone,
   {b4543c24-5413-46d8-b144-e5382978a4db}, !- Secondary Daylighting Control Name
   0.1395,                                 !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {4cbf6a6d-eced-4f2b-8679-dd4d53bbee11}, !- Group Rendering Name
   {1b1243ec-a5f3-4b97-ab63-9d289f43a90e}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -6536,7 +6536,7 @@ OS:ThermalZone,
   {f192a248-0488-4eda-b98e-e7d52cf1c12f}, !- Secondary Daylighting Control Name
   0.1395,                                 !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {68b1f8fc-c320-4555-87ab-0ae534fed9a1}, !- Group Rendering Name
   {83e688a2-f7b6-45e8-b120-d393e38bf795}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -6638,7 +6638,7 @@ OS:ThermalZone,
   {05757b38-601b-496e-95b4-f9d401302030}, !- Secondary Daylighting Control Name
   0.1395,                                 !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {13808c21-f44d-4318-888f-3482d270d707}, !- Group Rendering Name
   {28f85925-4006-43cf-9baa-6b1af88d4327}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -6740,7 +6740,7 @@ OS:ThermalZone,
   {94975c90-282a-4199-828f-0cc83c4f54a1}, !- Secondary Daylighting Control Name
   0.1395,                                 !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {5adb2869-967d-4794-b520-5052927646f5}, !- Group Rendering Name
   {75cc168e-5729-4eb7-8e80-d9cd18ea22ac}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -6842,7 +6842,7 @@ OS:ThermalZone,
   ,                                       !- Secondary Daylighting Control Name
   ,                                       !- Fraction of Zone Controlled by Secondary Daylighting Control
   ,                                       !- Illuminance Map Name
-  ,                                       !- Group Rendering Name
+  {0ceeb652-7733-4532-a371-ea1f2cf38274}, !- Group Rendering Name
   {9d31cd12-82b7-4c1f-9c62-a706e915314d}, !- Thermostat Name
   No;                                     !- Use Ideal Air Loads
 
@@ -8836,7 +8836,7 @@ OS:Connection,
 
 OS:AirLoopHVAC,
   {5ca24457-768a-46e7-a9ac-cbc3277316eb}, !- Handle
-  5 Zone PVAV 2,                          !- Name
+  5 Zone VAV,                             !- Name
   ,                                       !- Controller List Name
   {0a60fc5d-b21f-4cf5-91ec-7ffe078db012}, !- Availability Schedule
   {35fba4fe-918e-479d-9ad0-246e493b95a4}, !- Availability Manager List Name
@@ -8858,13 +8858,13 @@ OS:AirLoopHVAC,
 
 OS:Node,
   {d875fa48-a2db-4a99-b57f-14337fcf2e4b}, !- Handle
-  5 Zone PVAV 2 Supply Inlet Node,        !- Name
+  5 Zone VAV Supply Inlet Node,           !- Name
   {d533c28f-4bb0-4627-bd07-75f314c41a57}, !- Inlet Port
   {efe260aa-7921-4c06-bd23-35965514f2ca}; !- Outlet Port
 
 OS:Node,
   {7fbb1fdd-f155-41d0-8ff6-224fd5c0a607}, !- Handle
-  5 Zone PVAV 2 Supply Outlet Node,       !- Name
+  5 Zone VAV Supply Outlet Node,          !- Name
   {fe5bd957-4ae6-4729-9a76-6726201a6ee9}, !- Inlet Port
   {4c755cc9-7814-4b99-a800-2bbe09ccc2a7}; !- Outlet Port
 
@@ -8884,13 +8884,13 @@ OS:Connection,
 
 OS:Node,
   {49428770-2226-47ea-9d12-8ca3574fce94}, !- Handle
-  5 Zone PVAV 2 Demand Inlet Node,        !- Name
+  5 Zone VAV Demand Inlet Node,           !- Name
   {1040e791-d5e1-47a5-aab3-77663b60f768}, !- Inlet Port
   {88cc3b4c-49f5-4225-bf44-77070ea5a099}; !- Outlet Port
 
 OS:Node,
   {514b5530-d15c-4b1e-8e2e-19af72e09e91}, !- Handle
-  5 Zone PVAV 2 Demand Outlet Node,       !- Name
+  5 Zone VAV Demand Outlet Node,          !- Name
   {66c4868d-099e-4b05-877d-0eeace5a95f5}, !- Inlet Port
   {2b2f3db0-7e74-4c24-b2ef-d76cd9524024}; !- Outlet Port
 
@@ -9002,7 +9002,7 @@ OS:Schedule:Day,
 
 OS:Fan:VariableVolume,
   {050d936c-aaf6-4d63-b7aa-ef99ef08b5a6}, !- Handle
-  5 Zone PVAV 2 Fan,                      !- Name
+  5 Zone VAV Fan,                         !- Name
   {466e2079-d979-4ed3-884a-64ded6384e3b}, !- Availability Schedule Name
   0.6045,                                 !- Fan Total Efficiency
   1389.9161178,                           !- Pressure Rise {Pa}
@@ -9017,7 +9017,7 @@ OS:Fan:VariableVolume,
   -0.0729,                                !- Fan Power Coefficient 3
   0.9437,                                 !- Fan Power Coefficient 4
   0,                                      !- Fan Power Coefficient 5
-  {e3d49714-4391-43cc-bcc1-11f3cc1830fc}, !- Air Inlet Node Name
+  {cace5c4a-5ba1-4393-a7e2-410c2baaf428}, !- Air Inlet Node Name
   {fe5bd957-4ae6-4729-9a76-6726201a6ee9}, !- Air Outlet Node Name
   ;                                       !- End-Use Subcategory
 
@@ -9028,42 +9028,9 @@ OS:Connection,
   {7fbb1fdd-f155-41d0-8ff6-224fd5c0a607}, !- Target Object
   2;                                      !- Inlet Port
 
-OS:Coil:Heating:Gas,
-  {ec480809-e913-4360-8568-5286513b2c7d}, !- Handle
-  5 Zone PVAV 2 Main Gas Htg Coil,        !- Name
-  {466e2079-d979-4ed3-884a-64ded6384e3b}, !- Availability Schedule Name
-  0.8,                                    !- Gas Burner Efficiency
-  AutoSize,                               !- Nominal Capacity {W}
-  {978231f8-62d0-4a37-aeed-abe98ceabbce}, !- Air Inlet Node Name
-  {009dbba1-2448-4e9e-8e08-9c21d687df0d}, !- Air Outlet Node Name
-  ,                                       !- Temperature Setpoint Node Name
-  0,                                      !- On Cycle Parasitic Electric Load {W}
-  ,                                       !- Part Load Fraction Correlation Curve Name
-  0;                                      !- Off Cycle Parasitic Gas Load {W}
-
-OS:Node,
-  {cdcd1b52-fd31-4e2b-b6e1-3ea662a42280}, !- Handle
-  5 Zone PVAV 2 Main Gas Htg Coil Outlet Air Node, !- Name
-  {009dbba1-2448-4e9e-8e08-9c21d687df0d}, !- Inlet Port
-  {e3d49714-4391-43cc-bcc1-11f3cc1830fc}; !- Outlet Port
-
-OS:Connection,
-  {009dbba1-2448-4e9e-8e08-9c21d687df0d}, !- Handle
-  {ec480809-e913-4360-8568-5286513b2c7d}, !- Source Object
-  6,                                      !- Outlet Port
-  {cdcd1b52-fd31-4e2b-b6e1-3ea662a42280}, !- Target Object
-  2;                                      !- Inlet Port
-
-OS:Connection,
-  {e3d49714-4391-43cc-bcc1-11f3cc1830fc}, !- Handle
-  {cdcd1b52-fd31-4e2b-b6e1-3ea662a42280}, !- Source Object
-  3,                                      !- Outlet Port
-  {050d936c-aaf6-4d63-b7aa-ef99ef08b5a6}, !- Target Object
-  16;                                     !- Inlet Port
-
 OS:Coil:Cooling:DX:TwoSpeed,
   {1c3fc871-7f44-4677-ba6c-51cd17b55fab}, !- Handle
-  5 Zone PVAV 2 2spd DX Clg Coil 364kBtu/hr 9.8EER, !- Name
+  5 Zone VAV 2spd DX Clg Coil 364kBtu/hr 9.8EER, !- Name
   {466e2079-d979-4ed3-884a-64ded6384e3b}, !- Availability Schedule Name
   Autosize,                               !- Rated High Speed Total Cooling Capacity {W}
   Autosize,                               !- Rated High Speed Sensible Heat Ratio
@@ -9106,7 +9073,7 @@ OS:Node,
   {63de0008-85e9-4599-b467-a158548ecba9}, !- Handle
   5 Zone PVAV 2 2spd DX Clg Coil 364kBtu/hr 9.8EER Outlet Air Node, !- Name
   {775e7558-5d83-4aa1-bab8-c192ff14ade0}, !- Inlet Port
-  {978231f8-62d0-4a37-aeed-abe98ceabbce}; !- Outlet Port
+  {90345228-ac3c-4e79-8767-5ba28a7efbc6}; !- Outlet Port
 
 OS:Connection,
   {775e7558-5d83-4aa1-bab8-c192ff14ade0}, !- Handle
@@ -9114,13 +9081,6 @@ OS:Connection,
   8,                                      !- Outlet Port
   {63de0008-85e9-4599-b467-a158548ecba9}, !- Target Object
   2;                                      !- Inlet Port
-
-OS:Connection,
-  {978231f8-62d0-4a37-aeed-abe98ceabbce}, !- Handle
-  {63de0008-85e9-4599-b467-a158548ecba9}, !- Source Object
-  3,                                      !- Outlet Port
-  {ec480809-e913-4360-8568-5286513b2c7d}, !- Target Object
-  5;                                      !- Inlet Port
 
 OS:Controller:OutdoorAir,
   {77a17a9b-b591-4a4b-bb67-90927ec22a84}, !- Handle
@@ -9161,7 +9121,7 @@ OS:Controller:MechanicalVentilation,
 
 OS:AirLoopHVAC:OutdoorAirSystem,
   {5b553726-7db9-4fc7-a56f-313e74c5b939}, !- Handle
-  5 Zone PVAV 2 OA System,                !- Name
+  5 Zone VAV OA System,                   !- Name
   {77a17a9b-b591-4a4b-bb67-90927ec22a84}, !- Controller Name
   ,                                       !- Outdoor Air Equipment List Name
   ,                                       !- Availability Manager List Name
@@ -9172,7 +9132,7 @@ OS:AirLoopHVAC:OutdoorAirSystem,
 
 OS:Node,
   {241326a5-d13c-4a6d-b19d-76d9f552ec81}, !- Handle
-  5 Zone PVAV 2 Outdoor Air Node,         !- Name
+  5 Zone VAV Outdoor Air Node,            !- Name
   ,                                       !- Inlet Port
   {fac64f4f-bde6-441f-a7b6-888bd830d647}; !- Outlet Port
 
@@ -9185,7 +9145,7 @@ OS:Connection,
 
 OS:Node,
   {d0fefdac-531d-4f44-ba94-0f95ec50e951}, !- Handle
-  5 Zone PVAV 2 Relief Air Node,          !- Name
+  5 Zone VAV Relief Air Node,             !- Name
   {b99b6b3b-e3d9-4484-a4a1-a4dc741450fc}, !- Inlet Port
   ;                                       !- Outlet Port
 
@@ -9198,7 +9158,7 @@ OS:Connection,
 
 OS:Node,
   {4be932b9-a38a-4fa2-8ac7-a07851a35a28}, !- Handle
-  5 Zone PVAV 2 Mixed Air Node,           !- Name
+  5 Zone VAV Mixed Air Node,              !- Name
   {4c3aee75-e05a-41e8-aa87-bd592783097e}, !- Inlet Port
   {f2c4e79c-a97e-43c8-a1c1-7399f7984679}; !- Outlet Port
 
@@ -12445,7 +12405,7 @@ OS:SetpointManager:Warmest,
 
 OS:SetpointManager:Warmest,
   {f305e479-58fa-4ac6-b3eb-e1c761206e8a}, !- Handle
-  5 Zone PVAV 2 SAT Warmest Reset,        !- Name
+  5 Zone VAV SAT Warmest Reset,           !- Name
   Temperature,                            !- Control Variable
   12.7777777777778,                       !- Minimum Setpoint Temperature {C}
   15.5555555555556,                       !- Maximum Setpoint Temperature {C}
@@ -13349,4 +13309,572 @@ OS:Connection,
   3,                                      !- Outlet Port
   {fa36403e-95b2-446f-a467-ae50718fc491}, !- Target Object
   5;                                      !- Inlet Port
+
+OS:PlantLoop,
+  {e105a7bb-e420-409c-970c-28ecb1d7c44f}, !- Handle
+  VAV Hot Water Loop,                     !- Name
+  Water,                                  !- Fluid Type
+  0,                                      !- Glycol Concentration
+  ,                                       !- User Defined Fluid Type
+  ,                                       !- Plant Equipment Operation Heating Load
+  ,                                       !- Plant Equipment Operation Cooling Load
+  ,                                       !- Primary Plant Equipment Operation Scheme
+  {091d3930-1fa9-4a5a-8427-f1f392e8f2ef}, !- Loop Temperature Setpoint Node Name
+  ,                                       !- Maximum Loop Temperature {C}
+  ,                                       !- Minimum Loop Temperature {C}
+  ,                                       !- Maximum Loop Flow Rate {m3/s}
+  ,                                       !- Minimum Loop Flow Rate {m3/s}
+  Autocalculate,                          !- Plant Loop Volume {m3}
+  {9ec74e9c-68e0-4e47-bffc-3dcaa67117c7}, !- Plant Side Inlet Node Name
+  {6ab8f6a4-373d-4589-b3d8-e59b06d1c21d}, !- Plant Side Outlet Node Name
+  ,                                       !- Plant Side Branch List Name
+  {31162d6e-c56f-4d11-bb6d-90e1ff815303}, !- Demand Side Inlet Node Name
+  {a3c8e09b-e0b8-4dba-9e38-bf76f8af4c46}, !- Demand Side Outlet Node Name
+  ,                                       !- Demand Side Branch List Name
+  ,                                       !- Demand Side Connector List Name
+  Optimal,                                !- Load Distribution Scheme
+  {a33eadba-bf8d-43dc-9c96-499a4243f32c}, !- Availability Manager List Name
+  ,                                       !- Plant Loop Demand Calculation Scheme
+  ,                                       !- Common Pipe Simulation
+  ,                                       !- Pressure Simulation Type
+  ,                                       !- Plant Equipment Operation Heating Load Schedule
+  ,                                       !- Plant Equipment Operation Cooling Load Schedule
+  ,                                       !- Primary Plant Equipment Operation Scheme Schedule
+  ,                                       !- Component Setpoint Operation Scheme Schedule
+  {4a1793bf-397b-4a52-9e2d-9d65d961ec2c}, !- Demand Mixer Name
+  {712cd732-5608-4522-b03e-7c584e4398c3}, !- Demand Splitter Name
+  {e6f88a6a-9bc2-4232-8605-bcf00f461e3b}, !- Supply Mixer Name
+  {be18f43a-61a3-425a-80fc-74097e5d4935}; !- Supply Splitter Name
+
+OS:Node,
+  {a956137a-3b8e-400d-b5d8-dc09f79d136d}, !- Handle
+  VAV Hot Water Loop Supply Inlet Node,   !- Name
+  {9ec74e9c-68e0-4e47-bffc-3dcaa67117c7}, !- Inlet Port
+  {6d100bd1-d899-410f-8ba8-7d4908110c15}; !- Outlet Port
+
+OS:Node,
+  {091d3930-1fa9-4a5a-8427-f1f392e8f2ef}, !- Handle
+  VAV Hot Water Loop Supply Outlet Node,  !- Name
+  {24c71695-4865-4f27-bdf1-5a901a37d0c7}, !- Inlet Port
+  {6ab8f6a4-373d-4589-b3d8-e59b06d1c21d}; !- Outlet Port
+
+OS:Node,
+  {5d3b2cfa-0398-4843-95ee-20ddcdbad12a}, !- Handle
+  VAV Hot Water Loop HW Boiler Inlet Node, !- Name
+  {90e9ecd8-13a4-471d-bda2-3ed31b8aedf7}, !- Inlet Port
+  {37d01a92-73ca-4160-b4b4-1c949fe7a358}; !- Outlet Port
+
+OS:Connector:Mixer,
+  {e6f88a6a-9bc2-4232-8605-bcf00f461e3b}, !- Handle
+  Connector Mixer 3,                      !- Name
+  {24c71695-4865-4f27-bdf1-5a901a37d0c7}, !- Outlet Branch Name
+  {a35ae9ee-f040-453b-b3ee-b458c19f0847}; !- Inlet Branch Name 1
+
+OS:Connector:Splitter,
+  {be18f43a-61a3-425a-80fc-74097e5d4935}, !- Handle
+  Connector Splitter 3,                   !- Name
+  {aad2aad9-d30d-40b4-91d5-e7f125cce60e}, !- Inlet Branch Name
+  {90e9ecd8-13a4-471d-bda2-3ed31b8aedf7}; !- Outlet Branch Name 1
+
+OS:Connection,
+  {9ec74e9c-68e0-4e47-bffc-3dcaa67117c7}, !- Handle
+  {e105a7bb-e420-409c-970c-28ecb1d7c44f}, !- Source Object
+  14,                                     !- Outlet Port
+  {a956137a-3b8e-400d-b5d8-dc09f79d136d}, !- Target Object
+  2;                                      !- Inlet Port
+
+OS:Connection,
+  {90e9ecd8-13a4-471d-bda2-3ed31b8aedf7}, !- Handle
+  {be18f43a-61a3-425a-80fc-74097e5d4935}, !- Source Object
+  3,                                      !- Outlet Port
+  {5d3b2cfa-0398-4843-95ee-20ddcdbad12a}, !- Target Object
+  2;                                      !- Inlet Port
+
+OS:Connection,
+  {24c71695-4865-4f27-bdf1-5a901a37d0c7}, !- Handle
+  {e6f88a6a-9bc2-4232-8605-bcf00f461e3b}, !- Source Object
+  2,                                      !- Outlet Port
+  {091d3930-1fa9-4a5a-8427-f1f392e8f2ef}, !- Target Object
+  2;                                      !- Inlet Port
+
+OS:Connection,
+  {6ab8f6a4-373d-4589-b3d8-e59b06d1c21d}, !- Handle
+  {091d3930-1fa9-4a5a-8427-f1f392e8f2ef}, !- Source Object
+  3,                                      !- Outlet Port
+  {e105a7bb-e420-409c-970c-28ecb1d7c44f}, !- Target Object
+  15;                                     !- Inlet Port
+
+OS:Node,
+  {a1177e54-af6b-4293-8ea1-830c6481d99f}, !- Handle
+  VAV Hot Water Loop Demand Inlet Node,   !- Name
+  {31162d6e-c56f-4d11-bb6d-90e1ff815303}, !- Inlet Port
+  {6f1cc074-5cb9-46b0-a8ce-83f2741187f4}; !- Outlet Port
+
+OS:Node,
+  {daacfa2a-01d5-4cc7-a741-e25132cd31d3}, !- Handle
+  VAV Hot Water Loop Demand Outlet Node,  !- Name
+  {8f297d43-58fe-456c-aca4-f60b12a9de16}, !- Inlet Port
+  {a3c8e09b-e0b8-4dba-9e38-bf76f8af4c46}; !- Outlet Port
+
+OS:Node,
+  {898a1c95-f530-427b-a7a9-ebc7cafeaf64}, !- Handle
+  VAV Hot Water Loop HW Htg Coil Inlet Node, !- Name
+  {9a08744a-90bb-427a-ba34-a808c34e1260}, !- Inlet Port
+  {acbfba92-7684-48ab-83a9-d66914733724}; !- Outlet Port
+
+OS:Connector:Mixer,
+  {4a1793bf-397b-4a52-9e2d-9d65d961ec2c}, !- Handle
+  Connector Mixer 4,                      !- Name
+  {8f297d43-58fe-456c-aca4-f60b12a9de16}, !- Outlet Branch Name
+  {37aae9e4-4e2e-4b1e-a958-968f65596e9f}; !- Inlet Branch Name 1
+
+OS:Connector:Splitter,
+  {712cd732-5608-4522-b03e-7c584e4398c3}, !- Handle
+  Connector Splitter 4,                   !- Name
+  {6f1cc074-5cb9-46b0-a8ce-83f2741187f4}, !- Inlet Branch Name
+  {9a08744a-90bb-427a-ba34-a808c34e1260}; !- Outlet Branch Name 1
+
+OS:Connection,
+  {31162d6e-c56f-4d11-bb6d-90e1ff815303}, !- Handle
+  {e105a7bb-e420-409c-970c-28ecb1d7c44f}, !- Source Object
+  17,                                     !- Outlet Port
+  {a1177e54-af6b-4293-8ea1-830c6481d99f}, !- Target Object
+  2;                                      !- Inlet Port
+
+OS:Connection,
+  {6f1cc074-5cb9-46b0-a8ce-83f2741187f4}, !- Handle
+  {a1177e54-af6b-4293-8ea1-830c6481d99f}, !- Source Object
+  3,                                      !- Outlet Port
+  {712cd732-5608-4522-b03e-7c584e4398c3}, !- Target Object
+  2;                                      !- Inlet Port
+
+OS:Connection,
+  {9a08744a-90bb-427a-ba34-a808c34e1260}, !- Handle
+  {712cd732-5608-4522-b03e-7c584e4398c3}, !- Source Object
+  3,                                      !- Outlet Port
+  {898a1c95-f530-427b-a7a9-ebc7cafeaf64}, !- Target Object
+  2;                                      !- Inlet Port
+
+OS:Connection,
+  {8f297d43-58fe-456c-aca4-f60b12a9de16}, !- Handle
+  {4a1793bf-397b-4a52-9e2d-9d65d961ec2c}, !- Source Object
+  2,                                      !- Outlet Port
+  {daacfa2a-01d5-4cc7-a741-e25132cd31d3}, !- Target Object
+  2;                                      !- Inlet Port
+
+OS:Connection,
+  {a3c8e09b-e0b8-4dba-9e38-bf76f8af4c46}, !- Handle
+  {daacfa2a-01d5-4cc7-a741-e25132cd31d3}, !- Source Object
+  3,                                      !- Outlet Port
+  {e105a7bb-e420-409c-970c-28ecb1d7c44f}, !- Target Object
+  18;                                     !- Inlet Port
+
+OS:Sizing:Plant,
+  {1a61c423-0f37-48fc-86c9-5cb88f7b1ebe}, !- Handle
+  {e105a7bb-e420-409c-970c-28ecb1d7c44f}, !- Plant or Condenser Loop Name
+  Heating,                                !- Loop Type
+  82,                                     !- Design Loop Exit Temperature {C}
+  11,                                     !- Loop Design Temperature Difference {deltaC}
+  NonCoincident,                          !- Sizing Option
+  1,                                      !- Zone Timesteps in Averaging Window
+  None;                                   !- Coincident Sizing Factor Mode
+
+OS:AvailabilityManagerAssignmentList,
+  {a33eadba-bf8d-43dc-9c96-499a4243f32c}, !- Handle
+  Plant Loop 1 AvailabilityManagerAssignmentList 1; !- Name
+
+OS:Boiler:HotWater,
+  {1e091b8b-0359-439f-8268-d39b88f7b948}, !- Handle
+  VAV Hot Water Loop HW Boiler,           !- Name
+  ,                                       !- Fuel Type
+  ,                                       !- Nominal Capacity {W}
+  ,                                       !- Nominal Thermal Efficiency
+  LeavingBoiler,                          !- Efficiency Curve Temperature Evaluation Variable
+  {76e71ed8-9322-4bf5-8576-d067f4092e4e}, !- Normalized Boiler Efficiency Curve Name
+  ,                                       !- Design Water Flow Rate {m3/s}
+  ,                                       !- Minimum Part Load Ratio
+  ,                                       !- Maximum Part Load Ratio
+  ,                                       !- Optimum Part Load Ratio
+  {37d01a92-73ca-4160-b4b4-1c949fe7a358}, !- Boiler Water Inlet Node Name
+  {2a2b7dfe-3678-4774-ad9b-1203a96d73bc}, !- Boiler Water Outlet Node Name
+  99,                                     !- Water Outlet Upper Temperature Limit {C}
+  NotModulated,                           !- Boiler Flow Mode
+  0,                                      !- On Cycle Parasitic Electric Load {W}
+  0,                                      !- Off Cycle Parasitic Fuel Load {W}
+  1,                                      !- Sizing Factor
+  General;                                !- End-Use Subcategory
+
+OS:Curve:Biquadratic,
+  {76e71ed8-9322-4bf5-8576-d067f4092e4e}, !- Handle
+  Boiler Efficiency,                      !- Name
+  1,                                      !- Coefficient1 Constant
+  0,                                      !- Coefficient2 x
+  0,                                      !- Coefficient3 x**2
+  0,                                      !- Coefficient4 y
+  0,                                      !- Coefficient5 y**2
+  0,                                      !- Coefficient6 x*y
+  0,                                      !- Minimum Value of x
+  1,                                      !- Maximum Value of x
+  0,                                      !- Minimum Value of y
+  1,                                      !- Maximum Value of y
+  ,                                       !- Minimum Curve Output
+  ,                                       !- Maximum Curve Output
+  ,                                       !- Input Unit Type for X
+  ,                                       !- Input Unit Type for Y
+  ;                                       !- Output Unit Type
+
+OS:Node,
+  {2160c046-c767-446a-9155-4a4fd1268f46}, !- Handle
+  VAV Hot Water Loop HW Boiler Outlet Node, !- Name
+  {2a2b7dfe-3678-4774-ad9b-1203a96d73bc}, !- Inlet Port
+  {a35ae9ee-f040-453b-b3ee-b458c19f0847}; !- Outlet Port
+
+OS:Connection,
+  {37d01a92-73ca-4160-b4b4-1c949fe7a358}, !- Handle
+  {5d3b2cfa-0398-4843-95ee-20ddcdbad12a}, !- Source Object
+  3,                                      !- Outlet Port
+  {1e091b8b-0359-439f-8268-d39b88f7b948}, !- Target Object
+  11;                                     !- Inlet Port
+
+OS:Connection,
+  {2a2b7dfe-3678-4774-ad9b-1203a96d73bc}, !- Handle
+  {1e091b8b-0359-439f-8268-d39b88f7b948}, !- Source Object
+  12,                                     !- Outlet Port
+  {2160c046-c767-446a-9155-4a4fd1268f46}, !- Target Object
+  2;                                      !- Inlet Port
+
+OS:Connection,
+  {a35ae9ee-f040-453b-b3ee-b458c19f0847}, !- Handle
+  {2160c046-c767-446a-9155-4a4fd1268f46}, !- Source Object
+  3,                                      !- Outlet Port
+  {e6f88a6a-9bc2-4232-8605-bcf00f461e3b}, !- Target Object
+  3;                                      !- Inlet Port
+
+OS:Pump:VariableSpeed,
+  {c6623335-fe9a-4661-90e4-d71373ecc402}, !- Handle
+  VAV Hot Water Loop Var Spd Pump,        !- Name
+  {6d100bd1-d899-410f-8ba8-7d4908110c15}, !- Inlet Node Name
+  {9f3f1690-edfc-4979-8cfd-6f40d80ec903}, !- Outlet Node Name
+  ,                                       !- Rated Flow Rate {m3/s}
+  ,                                       !- Rated Pump Head {Pa}
+  ,                                       !- Rated Power Consumption {W}
+  ,                                       !- Motor Efficiency
+  ,                                       !- Fraction of Motor Inefficiencies to Fluid Stream
+  ,                                       !- Coefficient 1 of the Part Load Performance Curve
+  ,                                       !- Coefficient 2 of the Part Load Performance Curve
+  ,                                       !- Coefficient 3 of the Part Load Performance Curve
+  ,                                       !- Coefficient 4 of the Part Load Performance Curve
+  ,                                       !- Minimum Flow Rate {m3/s}
+  ,                                       !- Pump Control Type
+  ,                                       !- Pump Flow Rate Schedule Name
+  ,                                       !- Pump Curve Name
+  ,                                       !- Impeller Diameter {m}
+  ,                                       !- VFD Control Type
+  ,                                       !- Pump RPM Schedule Name
+  ,                                       !- Minimum Pressure Schedule {Pa}
+  ,                                       !- Maximum Pressure Schedule {Pa}
+  ,                                       !- Minimum RPM Schedule {rev/min}
+  ,                                       !- Maximum RPM Schedule {rev/min}
+  ,                                       !- Zone Name
+  0.5,                                    !- Skin Loss Radiative Fraction
+  PowerPerFlowPerPressure,                !- Design Power Sizing Method
+  348701.1,                               !- Design Electric Power per Unit Flow Rate {W/(m3/s)}
+  1.282051282,                            !- Design Shaft Power per Unit Flow Rate per Unit Head {W-s/m3-Pa}
+  0.0;                                    !- Design Minimum Flow Rate Fraction
+
+OS:Node,
+  {dd3205b2-10f3-426c-bf73-b64a2011bf8e}, !- Handle
+  VAV Hot Water Loop Var Spd Pump Oulet Node, !- Name
+  {9f3f1690-edfc-4979-8cfd-6f40d80ec903}, !- Inlet Port
+  {aad2aad9-d30d-40b4-91d5-e7f125cce60e}; !- Outlet Port
+
+OS:Connection,
+  {6d100bd1-d899-410f-8ba8-7d4908110c15}, !- Handle
+  {a956137a-3b8e-400d-b5d8-dc09f79d136d}, !- Source Object
+  3,                                      !- Outlet Port
+  {c6623335-fe9a-4661-90e4-d71373ecc402}, !- Target Object
+  2;                                      !- Inlet Port
+
+OS:Connection,
+  {9f3f1690-edfc-4979-8cfd-6f40d80ec903}, !- Handle
+  {c6623335-fe9a-4661-90e4-d71373ecc402}, !- Source Object
+  3,                                      !- Outlet Port
+  {dd3205b2-10f3-426c-bf73-b64a2011bf8e}, !- Target Object
+  2;                                      !- Inlet Port
+
+OS:Connection,
+  {aad2aad9-d30d-40b4-91d5-e7f125cce60e}, !- Handle
+  {dd3205b2-10f3-426c-bf73-b64a2011bf8e}, !- Source Object
+  3,                                      !- Outlet Port
+  {be18f43a-61a3-425a-80fc-74097e5d4935}, !- Target Object
+  2;                                      !- Inlet Port
+
+OS:SetpointManager:Scheduled,
+  {42a62a1d-8ec6-4fb1-9e49-6221623bb95b}, ! Handle
+  VAV Hot Water Loop Scheduled HW Temp,   ! Name
+  Temperature,                            ! Control Variable
+  {5d396ddd-2455-4ca8-9b91-e4ba8d549961}, ! Schedule Name
+  {091d3930-1fa9-4a5a-8427-f1f392e8f2ef}; ! Setpoint Node or NodeList Name
+
+OS:Schedule:Ruleset,
+  {5d396ddd-2455-4ca8-9b91-e4ba8d549961}, ! Handle
+  Hot Water Temperature,                  ! Name
+  {d5af5c8c-49d7-4e72-ae78-23cc688d9f61}, ! Schedule Type Limits Name
+  {5285d29c-c253-45e1-9db1-6272f1c34d34}, ! Default Day Schedule Name
+  {efcee2cb-b671-49d8-9d3f-58b21d25dc92}, ! Summer Design Day Schedule Name
+  {99c23e04-49a3-40ac-b629-b472ee8d6699}; ! Winter Design Day Schedule Name
+
+OS:Schedule:Day,
+  {5285d29c-c253-45e1-9db1-6272f1c34d34}, ! Handle
+  Hot Water Temperature Default,          ! Name
+  {d5af5c8c-49d7-4e72-ae78-23cc688d9f61}, ! Schedule Type Limits Name
+  ,                                       ! Interpolate to Timestep
+  24,                                     ! Hour 1
+  0,                                      ! Minute 1
+  67;                                     ! Value Until Time 1
+
+OS:Schedule:Day,
+  {efcee2cb-b671-49d8-9d3f-58b21d25dc92}, ! Handle
+  Hot Water Temperature Summer Design Day, ! Name
+  {d5af5c8c-49d7-4e72-ae78-23cc688d9f61}, ! Schedule Type Limits Name
+  ,                                       ! Interpolate to Timestep
+  24,                                     ! Hour 1
+  0,                                      ! Minute 1
+  67;                                     ! Value Until Time 1
+
+OS:Schedule:Day,
+  {99c23e04-49a3-40ac-b629-b472ee8d6699}, ! Handle
+  Hot Water Temperature Winter Design Day, ! Name
+  {d5af5c8c-49d7-4e72-ae78-23cc688d9f61}, ! Schedule Type Limits Name
+  ,                                       ! Interpolate to Timestep
+  24,                                     ! Hour 1
+  0,                                      ! Minute 1
+  67;                                     ! Value Until Time 1
+
+OS:Rendering:Color,
+  {f8bbb07e-98a9-4d6d-914b-b191d88e3227}, !- Handle
+  Rendering Color 4,                      !- Name
+  245,                                    !- Rendering Red Value
+  245,                                    !- Rendering Green Value
+  245;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {3832f401-d8c5-4ec2-80f4-c34d52ddcd1d}, !- Handle
+  Rendering Color 5,                      !- Name
+  245,                                    !- Rendering Red Value
+  179,                                    !- Rendering Green Value
+  222;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {a3bdd0d9-c615-4c89-9a59-a023befd688d}, !- Handle
+  Rendering Color 6,                      !- Name
+  245,                                    !- Rendering Red Value
+  250,                                    !- Rendering Green Value
+  255;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {5ebf591c-83f3-45f4-9041-0a5447c2a852}, !- Handle
+  Rendering Color 7,                      !- Name
+  148,                                    !- Rendering Red Value
+  211,                                    !- Rendering Green Value
+  0;                                      !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {a8ea670e-58c1-49eb-9759-3131f37c03b2}, !- Handle
+  Rendering Color 8,                      !- Name
+  255,                                    !- Rendering Red Value
+  224,                                    !- Rendering Green Value
+  255;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {ecb8064c-f304-4a57-aac6-36632ae29ea6}, !- Handle
+  Rendering Color 9,                      !- Name
+  119,                                    !- Rendering Red Value
+  153,                                    !- Rendering Green Value
+  136;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {a0738413-23af-4cf1-870e-f502073015ae}, !- Handle
+  Rendering Color 10,                     !- Name
+  250,                                    !- Rendering Red Value
+  114,                                    !- Rendering Green Value
+  128;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {9263ccbb-44e3-42de-a68c-0e34689bc3db}, !- Handle
+  Rendering Color 11,                     !- Name
+  250,                                    !- Rendering Red Value
+  215,                                    !- Rendering Green Value
+  235;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {7a547cc9-6048-4ad3-93e2-12ec2de6649e}, !- Handle
+  Rendering Color 12,                     !- Name
+  255,                                    !- Rendering Red Value
+  213,                                    !- Rendering Green Value
+  239;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {34179be4-7096-4665-af86-57706f37dd72}, !- Handle
+  Rendering Color 13,                     !- Name
+  245,                                    !- Rendering Red Value
+  179,                                    !- Rendering Green Value
+  222;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {35a32010-e39f-4442-9f91-36f47ea07cfa}, !- Handle
+  Rendering Color 14,                     !- Name
+  210,                                    !- Rendering Red Value
+  140,                                    !- Rendering Green Value
+  180;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {f2835d5f-0eea-4b4e-a97e-699fb3a8fbae}, !- Handle
+  Rendering Color 15,                     !- Name
+  75,                                     !- Rendering Red Value
+  130,                                    !- Rendering Green Value
+  0;                                      !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {91e060e7-c098-4eef-af66-1a9fc8a0298d}, !- Handle
+  Rendering Color 16,                     !- Name
+  224,                                    !- Rendering Red Value
+  255,                                    !- Rendering Green Value
+  255;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {4cbf6a6d-eced-4f2b-8679-dd4d53bbee11}, !- Handle
+  Rendering Color 17,                     !- Name
+  255,                                    !- Rendering Red Value
+  224,                                    !- Rendering Green Value
+  255;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {68b1f8fc-c320-4555-87ab-0ae534fed9a1}, !- Handle
+  Rendering Color 18,                     !- Name
+  173,                                    !- Rendering Red Value
+  230,                                    !- Rendering Green Value
+  216;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {13808c21-f44d-4318-888f-3482d270d707}, !- Handle
+  Rendering Color 19,                     !- Name
+  100,                                    !- Rendering Red Value
+  237,                                    !- Rendering Green Value
+  149;                                    !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {5adb2869-967d-4794-b520-5052927646f5}, !- Handle
+  Rendering Color 20,                     !- Name
+  0,                                      !- Rendering Red Value
+  255,                                    !- Rendering Green Value
+  0;                                      !- Rendering Blue Value
+
+OS:Rendering:Color,
+  {0ceeb652-7733-4532-a371-ea1f2cf38274}, !- Handle
+  Rendering Color 21,                     !- Name
+  221,                                    !- Rendering Red Value
+  221,                                    !- Rendering Green Value
+  160;                                    !- Rendering Blue Value
+
+OS:Coil:Heating:Water,
+  {a2dba4d5-1e63-4411-95cc-c131b5725708}, ! Handle
+  5 Zone VAV HW Htg Coil,                 ! Name
+  {7c7989db-8728-48a8-b988-ef3bcbbf5113}, ! Availability Schedule Name
+  ,                                       ! U-Factor Times Area Value {W/K}
+  ,                                       ! Maximum Water Flow Rate {m3/s}
+  {acbfba92-7684-48ab-83a9-d66914733724}, ! Water Inlet Node Name
+  {491ba46c-eab1-46a2-833f-c8bf85a8dafe}, ! Water Outlet Node Name
+  {90345228-ac3c-4e79-8767-5ba28a7efbc6}, ! Air Inlet Node Name
+  {ecb7109a-938e-4808-9d66-62475fa838d1}, ! Air Outlet Node Name
+  ,                                       ! Performance Input Method
+  ,                                       ! Rated Capacity {W}
+  ,                                       ! Rated Inlet Water Temperature {C}
+  ,                                       ! Rated Inlet Air Temperature {C}
+  ,                                       ! Rated Outlet Water Temperature {C}
+  ,                                       ! Rated Outlet Air Temperature {C}
+  ;                                       ! Rated Ratio for Air and Water Convection
+
+OS:Node,
+  {970ca7fb-4d68-4b7e-9976-aa9ab6646b2e}, !- Handle
+  5 Zone VAV HW Htg Coil Outlet Node,     !- Name
+  {ecb7109a-938e-4808-9d66-62475fa838d1}, !- Inlet Port
+  {cace5c4a-5ba1-4393-a7e2-410c2baaf428}; !- Outlet Port
+
+OS:Connection,
+  {ecb7109a-938e-4808-9d66-62475fa838d1}, !- Handle
+  {a2dba4d5-1e63-4411-95cc-c131b5725708}, !- Source Object
+  8,                                      !- Outlet Port
+  {970ca7fb-4d68-4b7e-9976-aa9ab6646b2e}, !- Target Object
+  2;                                      !- Inlet Port
+
+OS:Connection,
+  {cace5c4a-5ba1-4393-a7e2-410c2baaf428}, !- Handle
+  {970ca7fb-4d68-4b7e-9976-aa9ab6646b2e}, !- Source Object
+  3,                                      !- Outlet Port
+  {050d936c-aaf6-4d63-b7aa-ef99ef08b5a6}, !- Target Object
+  16;                                     !- Inlet Port
+
+OS:Connection,
+  {90345228-ac3c-4e79-8767-5ba28a7efbc6}, !- Handle
+  {63de0008-85e9-4599-b467-a158548ecba9}, !- Source Object
+  3,                                      !- Outlet Port
+  {a2dba4d5-1e63-4411-95cc-c131b5725708}, !- Target Object
+  7;                                      !- Inlet Port
+
+OS:Node,
+  {ba006f60-8536-4d53-912e-5073600b5699}, !- Handle
+  VAV Hot Water Loop HW Htg Coil Outlet Node, !- Name
+  {491ba46c-eab1-46a2-833f-c8bf85a8dafe}, !- Inlet Port
+  {37aae9e4-4e2e-4b1e-a958-968f65596e9f}; !- Outlet Port
+
+OS:Connection,
+  {acbfba92-7684-48ab-83a9-d66914733724}, !- Handle
+  {898a1c95-f530-427b-a7a9-ebc7cafeaf64}, !- Source Object
+  3,                                      !- Outlet Port
+  {a2dba4d5-1e63-4411-95cc-c131b5725708}, !- Target Object
+  5;                                      !- Inlet Port
+
+OS:Connection,
+  {491ba46c-eab1-46a2-833f-c8bf85a8dafe}, !- Handle
+  {a2dba4d5-1e63-4411-95cc-c131b5725708}, !- Source Object
+  6,                                      !- Outlet Port
+  {ba006f60-8536-4d53-912e-5073600b5699}, !- Target Object
+  2;                                      !- Inlet Port
+
+OS:Connection,
+  {37aae9e4-4e2e-4b1e-a958-968f65596e9f}, !- Handle
+  {ba006f60-8536-4d53-912e-5073600b5699}, !- Source Object
+  3,                                      !- Outlet Port
+  {4a1793bf-397b-4a52-9e2d-9d65d961ec2c}, !- Target Object
+  3;                                      !- Inlet Port
+
+OS:Controller:WaterCoil,
+  {b5d2591a-f8fc-4999-9827-52275121a1dc}, !- Handle
+  Controller Water Coil 1,                !- Name
+  {a2dba4d5-1e63-4411-95cc-c131b5725708}, !- Water Coil Name
+  ,                                       !- Control Variable
+  Normal,                                 !- Action
+  ,                                       !- Actuator Variable
+  ,                                       !- Sensor Node Name
+  ,                                       !- Actuator Node Name
+  ,                                       !- Controller Convergence Tolerance {deltaC}
+  ,                                       !- Maximum Actuated Flow {m3/s}
+  ;                                       !- Minimum Actuated Flow {m3/s}
+
+OS:WeatherFile,
+  {fc9b5ef2-4b66-4c02-9616-d316081ba82b}, !- Handle
+  Chicago Ohare Intl Ap,                  !- City
+  IL,                                     !- State Province Region
+  USA,                                    !- Country
+  TMY3,                                   !- Data Source
+  725300,                                 !- WMO Number
+  41.98,                                  !- Latitude {deg}
+  -87.92,                                 !- Longitude {deg}
+  -6,                                     !- Time Zone {hr}
+  201,                                    !- Elevation {m}
+  USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw, !- Url
+  C254B53F,                               !- Checksum
+  ,                                       !- Start Date Actual Year
+  Sunday;                                 !- Start Day of Week
 
