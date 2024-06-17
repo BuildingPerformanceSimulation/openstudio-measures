@@ -706,7 +706,7 @@
 
         let supplyText = new joint.shapes.standard.TextBlock({
           id: "Supply Text",
-          position: { x: 125, y: 25 },
+          position: { x: 125, y: 20 },
           size: { width: 250, height: 25 },
           attrs: {
             label: {
@@ -770,8 +770,8 @@
         const portConfig = setPortConfig(comp)
         let node = new joint.shapes.standard.Ellipse({
           id: comp.name,
-          size: {width: 25.5, height: 25.5},
-          position: {x: comp.column * 100 + 37.5, y: comp.row * 100 + 37.5},
+          size: {width: 25, height: 25},
+          position: {x: comp.column * 100 + 37, y: comp.row * 100 + 37},
           attrs: {body: {fill: 'white'}},
           ports: portConfig
         });
