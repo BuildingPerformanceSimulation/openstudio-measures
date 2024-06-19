@@ -13848,6 +13848,23 @@ OS:Controller:WaterCoil,
   ,                                       !- Maximum Actuated Flow {m3/s}
   ;                                       !- Minimum Actuated Flow {m3/s}
 
+
+OS:WeatherFile,
+  {e1b10b9f-aadb-4db3-9aa8-a1a6cac7e087}, !- Handle
+  Chicago Ohare Intl Ap,                  !- City
+  IL,                                     !- State Province Region
+  USA,                                    !- Country
+  TMY3,                                   !- Data Source
+  725300,                                 !- WMO Number
+  41.98,                                  !- Latitude {deg}
+  -87.92,                                 !- Longitude {deg}
+  -6,                                     !- Time Zone {hr}
+  201,                                    !- Elevation {m}
+  USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw, !- Url
+  C254B53F,                               !- Checksum
+  ,                                       !- Start Date Actual Year
+  Sunday;                                 !- Start Day of Week
+
 OS:HeatExchanger:AirToAir:SensibleAndLatent,
   {c58492e5-16ee-4cd1-8e52-77fb9f01bce0}, !- Handle
   Air-to-Air Plate HX,                    !- Name
