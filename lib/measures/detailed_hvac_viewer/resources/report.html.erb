@@ -342,9 +342,9 @@
         let valid_component_name;
         let i = 0;
         while (!valid_component_name) {
-            check_component = comps.some(comp => comp.object_name === component.after_objects[i]);
+            check_component = comps.some(comp => comp.object_name === component[order][i]);
             if (check_component) {
-                valid_component_name = component.after_objects[i];
+                valid_component_name = component[order][i];
             }
             i++
         }
@@ -506,7 +506,7 @@
             
             // set objects in each branch until the mixer is reached
             let finalBranchColumn = column;
-            let finalBranchObject;
+            let finalBranchObject = null;
             for (let i = 0; i < currentComp.after_objects.length; i++) {
               let branchObjectName = currentComp.after_objects[i];
               let branchObject = findComponent(components, branchObjectName)
@@ -540,17 +540,8 @@
             
           } else if (currentComp['object_type'] === "OS_AirLoopHVAC_OutdoorAirSystem") {
             // Set up OA system. Need to expand for equipment on outdoor loop like HX.
-            let outdoorName = '';
             let reliefName = '';
-            
-            // set outdoor side
-            for (let objName of currentComp['before_objects']) {
-              let obj = findComponent(components, objName);
-              if (obj['component_side'] === 'outdoor') {
-                gridData.push(makeNode(obj, dimensions.supplyDimensions.height, dimensions.supplyDimensions.outdoorCol));
-                outdoorName = obj['object_name'];
-              }
-            }
+            let outdoorName = '';
             
             // set relief side and get mixer node
             for (let objName of currentComp['after_objects']) {
@@ -558,10 +549,95 @@
               if (obj['component_side'] === 'supply') {
                 currentCompName = obj['object_name'];
               } else if (obj['component_side'] === 'relief') {
-                gridData.push(makeNode(obj, dimensions.supplyDimensions.height, dimensions.supplyDimensions.reliefCol));
+                let branchrow = dimensions.supplyDimensions.mainBranch - 1;
+                gridData.push(makeNode(obj, branchrow, dimensions.supplyDimensions.reliefCol));
                 reliefName = obj['object_name']
+                if (dimensions.supplyDimensions.numReliefComponents > 1) {
+                  let branchObjectName = obj.after_objects[0];
+                  let branchObject = findComponent(components, branchObjectName);
+                  branchrow--;
+                  let end_reached = false;
+                  while (!end_reached) {
+                    if (branchObject['after_objects'].length === 0) {
+                      end_reached = true
+                      gridData.push(makeNode(branchObject, dimensions.supplyDimensions.height, dimensions.supplyDimensions.reliefCol));
+                    } else if (branchObject['object_type'] === "OS_Node") {
+                      gridData.push(makeNode(branchObject, branchrow, dimensions.supplyDimensions.reliefCol));
+                      branchObjectName = validObjectInLoop(components, branchObject, 'after_objects');
+                      branchObject = findComponent(components, branchObjectName);
+                      branchrow--;
+                    } else if (branchObject['object_type'] === "OS_HeatExchanger_AirToAir_SensibleAndLatent") {
+                      for (let after of branchObject['after_objects']) {
+                        let after_obj = findComponent(components, after);
+                        if (after_obj['component_side'] === 'relief') {
+                          branchObjectName = after_obj['object_name'];
+                        }
+                      }
+                      branchObject = findComponent(components, branchObjectName);
+                      branchrow--;
+                    } else {
+                      gridData.push(makeEquipment(branchObject, branchrow, dimensions.supplyDimensions.reliefCol));
+                      branchObjectName = validObjectInLoop(components, branchObject, 'after_objects');
+                      branchObject = findComponent(components, branchObjectName);
+                      branchrow--;
+                    }
+                  }
+                }
               }
             }
+
+            // set outdoor side
+            for (let objName of currentComp['before_objects']) {
+              let obj = findComponent(components, objName);
+              if (obj['component_side'] === 'outdoor') {
+                let branchrow = dimensions.supplyDimensions.mainBranch - 1;
+                gridData.push(makeNode(obj, branchrow, dimensions.supplyDimensions.outdoorCol));
+                outdoorName = obj['object_name'];
+                if (dimensions.supplyDimensions.numOutdoorComponents > 1) {
+                  let branchObjectName = obj.before_objects[0];
+                  let branchObject = findComponent(components, branchObjectName);
+                  branchrow--;
+                  let end_reached = false;
+                  while (!end_reached && branchrow > -10) {
+                    console.log(branchObject)
+                    if (branchObject['before_objects'].length === 0) {
+                      end_reached = true
+                      gridData.push(makeNode(branchObject, dimensions.supplyDimensions.height, dimensions.supplyDimensions.outdoorCol));
+                    } else if (branchObject['object_type'] === "OS_Node") {
+                      gridData.push(makeNode(branchObject, branchrow, dimensions.supplyDimensions.outdoorCol));
+                      branchObjectName = validObjectInLoop(components, branchObject, 'before_objects');
+                      branchObject = findComponent(components, branchObjectName);
+                      branchrow--;
+                    } else if (branchObject['object_type'] === "OS_HeatExchanger_AirToAir_SensibleAndLatent") {
+                      let outdoor_node = null;
+                      let relief_node = null;
+                      for (let before of branchObject['before_objects']) {
+                        let before_obj = findComponent(components, before);
+                        if (before_obj['component_side'] === 'outdoor') {
+                          outdoor_node = before_obj['object_name'];
+                          branchObjectName = outdoor_node;
+                        }
+                      }
+                      for (let after of branchObject['after_objects']) {
+                        let after_obj = findComponent(components, after);
+                        if (after_obj['component_side'] === 'relief') {
+                          relief_node = after_obj['object_name'];
+                        }
+                      }
+                      gridData.push(makeHXSystem(branchObject, branchrow,dimensions.supplyDimensions.reliefCol, outdoor_node, relief_node))
+                      branchObject = findComponent(components, branchObjectName);
+                      branchrow--;
+                    } else {
+                      gridData.push(makeEquipment(branchObject, branchrow, dimensions.supplyDimensions.outdoorCol));
+                      branchObjectName = validObjectInLoop(components, branchObject, 'before_objects');
+                      branchObject = findComponent(components, branchObjectName);
+                      branchrow--;
+                    }
+                  }
+                }
+              }
+            }
+
             gridData.push(makeOASystem(currentComp, dimensions.supplyDimensions.mainBranch, column, outdoorName, reliefName));
             column += 2;
             
@@ -604,7 +680,7 @@
               mixer_type = "OS_Connector_Mixer";
             }
             let finalBranchColumn = column;
-            let finalBranchObject;
+            let finalBranchObject = null;
             for (let i = 0; i < currentComp.after_objects.length; i++) {
               let branchObjectName = currentComp.after_objects[i];
               let branchObject = findComponent(components, branchObjectName)
@@ -781,18 +857,25 @@
           return node;
         }
 
-        function createEquipment(comp) {
-          const portConfig = setPortConfig(comp)
-          let equipment = new joint.shapes.standard.Image({
-            id: comp.name,
-            position: {x: comp.column * 100, y: comp.row * 100},
-            size: {width: 100, height: 100},
-            attrs: {image: {'xlink:href': comp.image}},
-            ports: portConfig
-          });
-          equipment.addTo(graph);
-          return equipment;
-        }
+      function createEquipment(comp) {
+        const portConfig = setPortConfig(comp)
+        let rotation = comp.side === 'outdoor' ? 90 : (comp.side === 'relief' ? -90 : 0)
+        let equipment = new joint.shapes.standard.Image({
+          id: comp.name,
+          position: {x: comp.column * 100, y: comp.row * 100},
+          size: {width: 100, height: 100},
+          // angle: rotation,
+          attrs: {
+            image: {
+              'xlink:href': comp.image,
+              transform: `rotate(${rotation} 50 50)`,
+            }
+          },
+          ports: portConfig
+        });
+        equipment.addTo(graph);
+        return equipment;
+      }
 
         function createOASystem(comp) {
           const relativePort= {position: { name: 'relative' },markup: [{ tagName: 'rect' }]};
@@ -828,6 +911,27 @@
           return connector;
         }
 
+      function createHXSystem(comp) {
+        const relativePort= {position: { name: 'relative' },markup: [{ tagName: 'rect' }]};
+        let oa_sys = new joint.shapes.standard.Image({
+          id: comp.name,
+          position: {x: comp.column * 100, y: comp.row * 100},
+          size: {width: 200, height: 100},
+          attrs: {image: {'xlink:href': comp.image}},
+          ports: {
+            groups: {"relative":relativePort},
+            items: [
+              {id: 'in',group: "relative",args: {x: '25%', y: '100%'}},
+              {id: 'relief',group: "relative",args: {x: '25%', y: '0%'}},
+              {id: 'outdoor',group: "relative",args: {x: '75%', y: '0%'}},
+              {id: 'out',group: "relative",args: {x: '75%', y: '100%'}}
+            ]
+          }
+        });
+        oa_sys.addTo(graph);
+        return oa_sys;
+      }
+
         let elements = {}
         gridData.forEach(function (component) {
           let element;
@@ -839,6 +943,8 @@
             element = createConnector(component)
           } else if (component.type === 'oa_system') {
             element = createOASystem(component)
+          } else if (component.type === 'hx_system') {
+            element = createHXSystem(component)
           }
           elements[component.name] = element;
         });
@@ -891,6 +997,7 @@
           // console.log(dimensions);
           changePaperDimensions(dimensions);
           const activeGridData = defineGridData(selectedLoopData);
+          console.log(activeGridData)
           createElements(activeGridData);
         });
       }
