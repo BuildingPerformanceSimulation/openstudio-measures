@@ -250,7 +250,7 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
     return comp_data
   end
 
-  def hvac_component_data_hash(comp, reporting_frequency, variable_names, loop_data)
+  def hvac_component_data_hash(comp, reporting_frequency, variable_names)
     comp_data = {}
     comp = comp.to_HVACComponent.get
     comp_data['object_name'] = comp.name.to_s
@@ -261,25 +261,31 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
     # capture outdoor air system properties
     if comp.to_AirLoopHVACOutdoorAirSystem.is_initialized
       comp = comp.to_AirLoopHVACOutdoorAirSystem.get
-      if comp.outboardOANode.is_initialized
-        oa_node = comp.outboardOANode.get
-        comp_data['before_objects'] << oa_node.name.get
-        temp_comp = straight_component_data_hash(oa_node, reporting_frequency, variable_names)
-        temp_comp['component_side'] = 'outdoor'
-        loop_data['components'] << temp_comp
+      if comp.outdoorAirModelObject.is_initialized
+        comp_data['before_objects'] << comp.outdoorAirModelObject.get.name.get
       end
       if comp.returnAirModelObject.is_initialized
         comp_data['before_objects'] << comp.returnAirModelObject.get.name.get
       end
-      if comp.outboardReliefNode.is_initialized
-        relief_node = comp.outboardReliefNode.get
-        comp_data['after_objects'] << relief_node.name.get
-        temp_comp = straight_component_data_hash(relief_node, reporting_frequency, variable_names)
-        temp_comp['component_side'] = 'relief'
-        loop_data['components'] << temp_comp
+      if comp.reliefAirModelObject.is_initialized
+        comp_data['after_objects'] << comp.reliefAirModelObject.get.name.get
       end
       if comp.mixedAirModelObject.is_initialized
         comp_data['after_objects'] << comp.mixedAirModelObject.get.name.get
+      end
+    elsif comp.to_HeatExchangerAirToAirSensibleAndLatent.is_initialized
+      comp = comp.to_HeatExchangerAirToAirSensibleAndLatent.get
+      if comp.primaryAirInletModelObject.is_initialized
+        comp_data['before_objects'] << comp.primaryAirInletModelObject.get.name.get
+      end
+      if comp.secondaryAirInletModelObject.is_initialized
+        comp_data['before_objects'] << comp.secondaryAirInletModelObject.get.name.get
+      end
+      if comp.primaryAirOutletModelObject.is_initialized
+        comp_data['after_objects'] << comp.primaryAirOutletModelObject.get.name.get
+      end
+      if comp.secondaryAirOutletModelObject.is_initialized
+        comp_data['after_objects'] << comp.secondaryAirOutletModelObject.get.name.get
       end
     elsif comp.to_Splitter.is_initialized
       # if the object is a splitter, log the inlet node and all outlet nodes
@@ -415,18 +421,45 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
         if comp.to_StraightComponent.is_initialized
           comp_data = straight_component_data_hash(comp, reporting_frequency, variable_names)
         else
-          comp_data = hvac_component_data_hash(comp, reporting_frequency, variable_names, loop_data)
+          comp_data = hvac_component_data_hash(comp, reporting_frequency, variable_names)
         end
         comp_data['component_side'] = 'supply'
         loop_data['components'] << comp_data
+        if comp.to_AirLoopHVACOutdoorAirSystem.is_initialized
+          hx = []
+          oa_comp = comp.to_AirLoopHVACOutdoorAirSystem.get
+          oa_comp.oaComponents.each do |temp_comp|
+            if temp_comp.to_HeatExchangerAirToAirSensibleAndLatent.is_initialized
+              hx << temp_comp.name.to_s
+            end
+            if temp_comp.to_StraightComponent.is_initialized
+              temp_comp_data = straight_component_data_hash(temp_comp, reporting_frequency, variable_names)
+            else
+              temp_comp_data = hvac_component_data_hash(temp_comp, reporting_frequency, variable_names)
+            end
+            temp_comp_data['component_side'] = 'outdoor'
+            loop_data['components'] << temp_comp_data
+          end
+          oa_comp.reliefComponents.each do |temp_comp|
+            unless hx.include?(temp_comp.name.to_s)
+              if temp_comp.to_StraightComponent.is_initialized
+                temp_comp_data = straight_component_data_hash(temp_comp, reporting_frequency, variable_names)
+              else
+                temp_comp_data = hvac_component_data_hash(temp_comp, reporting_frequency, variable_names)
+              end
+              temp_comp_data['component_side'] = 'relief'
+              loop_data['components'] << temp_comp_data
+            end
+          end
+        end
       end
       # loop through demand side components and add them to components array
       hvac_loop.demandComponents.each do |comp|
         if comp.to_StraightComponent.is_initialized
-          variable_names = [] unless include_demand_nodes
-          comp_data = straight_component_data_hash(comp, reporting_frequency, variable_names)
+          # variable_names = [] unless include_demand_nodes
+          comp_data = straight_component_data_hash(comp, reporting_frequency, include_demand_nodes ? variable_names : [])
         else
-          comp_data = hvac_component_data_hash(comp, reporting_frequency, variable_names, loop_data)
+          comp_data = hvac_component_data_hash(comp, reporting_frequency, include_demand_nodes ? variable_names : [])
         end
         comp_data['component_side'] = 'demand'
         loop_data['components'] << comp_data
@@ -448,7 +481,7 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
     end
 
     # Convert the hash to a JSON string
-    hvac_data = JSON.pretty_generate(hvac_data)
+    hvac_data = JSON.pretty_generate(hvac_data, opts = {indent: "", array_nl: ""})
 
     # Write the JSON string to the file
     File.open('hvac_data.json', 'w') do |file|
@@ -475,7 +508,7 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
     html_out = renderer.result(binding)
 
     # write html file
-    html_out_path = './detailed_hvac_report.html'
+    html_out_path = './report.html'
     File.open(html_out_path, 'w') do |file|
       file << html_out
       # make sure data is written to the disk one way or the other

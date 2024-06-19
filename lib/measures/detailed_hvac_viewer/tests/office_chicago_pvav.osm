@@ -8286,7 +8286,7 @@ OS:Node,
   {6bdddc02-fc4a-4438-92b2-f9327a8417a6}, !- Handle
   5 Zone PVAV 1 Outdoor Air Node,         !- Name
   ,                                       !- Inlet Port
-  {8e507e3e-aada-4b64-b99e-fb968bf66683}; !- Outlet Port
+  {33e424a5-054b-4785-b7a8-8975f3ecf012}; !- Outlet Port
 
 OS:Node,
   {03eee811-3286-492b-9aa5-3b7e4fa970c7}, !- Handle
@@ -13242,7 +13242,7 @@ OS:ScheduleTypeLimits,
 
 OS:Node,
   {63ec1c07-0b61-46c9-9141-2701b6d5a872}, !- Handle
-  Node 1,                                 !- Name
+  5 Zone PVAV 1 Single Spd DX Clg Coil Outlet Air Node, !- Name
   {017a79dd-976d-4f4b-ab71-f41061f41905}, !- Inlet Port
   {1512c1dc-02d1-48be-8a7d-55912f49b5de}; !- Outlet Port
 
@@ -13264,7 +13264,7 @@ OS:Coil:Heating:Electric,
 
 OS:Node,
   {55aa1712-389b-422a-9d88-94775f0f0b8c}, !- Handle
-  Node 2,                                 !- Name
+  5 Zone PVAV 1 Elec Htg Coil Outlet Air Node, !- Name
   {5cb8284c-2a0d-45ac-9f00-1296473e6c7c}, !- Inlet Port
   {cd983207-1cb7-4985-8fad-1f93d344df4b}; !- Outlet Port
 
@@ -13848,22 +13848,6 @@ OS:Controller:WaterCoil,
   ,                                       !- Maximum Actuated Flow {m3/s}
   ;                                       !- Minimum Actuated Flow {m3/s}
 
-OS:WeatherFile,
-  {4eb9faf4-846a-4d4f-8849-20ac62915e3d}, !- Handle
-  Chicago Ohare Intl Ap,                  !- City
-  IL,                                     !- State Province Region
-  USA,                                    !- Country
-  TMY3,                                   !- Data Source
-  725300,                                 !- WMO Number
-  41.98,                                  !- Latitude {deg}
-  -87.92,                                 !- Longitude {deg}
-  -6,                                     !- Time Zone {hr}
-  201,                                    !- Elevation {m}
-  USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw, !- Url
-  C254B53F,                               !- Checksum
-  ,                                       !- Start Date Actual Year
-  Sunday;                                 !- Start Day of Week
-
 OS:HeatExchanger:AirToAir:SensibleAndLatent,
   {c58492e5-16ee-4cd1-8e52-77fb9f01bce0}, !- Handle
   Air-to-Air Plate HX,                    !- Name
@@ -13877,7 +13861,7 @@ OS:HeatExchanger:AirToAir:SensibleAndLatent,
   0.68,                                   !- Latent Effectiveness at 100% Cooling Air Flow {dimensionless}
   0.81,                                   !- Sensible Effectiveness at 75% Cooling Air Flow {dimensionless}
   0.73,                                   !- Latent Effectiveness at 75% Cooling Air Flow {dimensionless}
-  {8e507e3e-aada-4b64-b99e-fb968bf66683}, !- Supply Air Inlet Node
+  {0ccdd590-fc6c-473e-8dc9-226a9db37a4e}, !- Supply Air Inlet Node
   {b7aba8d2-bf5e-4a9b-a0b5-c093978b0fc8}, !- Supply Air Outlet Node
   {60bd128a-60af-41fe-816c-5afb51158936}, !- Exhaust Air Inlet Node
   {d27b2516-0137-45b7-85d2-afc9aab35bde}, !- Exhaust Air Outlet Node
@@ -13892,16 +13876,9 @@ OS:HeatExchanger:AirToAir:SensibleAndLatent,
 
 OS:Node,
   {21c5a6f2-cbb3-49e3-b91b-d0f35e06d423}, !- Handle
-  5 Zone PVAV 1 Air-to-Air Plate HX Outlet Node, !- Name
+  5 Zone PVAV 1 Air-to-Air Plate HX Outlet Air Node, !- Name
   {b7aba8d2-bf5e-4a9b-a0b5-c093978b0fc8}, !- Inlet Port
   {4fd32c13-2f0e-407a-b462-470a2b8aa4a8}; !- Outlet Port
-
-OS:Connection,
-  {8e507e3e-aada-4b64-b99e-fb968bf66683}, !- Handle
-  {6bdddc02-fc4a-4438-92b2-f9327a8417a6}, !- Source Object
-  3,                                      !- Outlet Port
-  {c58492e5-16ee-4cd1-8e52-77fb9f01bce0}, !- Target Object
-  12;                                     !- Inlet Port
 
 OS:Connection,
   {b7aba8d2-bf5e-4a9b-a0b5-c093978b0fc8}, !- Handle
@@ -13919,7 +13896,7 @@ OS:Connection,
 
 OS:Node,
   {f9c90456-b020-44bf-9735-d10dbd4e6c54}, !- Handle
-  5 Zone PVAV 1 Air-to-Air Plate HX Inlet Node, !- Name
+  5 Zone PVAV 1 Air-to-Air Plate HX Inlet Air Node, !- Name
   {a65e4b0c-2b15-4032-9992-cad9eada3872}, !- Inlet Port
   {60bd128a-60af-41fe-816c-5afb51158936}; !- Outlet Port
 
@@ -13943,4 +13920,82 @@ OS:Connection,
   15,                                     !- Outlet Port
   {03eee811-3286-492b-9aa5-3b7e4fa970c7}, !- Target Object
   2;                                      !- Inlet Port
+
+OS:Coil:Heating:Electric,
+  {720d5f98-22b7-4766-bff7-039a315fbc70}, ! Handle
+  5 Zone PVAV 1 Elec PreHtg Coil,         ! Name
+  {7c7989db-8728-48a8-b988-ef3bcbbf5113}, ! Availability Schedule Name
+  ,                                       ! Efficiency
+  ,                                       ! Nominal Capacity {W}
+  {33e424a5-054b-4785-b7a8-8975f3ecf012}, ! Air Inlet Node Name
+  {ea09228b-cd6f-4eae-a979-52cbc24324c6}; ! Air Outlet Node Name
+
+OS:Node,
+  {166b180b-af32-4403-86ff-9d8e022c3449}, !- Handle
+  5 Zone PVAV 1 Elec PreHtg Coil Outlet  Air Node, !- Name
+  {ea09228b-cd6f-4eae-a979-52cbc24324c6}, !- Inlet Port
+  {0ccdd590-fc6c-473e-8dc9-226a9db37a4e}; !- Outlet Port
+
+OS:Connection,
+  {33e424a5-054b-4785-b7a8-8975f3ecf012}, !- Handle
+  {6bdddc02-fc4a-4438-92b2-f9327a8417a6}, !- Source Object
+  3,                                      !- Outlet Port
+  {720d5f98-22b7-4766-bff7-039a315fbc70}, !- Target Object
+  5;                                      !- Inlet Port
+
+OS:Connection,
+  {ea09228b-cd6f-4eae-a979-52cbc24324c6}, !- Handle
+  {720d5f98-22b7-4766-bff7-039a315fbc70}, !- Source Object
+  6,                                      !- Outlet Port
+  {166b180b-af32-4403-86ff-9d8e022c3449}, !- Target Object
+  2;                                      !- Inlet Port
+
+OS:Connection,
+  {0ccdd590-fc6c-473e-8dc9-226a9db37a4e}, !- Handle
+  {166b180b-af32-4403-86ff-9d8e022c3449}, !- Source Object
+  3,                                      !- Outlet Port
+  {c58492e5-16ee-4cd1-8e52-77fb9f01bce0}, !- Target Object
+  12;                                     !- Inlet Port
+
+OS:SetpointManager:Scheduled,
+  {8bc313f7-18e4-4eda-a373-74d598553409}, ! Handle
+  Scheduled Deck Temp,                    ! Name
+  Temperature,                            ! Control Variable
+  {3d1a901b-5009-4d26-9347-1612434fc8ce}, ! Schedule Name
+  {166b180b-af32-4403-86ff-9d8e022c3449}; ! Setpoint Node or NodeList Name
+
+OS:Schedule:Ruleset,
+  {3d1a901b-5009-4d26-9347-1612434fc8ce}, ! Handle
+  Freeze Protection,                      ! Name
+  {d5af5c8c-49d7-4e72-ae78-23cc688d9f61}, ! Schedule Type Limits Name
+  {04dd317b-34f2-4ceb-b9bd-141a8535e63a}, ! Default Day Schedule Name
+  {8ccdc104-17a9-4e70-bc6d-ed628553fca5}, ! Summer Design Day Schedule Name
+  {52a89e80-d748-4ae3-8ea0-5de7e996624f}; ! Winter Design Day Schedule Name
+
+OS:Schedule:Day,
+  {04dd317b-34f2-4ceb-b9bd-141a8535e63a}, ! Handle
+  Freeze Protection Default,              ! Name
+  {d5af5c8c-49d7-4e72-ae78-23cc688d9f61}, ! Schedule Type Limits Name
+  ,                                       ! Interpolate to Timestep
+  24,                                     !- Hour 1
+  0,                                      !- Minute 1
+  3;                                      !- Value Until Time 1
+
+OS:Schedule:Day,
+  {8ccdc104-17a9-4e70-bc6d-ed628553fca5}, ! Handle
+  Deck Temperature Summer Design Day,     ! Name
+  {d5af5c8c-49d7-4e72-ae78-23cc688d9f61}, ! Schedule Type Limits Name
+  ,                                       ! Interpolate to Timestep
+  24,                                     ! Hour 1
+  0,                                      ! Minute 1
+  12.8;                                   ! Value Until Time 1
+
+OS:Schedule:Day,
+  {52a89e80-d748-4ae3-8ea0-5de7e996624f}, ! Handle
+  Deck Temperature Winter Design Day,     ! Name
+  {d5af5c8c-49d7-4e72-ae78-23cc688d9f61}, ! Schedule Type Limits Name
+  ,                                       ! Interpolate to Timestep
+  24,                                     ! Hour 1
+  0,                                      ! Minute 1
+  12.8;                                   ! Value Until Time 1
 
