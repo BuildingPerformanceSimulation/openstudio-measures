@@ -479,6 +479,12 @@
           return makeComponent(comp, 'oa_system', row, col, assignImage(comp), specialPorts);
         }
 
+        function makeHXSystem(comp, row, col, outdoorName, reliefName) {
+          let specialPorts = { [outdoorName]: "outdoor", [reliefName]: "relief"};
+          return makeComponent(comp, 'hx_system', row, col, assignImage(comp), specialPorts);
+        }
+
+
         function makeConnector(comp, row, col) {
           return makeComponent(comp, 'connector', row, col);
         }
