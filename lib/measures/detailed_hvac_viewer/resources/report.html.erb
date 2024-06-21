@@ -337,21 +337,26 @@
       }
 
       // returns the first before/after object in the same loop. prevents cases where linked objects are in different loops.
-      function validObjectInLoop(comps, component, order='after_objects') {
-        let check_component;
-        let valid_component_name;
+      function nextObjectInLoop(comps, component, order='after_objects') {
+        let valid_component;
         let i = 0;
-        while (!valid_component_name) {
-            check_component = comps.some(comp => comp.object_name === component[order][i]);
-            if (check_component) {
-                valid_component_name = component[order][i];
-            }
-            i++
+        while (!valid_component) {
+          valid_component = comps.find(comp => comp.object_name === component[order][i]);
+          i++
         }
-        if (!valid_component_name) {
-            console.log(`No objects in ${order} for ${component.object_name} found in this loop`);
+        if (!valid_component) {
+          console.log(`No objects in ${order} for ${component.object_name} found in this loop`);
         } else{
-            return valid_component_name;
+          return valid_component;
+        }
+      }
+
+      function nextObjectOnSide(comps, component, side, order='after_objects') {
+        for (let objName of component[order]) {
+          let obj = findComponent(comps, objName);
+          if (obj['component_side'] === side) {
+            return obj;
+          }
         }
       }
 
@@ -369,11 +374,10 @@
             height:2 * scalar,
             mainBranch: 2 * scalar,
           };
-          
+
           // starting at the inlet node, count the number of objects
           let comp = findComponent(components, boundary[`${side}_inlet`]);
           let end_comp = findComponent(components, boundary[`${side}_outlet`]);
-          let afterObjectName;
           dimension.width++;
           while (comp !== end_comp) {
             if (comp.object_type === 'OS_AirLoopHVAC_ZoneSplitter' || comp.object_type === 'OS_Connector_Splitter') {
@@ -382,7 +386,7 @@
               const mid = Math.floor(dimension.rows.length / 2);
               dimension.mainBranch = dimension.rows.length % 2 !== 0 ? dimension.rows[mid]: (dimension.rows[mid - 1] + dimension.rows[mid]) / 2;
               dimension.height = dimension.rows[dimension.rows.length - 1];
-              afterObjectName = validObjectInLoop(components, comp, 'after_objects')
+              comp = nextObjectInLoop(components, comp, 'after_objects')
             } else if (comp.object_type === 'OS_AirLoopHVAC_OutdoorAirSystem') {
               // sets the OA system and any relief/outdoor nodes. Need to expand to allow equipment on outdoor side like HX
               dimension.reliefCol = dimension.width;
@@ -396,24 +400,18 @@
                     dimension.numReliefComponents++;
                 }
               });
-              for (let objName of comp['after_objects']) {
-                let obj = findComponent(components, objName);
-                if (obj['component_side'] === 'supply') {
-                  afterObjectName = obj['object_name'];
-                }
-              }
+              comp = nextObjectOnSide(components, comp, 'supply')
               dimension.width++;
               dimension.mainBranch = -2;
               dimension.height = (Math.max(dimension.numOutdoorComponents, dimension.numReliefComponents) + 2) * scalar;
             } else {
-              afterObjectName = validObjectInLoop(components, comp, 'after_objects')
+              comp = nextObjectInLoop(components, comp, 'after_objects')
             }
-            comp = findComponent(components, afterObjectName);
             dimension.width++;
           }
           return dimension
         }
-        
+
         // get the dimensions for the supply and demand side, and return the overall dimensions
         let supplyDimensions = calcDimensions('supply')
         let demandDimensions = calcDimensions('demand')
@@ -424,15 +422,14 @@
           demandDimensions
         };
       }
-      
-      // populate grid data for the selected loop.
+
       function defineGridData(loop) {
         let boundary = loop['boundary_nodes'];
         let components = loop["components"];
         let dimensions = loopDimensions(loop)
         let gridData = [];
 
-                // assigns image matching component type
+        // assigns image matching component type
         function assignImage(obj) {
           if (obj.object_type in imageDict) {
             return img_src + imageDict[obj.object_type];
@@ -452,9 +449,9 @@
           return links;
         }
 
-        // Functions to set up components in selected loop to griddata
-        function makeComponent(comp, compType, row, col, imageFile = null, specialPorts = {}, side = null) {
-          return {
+        // Functions to set up components to griddata and return proceeding object
+        function addCompToGridData(comp, compType, row, col, imageFile = null, specialPorts = {}, side = null) {
+          gridData.push({
             'name': comp['object_name'],
             'type': compType,
             'side': (side !== null) ? side : comp['component_side'],
@@ -463,268 +460,158 @@
             'before_objects': setLinks(comp['before_objects'], 'in', specialPorts),
             'after_objects': setLinks(comp['after_objects'], 'out', specialPorts),
             'image': imageFile
-          };
+          });
         }
 
-        function makeNode(comp, row, col, side = null) {
-          return makeComponent(comp, 'node', row, col, null, {}, side);
+        function makeNode(comp, row, col, side = null, order = 'after_objects') {
+          addCompToGridData(comp, 'node', row, col, null, {}, side);
+          return nextObjectInLoop(components, comp, order);
         }
 
-        function makeEquipment(comp, row, col) {
-          return makeComponent(comp, 'equipment', row, col, assignImage(comp));
+        function makeEquipment(comp, row, col, order = 'after_objects') {
+          addCompToGridData(comp, 'equipment', row, col, assignImage(comp));
+          return nextObjectInLoop(components, comp, order);
         }
 
-        function makeOASystem(comp, row, col, outdoorName, reliefName) {
-          let specialPorts = { [outdoorName]: "outdoor", [reliefName]: "relief" };
-          return makeComponent(comp, 'oa_system', row, col, assignImage(comp), specialPorts);
+        function makeHXSystem(comp, row, col) {
+          let outdoorNode = nextObjectOnSide(components, comp, 'outdoor', 'before_objects');
+          let reliefNode = nextObjectOnSide(components, comp, 'relief', 'after_objects');
+          addCompToGridData(comp, 'hx_system', row, col, assignImage(comp),
+            {[outdoorNode.object_name]: "outdoor", [reliefNode.object_name]: "relief"}
+          );
+          return reliefNode;
         }
 
-        function makeHXSystem(comp, row, col, outdoorName, reliefName) {
-          let specialPorts = { [outdoorName]: "outdoor", [reliefName]: "relief"};
-          return makeComponent(comp, 'hx_system', row, col, assignImage(comp), specialPorts);
+        function makeOASystem(comp, row, col) {
+          function setOASystemBranches(side) {
+            let order = (side === 'relief') ? 'after_objects' : 'before_objects';
+            let tempComp = nextObjectOnSide(components, comp, side, order);
+            let name = tempComp.object_name;
+            let branchRow = dimensions.supplyDimensions.mainBranch - 1;
+            // console.log(tempComp[order].length)
+            let end_reached = false;
+            while (!end_reached && branchRow > -15) {
+              console.log(tempComp)
+              if (tempComp[order].length === 0) {
+                end_reached = true; // reached the end node
+                addCompToGridData(tempComp, 'node', dimensions.supplyDimensions.height, dimensions.supplyDimensions[`${side}Col`], side)
+              } else if (tempComp['object_type'] === "OS_Node") {
+                tempComp = makeNode(tempComp, branchRow, dimensions.supplyDimensions[`${side}Col`], side, order);
+                branchRow--;
+              } else if (tempComp['object_type'] === "OS_HeatExchanger_AirToAir_SensibleAndLatent") {
+                if (side === 'relief') {
+                  tempComp = makeHXSystem(tempComp, branchRow, dimensions.supplyDimensions[`${side}Col`]);
+                } else {
+                  tempComp = findComponent(components, nextObjectOnSide(components, tempComp, side, order).object_name);
+                }
+                branchRow--;
+              } else {
+                tempComp = makeEquipment(tempComp, branchRow, dimensions.supplyDimensions[`${side}Col`], order);
+                branchRow--;
+              }
+            }
+            return name;
+          }
+
+
+
+          // get relief and outdoor nodes and add branch objects
+          let reliefName = setOASystemBranches('relief');
+          let outdoorName = setOASystemBranches('outdoor');
+
+          // add OA object
+          addCompToGridData(comp, 'oa_system', row, col, assignImage(comp),
+            { [outdoorName]: "outdoor", [reliefName]: "relief" }
+          );
+
+          // return mixer node
+          return nextObjectOnSide(components, comp, 'supply');
         }
 
+        function makeBranches(comp, row, col) {
+          // determine demand (-1, leftwards) or supply (+1, rightwards) direction
+          let side = comp['component_side'];
+          let increment = (side === "supply") ? 1 : -1;
 
-        function makeConnector(comp, row, col) {
-          return makeComponent(comp, 'connector', row, col);
+          // add splitter
+          addCompToGridData(comp, 'connector', row, col);
+
+          // set the mixer type to look for
+          let mixer_type;
+          if (comp['object_type'] === "OS_AirLoopHVAC_ZoneSplitter") {
+            mixer_type = "OS_AirLoopHVAC_ZoneMixer";
+          } else if (comp['object_type'] === "OS_Connector_Splitter") {
+            mixer_type = "OS_Connector_Mixer";
+          }
+
+          // parse each branch by looping through splitter after objects
+          let finalBranchColumn = 0;
+          let mixerComp = null;
+          for (let i = 0; i < comp.after_objects.length; i++) {
+            let branchComp = findComponent(components, comp.after_objects[i])
+            let branchColumn = col + increment
+            let mixer_reached = false
+            while (!mixer_reached) {
+              if (branchComp['object_type'] === mixer_type) {
+                mixer_reached = true;
+              } else if (branchComp['object_type'] === "OS_Node") {
+                branchComp =  makeNode(branchComp, dimensions[`${side}Dimensions`].rows[i], branchColumn);
+                branchColumn += increment;
+              } else {
+                branchComp = makeEquipment(branchComp, dimensions[`${side}Dimensions`].rows[i], branchColumn);
+                branchColumn += increment;
+              }
+            }
+            finalBranchColumn = branchColumn
+            mixerComp = branchComp
+          }
+
+          // add mixer
+          addCompToGridData(mixerComp, 'connector', row, finalBranchColumn);
+
+          // return next object and column number
+          let nextComp = nextObjectInLoop(components, comp)
+          finalBranchColumn += increment;
+          return { nextComp , finalBranchColumn };
         }
 
         // set Supply Inlet Node
-        let currentComp = findComponent(components, boundary['supply_inlet']);
-        let currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
-        gridData.push(makeNode(currentComp, -1, 1, 'supply_inlet'))
-        let column = 2;
+        function setGridLoop(side) {
+          let startColumn = (side === 'supply') ? 1 : dimensions.totalWidth;
+          let endColumn = (side === 'supply') ? dimensions.totalWidth : 1;
+          let increment = (side === 'supply') ? 1 : -1;
+          let base_row = (side === 'supply') ? -1 : 1
+          let column = startColumn;
 
-        // set rest of the components until supply outlet node
-        while (currentCompName !== boundary['supply_outlet']) {
-          currentComp = findComponent(components, currentCompName)
+          // set Inlet Node
+          let currentComp = findComponent(components, boundary[`${side}_inlet`]);
+          currentComp = makeNode(currentComp, base_row, startColumn, `${side}_inlet`)
+          column += increment;
 
-          if (currentComp['object_type'] === "OS_Node") {
-            // Set node objects
-            gridData.push(makeNode(currentComp, dimensions.supplyDimensions.mainBranch, column));
-            currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
-            column++;
-            
-          } else if (currentComp['object_type'] === "OS_Connector_Splitter") {
-            // set the splitter object
-            gridData.push(makeConnector(currentComp, dimensions.supplyDimensions.mainBranch, column));
-            let mixer_type = "OS_Connector_Mixer";
-            
-            // set objects in each branch until the mixer is reached
-            let finalBranchColumn = column;
-            let finalBranchObject = null;
-            for (let i = 0; i < currentComp.after_objects.length; i++) {
-              let branchObjectName = currentComp.after_objects[i];
-              let branchObject = findComponent(components, branchObjectName)
-              let branchColumn = column + 1
-              let mixer_not_reached = true
-              while (mixer_not_reached) {
-                if (branchObject['object_type'] === mixer_type) {
-                  mixer_not_reached = false;
-                } else if (branchObject['object_type'] === "OS_Node") {
-                  gridData.push(makeNode(branchObject, dimensions.supplyDimensions.rows[i], branchColumn));
-                  branchObjectName = validObjectInLoop(components, branchObject, 'after_objects');
-                  branchObject = findComponent(components, branchObjectName);
-                  branchColumn ++;
-                } else {
-                  gridData.push(makeEquipment(branchObject, dimensions.supplyDimensions.rows[i], branchColumn));
-                  branchObjectName = validObjectInLoop(components, branchObject, 'after_objects');
-                  branchObject = findComponent(components, branchObjectName);
-                  branchColumn ++;
-                }
-              }
-              finalBranchColumn = branchColumn
-              finalBranchObject = branchObject
+          // set rest of the components until outlet node
+          while (currentComp.object_name !== boundary[`${side}_outlet`]) {
+            if (currentComp['object_type'] === "OS_Node") {
+              currentComp = makeNode(currentComp, dimensions[`${side}Dimensions`].mainBranch, column);
+              column += increment;
+            } else if (currentComp['object_type'] === "OS_AirLoopHVAC_ZoneSplitter" || currentComp['object_type'] === "OS_Connector_Splitter") {
+              let branch = makeBranches(currentComp, dimensions[`${side}Dimensions`].mainBranch, column);
+              currentComp = branch.nextComp;
+              column = branch.finalBranchColumn;
+            } else if (currentComp['object_type'] === "OS_AirLoopHVAC_OutdoorAirSystem") {
+              currentComp = makeOASystem(currentComp, dimensions[`${side}Dimensions`].mainBranch, column);
+              column += 2;
+            } else {
+              currentComp = makeEquipment(currentComp, dimensions[`${side}Dimensions`].mainBranch, column);
+              column += increment;
             }
-            
-            // set the mixer object
-            column = finalBranchColumn;
-            currentComp = finalBranchObject;
-            gridData.push(makeConnector(currentComp, dimensions.supplyDimensions.mainBranch, column));
-            currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
-            column ++;
-            
-          } else if (currentComp['object_type'] === "OS_AirLoopHVAC_OutdoorAirSystem") {
-            // Set up OA system. Need to expand for equipment on outdoor loop like HX.
-            let reliefName = '';
-            let outdoorName = '';
-            
-            // set relief side and get mixer node
-            for (let objName of currentComp['after_objects']) {
-              let obj = findComponent(components, objName);
-              if (obj['component_side'] === 'supply') {
-                currentCompName = obj['object_name'];
-              } else if (obj['component_side'] === 'relief') {
-                let branchrow = dimensions.supplyDimensions.mainBranch - 1;
-                gridData.push(makeNode(obj, branchrow, dimensions.supplyDimensions.reliefCol));
-                reliefName = obj['object_name']
-                if (dimensions.supplyDimensions.numReliefComponents > 1) {
-                  let branchObjectName = obj.after_objects[0];
-                  let branchObject = findComponent(components, branchObjectName);
-                  branchrow--;
-                  let end_reached = false;
-                  while (!end_reached) {
-                    if (branchObject['after_objects'].length === 0) {
-                      end_reached = true
-                      gridData.push(makeNode(branchObject, dimensions.supplyDimensions.height, dimensions.supplyDimensions.reliefCol));
-                    } else if (branchObject['object_type'] === "OS_Node") {
-                      gridData.push(makeNode(branchObject, branchrow, dimensions.supplyDimensions.reliefCol));
-                      branchObjectName = validObjectInLoop(components, branchObject, 'after_objects');
-                      branchObject = findComponent(components, branchObjectName);
-                      branchrow--;
-                    } else if (branchObject['object_type'] === "OS_HeatExchanger_AirToAir_SensibleAndLatent") {
-                      for (let after of branchObject['after_objects']) {
-                        let after_obj = findComponent(components, after);
-                        if (after_obj['component_side'] === 'relief') {
-                          branchObjectName = after_obj['object_name'];
-                        }
-                      }
-                      branchObject = findComponent(components, branchObjectName);
-                      branchrow--;
-                    } else {
-                      gridData.push(makeEquipment(branchObject, branchrow, dimensions.supplyDimensions.reliefCol));
-                      branchObjectName = validObjectInLoop(components, branchObject, 'after_objects');
-                      branchObject = findComponent(components, branchObjectName);
-                      branchrow--;
-                    }
-                  }
-                }
-              }
-            }
-
-            // set outdoor side
-            for (let objName of currentComp['before_objects']) {
-              let obj = findComponent(components, objName);
-              if (obj['component_side'] === 'outdoor') {
-                let branchrow = dimensions.supplyDimensions.mainBranch - 1;
-                gridData.push(makeNode(obj, branchrow, dimensions.supplyDimensions.outdoorCol));
-                outdoorName = obj['object_name'];
-                if (dimensions.supplyDimensions.numOutdoorComponents > 1) {
-                  let branchObjectName = obj.before_objects[0];
-                  let branchObject = findComponent(components, branchObjectName);
-                  branchrow--;
-                  let end_reached = false;
-                  while (!end_reached && branchrow > -10) {
-                    console.log(branchObject)
-                    if (branchObject['before_objects'].length === 0) {
-                      end_reached = true
-                      gridData.push(makeNode(branchObject, dimensions.supplyDimensions.height, dimensions.supplyDimensions.outdoorCol));
-                    } else if (branchObject['object_type'] === "OS_Node") {
-                      gridData.push(makeNode(branchObject, branchrow, dimensions.supplyDimensions.outdoorCol));
-                      branchObjectName = validObjectInLoop(components, branchObject, 'before_objects');
-                      branchObject = findComponent(components, branchObjectName);
-                      branchrow--;
-                    } else if (branchObject['object_type'] === "OS_HeatExchanger_AirToAir_SensibleAndLatent") {
-                      let outdoor_node = null;
-                      let relief_node = null;
-                      for (let before of branchObject['before_objects']) {
-                        let before_obj = findComponent(components, before);
-                        if (before_obj['component_side'] === 'outdoor') {
-                          outdoor_node = before_obj['object_name'];
-                          branchObjectName = outdoor_node;
-                        }
-                      }
-                      for (let after of branchObject['after_objects']) {
-                        let after_obj = findComponent(components, after);
-                        if (after_obj['component_side'] === 'relief') {
-                          relief_node = after_obj['object_name'];
-                        }
-                      }
-                      gridData.push(makeHXSystem(branchObject, branchrow,dimensions.supplyDimensions.reliefCol, outdoor_node, relief_node))
-                      branchObject = findComponent(components, branchObjectName);
-                      branchrow--;
-                    } else {
-                      gridData.push(makeEquipment(branchObject, branchrow, dimensions.supplyDimensions.outdoorCol));
-                      branchObjectName = validObjectInLoop(components, branchObject, 'before_objects');
-                      branchObject = findComponent(components, branchObjectName);
-                      branchrow--;
-                    }
-                  }
-                }
-              }
-            }
-
-            gridData.push(makeOASystem(currentComp, dimensions.supplyDimensions.mainBranch, column, outdoorName, reliefName));
-            column += 2;
-            
-          } else {
-            // set equipments
-            gridData.push(makeEquipment(currentComp, dimensions.supplyDimensions.mainBranch, column));
-            currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
-            column++;
           }
+
+          // Set outlet node
+          makeNode(currentComp, base_row, endColumn, `${side}_outlet`)
         }
 
-        column = dimensions.totalWidth;  // set column to right edge
-
-        // Set supply outlet
-        currentComp = findComponent(components, currentCompName);
-        gridData.push(makeNode(currentComp, -1, column, 'supply_outlet'))
-
-        // Set demand inlet node
-        currentComp = findComponent(components, boundary['demand_inlet']);
-        currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
-        gridData.push(makeNode(currentComp, 1, column, 'demand_inlet'))
-        column --;
-
-        // set rest of the components until demand outlet node
-        while (currentCompName !== boundary['demand_outlet']) {
-          currentComp = findComponent(components, currentCompName)
-
-          if (currentComp['object_type'] === "OS_Node") {
-            gridData.push(makeNode(currentComp, dimensions.demandDimensions.mainBranch, column));
-            currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
-            column--;
-          } else if (currentComp['object_type'] === "OS_AirLoopHVAC_ZoneSplitter" || currentComp['object_type'] === "OS_Connector_Splitter") {
-            gridData.push(makeConnector(currentComp, dimensions.demandDimensions.mainBranch, column));
-
-            // set the mixer type to look for
-            let mixer_type;
-            if (currentComp['object_type'] === "OS_AirLoopHVAC_ZoneSplitter") {
-              mixer_type = "OS_AirLoopHVAC_ZoneMixer";
-            } else if (currentComp['object_type'] === "OS_Connector_Splitter") {
-              mixer_type = "OS_Connector_Mixer";
-            }
-            let finalBranchColumn = column;
-            let finalBranchObject = null;
-            for (let i = 0; i < currentComp.after_objects.length; i++) {
-              let branchObjectName = currentComp.after_objects[i];
-              let branchObject = findComponent(components, branchObjectName)
-              let branchColumn = column - 1
-              let mixer_not_reached = true
-              while (mixer_not_reached) {
-                if (branchObject['object_type'] === mixer_type) {
-                  mixer_not_reached = false;
-                } else if (branchObject['object_type'] === "OS_Node") {
-                  gridData.push(makeNode(branchObject, dimensions.demandDimensions.rows[i], branchColumn));
-                  branchObjectName = validObjectInLoop(components, branchObject, 'after_objects');
-                  branchObject = findComponent(components, branchObjectName);
-                  branchColumn --;
-                } else {
-                  gridData.push(makeEquipment(branchObject, dimensions.demandDimensions.rows[i], branchColumn));
-                  branchObjectName = validObjectInLoop(components, branchObject, 'after_objects');
-                  branchObject = findComponent(components, branchObjectName);
-                  branchColumn --;
-                }
-              }
-              finalBranchColumn = branchColumn
-              finalBranchObject = branchObject
-            }
-            column = finalBranchColumn;
-            currentComp = finalBranchObject;
-            gridData.push(makeConnector(currentComp, dimensions.demandDimensions.mainBranch, column));
-            currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
-            column--;
-          } else {
-            gridData.push(makeEquipment(currentComp, dimensions.demandDimensions.mainBranch, column));
-            currentCompName = validObjectInLoop(components, currentComp, 'after_objects');
-            column--;
-          }
-        }
-
-        // add demand outlet
-        currentComp = findComponent(components, currentCompName);
-        gridData.push(makeNode(currentComp, 1, 1, 'demand_outlet'))
+        setGridLoop('supply');
+        setGridLoop('demand');
 
         return gridData
       }
