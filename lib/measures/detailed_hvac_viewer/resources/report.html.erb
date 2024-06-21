@@ -513,8 +513,6 @@
             return name;
           }
 
-
-
           // get relief and outdoor nodes and add branch objects
           let reliefName = setOASystemBranches('relief');
           let outdoorName = setOASystemBranches('outdoor');
@@ -570,7 +568,7 @@
           addCompToGridData(mixerComp, 'connector', row, finalBranchColumn);
 
           // return next object and column number
-          let nextComp = nextObjectInLoop(components, comp)
+          let nextComp = nextObjectInLoop(components, mixerComp)
           finalBranchColumn += increment;
           return { nextComp , finalBranchColumn };
         }
