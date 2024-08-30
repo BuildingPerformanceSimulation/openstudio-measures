@@ -1,9 +1,10 @@
+<?xml version="1.0"?>
 <measure>
-  <schema_version>3.0</schema_version>
+  <schema_version>3.1</schema_version>
   <name>ideal_air_loads_zone_hvac</name>
   <uid>9cdff3b9-7ce1-4982-b555-bb83c73727e4</uid>
-  <version_id>2a56071b-8455-4a72-b78f-733240c202e8</version_id>
-  <version_modified>20190325T222118Z</version_modified>
+  <version_id>60fde288-f333-48dd-8712-fdd18b02cc8b</version_id>
+  <version_modified>2024-08-30T16:00:45Z</version_modified>
   <xml_checksum>1423DDF2</xml_checksum>
   <class_name>IdealAirLoadsZoneHVAC</class_name>
   <display_name>Ideal Air Loads Zone HVAC</display_name>
@@ -275,8 +276,8 @@
       </choices>
     </argument>
   </arguments>
-  <outputs/>
-  <provenances/>
+  <outputs />
+  <provenances />
   <tags>
     <tag>HVAC.Whole System</tag>
   </tags>
@@ -309,6 +310,29 @@
   </attributes>
   <files>
     <file>
+      <filename>LICENSE.md</filename>
+      <filetype>md</filetype>
+      <usage_type>license</usage_type>
+      <checksum>E7161B14</checksum>
+    </file>
+    <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>3.8.0</identifier>
+        <min_compatible>3.8.0</min_compatible>
+      </version>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>4AD86E18</checksum>
+    </file>
+    <file>
+      <filename>IdealAirLoadsZoneHVAC_Test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>17FF6A2D</checksum>
+    </file>
+    <file>
       <filename>office.osm</filename>
       <filetype>osm</filetype>
       <usage_type>test</usage_type>
@@ -319,23 +343,6 @@
       <filetype>osm</filetype>
       <usage_type>test</usage_type>
       <checksum>57F7FB68</checksum>
-    </file>
-    <file>
-      <filename>IdealAirLoadsZoneHVAC_Test.rb</filename>
-      <filetype>rb</filetype>
-      <usage_type>test</usage_type>
-      <checksum>A1C814B9</checksum>
-    </file>
-    <file>
-      <version>
-        <software_program>OpenStudio</software_program>
-        <identifier>2.7.0</identifier>
-        <min_compatible>2.7.0</min_compatible>
-      </version>
-      <filename>measure.rb</filename>
-      <filetype>rb</filetype>
-      <usage_type>script</usage_type>
-      <checksum>EEAE324E</checksum>
     </file>
   </files>
 </measure>

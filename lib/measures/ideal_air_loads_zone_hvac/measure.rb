@@ -1,7 +1,7 @@
 # dependencies
 require 'openstudio-standards'
 
-class IdealAirLoadsZoneHVAC < OpenStudio::Ruleset::ModelUserScript
+class IdealAirLoadsZoneHVAC < OpenStudio::Measure::ModelMeasure
 
   # human readable name
   def name
@@ -36,19 +36,19 @@ class IdealAirLoadsZoneHVAC < OpenStudio::Ruleset::ModelUserScript
     end
 
     # argument for system availability schedule
-    availability_schedule = OpenStudio::Ruleset::OSArgument::makeChoiceArgument('availability_schedule', schedule_choices, true)
+    availability_schedule = OpenStudio::Measure::OSArgument::makeChoiceArgument('availability_schedule', schedule_choices, true)
     availability_schedule.setDisplayName('System Availability Schedule:')
     availability_schedule.setDefaultValue('Default Always On')
     args << availability_schedule
 
     # argument for heating availability schedule
-    heating_availability_schedule = OpenStudio::Ruleset::OSArgument::makeChoiceArgument('heating_availability_schedule', schedule_choices, true)
+    heating_availability_schedule = OpenStudio::Measure::OSArgument::makeChoiceArgument('heating_availability_schedule', schedule_choices, true)
     heating_availability_schedule.setDisplayName('Heating Availability Schedule:')
     heating_availability_schedule.setDefaultValue('Default Always On')
     args << heating_availability_schedule
 
     # argument for cooling availability schedule
-    cooling_availability_schedule = OpenStudio::Ruleset::OSArgument::makeChoiceArgument('cooling_availability_schedule', schedule_choices, true)
+    cooling_availability_schedule = OpenStudio::Measure::OSArgument::makeChoiceArgument('cooling_availability_schedule', schedule_choices, true)
     cooling_availability_schedule.setDisplayName('Cooling Availability Schedule:')
     cooling_availability_schedule.setDefaultValue('Default Always On')
     args << cooling_availability_schedule
@@ -59,7 +59,7 @@ class IdealAirLoadsZoneHVAC < OpenStudio::Ruleset::ModelUserScript
     choices << 'LimitFlowRate'
     choices << 'LimitCapacity'
     choices << 'LimitFlowRateAndCapacity'
-    heating_limit_type = OpenStudio::Ruleset::OSArgument::makeChoiceArgument('heating_limit_type', choices, true)
+    heating_limit_type = OpenStudio::Measure::OSArgument::makeChoiceArgument('heating_limit_type', choices, true)
     heating_limit_type.setDisplayName('Heating Limit Type:')
     heating_limit_type.setDefaultValue('NoLimit')
     args << heating_limit_type
@@ -70,7 +70,7 @@ class IdealAirLoadsZoneHVAC < OpenStudio::Ruleset::ModelUserScript
     choices << 'LimitFlowRate'
     choices << 'LimitCapacity'
     choices << 'LimitFlowRateAndCapacity'
-    cooling_limit_type = OpenStudio::Ruleset::OSArgument::makeChoiceArgument('cooling_limit_type', choices, true)
+    cooling_limit_type = OpenStudio::Measure::OSArgument::makeChoiceArgument('cooling_limit_type', choices, true)
     cooling_limit_type.setDisplayName('Cooling Limit Type:')
     cooling_limit_type.setDefaultValue('NoLimit')
     args << cooling_limit_type
@@ -81,13 +81,13 @@ class IdealAirLoadsZoneHVAC < OpenStudio::Ruleset::ModelUserScript
     choices << 'ConstantSensibleHeatRatio'
     choices << 'Humidistat'
     choices << 'ConstantSupplyHumidityRatio'
-    dehumid_type = OpenStudio::Ruleset::OSArgument::makeChoiceArgument('dehumid_type', choices, true)
+    dehumid_type = OpenStudio::Measure::OSArgument::makeChoiceArgument('dehumid_type', choices, true)
     dehumid_type.setDisplayName('Dehumidification Control:')
     dehumid_type.setDefaultValue('ConstantSensibleHeatRatio')
     args << dehumid_type
 
     # argument for Cooling Sensible Heat Ratio
-    cooling_sensible_heat_ratio = OpenStudio::Ruleset::OSArgument::makeDoubleArgument('cooling_sensible_heat_ratio', true)
+    cooling_sensible_heat_ratio = OpenStudio::Measure::OSArgument::makeDoubleArgument('cooling_sensible_heat_ratio', true)
     cooling_sensible_heat_ratio.setDisplayName('Cooling Sensible Heat Ratio')
     cooling_sensible_heat_ratio.setDefaultValue(0.7)
     args << cooling_sensible_heat_ratio
@@ -97,19 +97,19 @@ class IdealAirLoadsZoneHVAC < OpenStudio::Ruleset::ModelUserScript
     choices << 'None'
     choices << 'Humidistat'
     choices << 'ConstantSupplyHumidityRatio'
-    humid_type = OpenStudio::Ruleset::OSArgument::makeChoiceArgument('humid_type', choices, true)
+    humid_type = OpenStudio::Measure::OSArgument::makeChoiceArgument('humid_type', choices, true)
     humid_type.setDisplayName('Humidification Control:')
     humid_type.setDefaultValue('None')
     args << humid_type
 
     # argument for Design Specification Outdoor Air
-    include_outdoor_air = OpenStudio::Ruleset::OSArgument::makeBoolArgument('include_outdoor_air', true)
+    include_outdoor_air = OpenStudio::Measure::OSArgument::makeBoolArgument('include_outdoor_air', true)
     include_outdoor_air.setDisplayName('Include Outdoor Air Ventilation?:')
     include_outdoor_air.setDefaultValue(true)
     args << include_outdoor_air
 
     # argument for Demand Controlled Ventilation
-    enable_dcv = OpenStudio::Ruleset::OSArgument::makeBoolArgument('enable_dcv', true)
+    enable_dcv = OpenStudio::Measure::OSArgument::makeBoolArgument('enable_dcv', true)
     enable_dcv.setDisplayName('Enable Demand Controlled Ventilation?:')
     enable_dcv.setDefaultValue(false)
     args << enable_dcv
@@ -119,7 +119,7 @@ class IdealAirLoadsZoneHVAC < OpenStudio::Ruleset::ModelUserScript
     choices << 'NoEconomizer'
     choices << 'DifferentialDryBulb'
     choices << 'DifferentialEnthalpy'
-    economizer_type = OpenStudio::Ruleset::OSArgument::makeChoiceArgument('economizer_type', choices, true)
+    economizer_type = OpenStudio::Measure::OSArgument::makeChoiceArgument('economizer_type', choices, true)
     economizer_type.setDisplayName('Economizer Type (Requires a Flow Rate Cooling Limit Type and Outdoor Air):')
     economizer_type.setDefaultValue('NoEconomizer')
     args << economizer_type
@@ -129,25 +129,25 @@ class IdealAirLoadsZoneHVAC < OpenStudio::Ruleset::ModelUserScript
     choices << 'None'
     choices << 'Sensible'
     choices << 'Enthalpy'
-    heat_recovery_type = OpenStudio::Ruleset::OSArgument::makeChoiceArgument('heat_recovery_type', choices, true)
+    heat_recovery_type = OpenStudio::Measure::OSArgument::makeChoiceArgument('heat_recovery_type', choices, true)
     heat_recovery_type.setDisplayName('Heat Recovery Type (Requires Outdoor Air):')
     heat_recovery_type.setDefaultValue('None')
     args << heat_recovery_type
 
     # argument for Heat Recovery Sensible Effectiveness
-    sensible_effectiveness = OpenStudio::Ruleset::OSArgument::makeDoubleArgument('sensible_effectiveness', true)
+    sensible_effectiveness = OpenStudio::Measure::OSArgument::makeDoubleArgument('sensible_effectiveness', true)
     sensible_effectiveness.setDisplayName('Heat Recovery Sensible Effectiveness')
     sensible_effectiveness.setDefaultValue(0.7)
     args << sensible_effectiveness
 
     # argument for Heat Recovery Latent Effectiveness
-    latent_effectiveness = OpenStudio::Ruleset::OSArgument::makeDoubleArgument('latent_effectiveness', true)
+    latent_effectiveness = OpenStudio::Measure::OSArgument::makeDoubleArgument('latent_effectiveness', true)
     latent_effectiveness.setDisplayName('Heat Recovery Latent Effectiveness')
     latent_effectiveness.setDefaultValue(0.65)
     args << latent_effectiveness
 
     # add output meter
-    add_meters = OpenStudio::Ruleset::OSArgument.makeBoolArgument('add_meters',true)
+    add_meters = OpenStudio::Measure::OSArgument.makeBoolArgument('add_meters',true)
     add_meters.setDisplayName('Add Meter:Custom and Output:Meter objects to sum ZoneHVAC:IdealLoadsAirSystem variables?')
     add_meters.setDefaultValue(true)
     args << add_meters
@@ -159,7 +159,7 @@ class IdealAirLoadsZoneHVAC < OpenStudio::Ruleset::ModelUserScript
   def run(model, runner, user_arguments)
     super(model, runner, user_arguments)
 
-    # use the built-in error checking 
+    # use the built-in error checking
     if not runner.validateUserArguments(arguments(model), user_arguments)
       return false
     end
@@ -184,7 +184,7 @@ class IdealAirLoadsZoneHVAC < OpenStudio::Ruleset::ModelUserScript
     latent_effectiveness = runner.getDoubleArgumentValue('latent_effectiveness', user_arguments)
     add_meters = runner.getBoolArgumentValue('add_meters', user_arguments)
 
-    # check which zone already include ideal air loads 
+    # check which zone already include ideal air loads
     existing_ideal_loads = model.getZoneHVACIdealLoadsAirSystems
     runner.registerInitialCondition("The model has #{existing_ideal_loads.size} ideal air loads objects.")
 
@@ -193,13 +193,13 @@ class IdealAirLoadsZoneHVAC < OpenStudio::Ruleset::ModelUserScript
 
     # remove existing HVAC
     runner.registerInfo('Removing existing HVAC systems from the model')
-    std.remove_HVAC(model)
+    std.remove_hvac(model)
 
     # add zone hvac ideal load air system objects
     conditioned_zones = []
     model.getThermalZones.each do |zone|
-      next if std.thermal_zone_plenum?(zone)
-      next if !std.thermal_zone_heated?(zone) && !std.thermal_zone_cooled?(zone)
+      next if OpenstudioStandards::ThermalZone.thermal_zone_plenum?(zone)
+      next if !OpenstudioStandards::ThermalZone.thermal_zone_heated?(zone) && !OpenstudioStandards::ThermalZone.thermal_zone_cooled?(zone)
       conditioned_zones << zone
     end
     ideal_loads_objects = std.model_add_ideal_air_loads(model,
