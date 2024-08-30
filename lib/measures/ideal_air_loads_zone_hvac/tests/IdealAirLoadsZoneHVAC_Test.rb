@@ -1,5 +1,5 @@
 require 'openstudio'
-require 'openstudio/ruleset/ShowRunnerOutput'
+require 'openstudio/measure/ShowRunnerOutput'
 require 'minitest/autorun'
 require_relative '../measure.rb'
 require 'fileutils'
@@ -48,7 +48,7 @@ class IdealAirLoadsZoneHVAC_Test < Minitest::Test
     measure = IdealAirLoadsZoneHVAC.new
 
     # create an instance of a runner
-    runner = OpenStudio::Ruleset::OSRunner.new
+    runner = OpenStudio::Measure::OSRunner.new(OpenStudio::WorkflowJSON.new)
 
     # load the test model
     translator = OpenStudio::OSVersion::VersionTranslator.new
@@ -59,7 +59,7 @@ class IdealAirLoadsZoneHVAC_Test < Minitest::Test
 
     # set argument values to good values
     arguments = measure.arguments(model)
-    argument_map = OpenStudio::Ruleset::OSArgumentMap.new
+    argument_map = OpenStudio::Measure::OSArgumentMap.new
 
     availability_schedule = arguments[0].clone
     assert(availability_schedule.setValue("HVAC Availability Schedule"))
@@ -148,7 +148,7 @@ class IdealAirLoadsZoneHVAC_Test < Minitest::Test
     measure = IdealAirLoadsZoneHVAC.new
 
     # create an instance of a runner
-    runner = OpenStudio::Ruleset::OSRunner.new
+    runner = OpenStudio::Measure::OSRunner.new(OpenStudio::WorkflowJSON.new)
 
     # load the test model
     translator = OpenStudio::OSVersion::VersionTranslator.new
@@ -159,7 +159,7 @@ class IdealAirLoadsZoneHVAC_Test < Minitest::Test
 
     # set argument values to good values
     arguments = measure.arguments(model)
-    argument_map = OpenStudio::Ruleset::OSArgumentMap.new
+    argument_map = OpenStudio::Measure::OSArgumentMap.new
 
     availability_schedule = arguments[0].clone
     assert(availability_schedule.setValue("HVAC Availability Schedule"))
@@ -248,7 +248,7 @@ class IdealAirLoadsZoneHVAC_Test < Minitest::Test
     measure = IdealAirLoadsZoneHVAC.new
 
     # create an instance of a runner
-    runner = OpenStudio::Ruleset::OSRunner.new
+    runner = OpenStudio::Measure::OSRunner.new(OpenStudio::WorkflowJSON.new)
 
     # load the test model
     translator = OpenStudio::OSVersion::VersionTranslator.new
@@ -259,7 +259,7 @@ class IdealAirLoadsZoneHVAC_Test < Minitest::Test
 
     # set argument values to good values
     arguments = measure.arguments(model)
-    argument_map = OpenStudio::Ruleset::OSArgumentMap.new
+    argument_map = OpenStudio::Measure::OSArgumentMap.new
 
     availability_schedule = arguments[0].clone
     assert(availability_schedule.setValue("HVAC Availability Schedule"))
