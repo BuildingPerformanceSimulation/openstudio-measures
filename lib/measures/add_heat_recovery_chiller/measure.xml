@@ -3,8 +3,8 @@
   <schema_version>3.1</schema_version>
   <name>add_heat_recovery_chiller</name>
   <uid>968b3e43-1b47-4f29-b0af-f1c16b3e68c2</uid>
-  <version_id>2ddbffd1-5149-445a-83e3-3d9f54f112f5</version_id>
-  <version_modified>2024-10-02T19:43:08Z</version_modified>
+  <version_id>58997653-d398-4180-b35d-9e3796cb9906</version_id>
+  <version_modified>2024-10-04T19:54:54Z</version_modified>
   <xml_checksum>88BE00C7</xml_checksum>
   <class_name>AddHeatRecoveryChiller</class_name>
   <display_name>Heat Recovery Chiller</display_name>
@@ -266,7 +266,7 @@
       <filename>measure.rb</filename>
       <filetype>rb</filetype>
       <usage_type>script</usage_type>
-      <checksum>FDA94B9A</checksum>
+      <checksum>7C514DEC</checksum>
     </file>
     <file>
       <filename>95.epw</filename>
@@ -278,49 +278,13 @@
       <filename>95.osm</filename>
       <filetype>osm</filetype>
       <usage_type>test</usage_type>
-      <checksum>93F8CB08</checksum>
+      <checksum>452A0575</checksum>
     </file>
     <file>
       <filename>AddHeatRecoveryChiller_Test.rb</filename>
       <filetype>rb</filetype>
       <usage_type>test</usage_type>
-      <checksum>D11BADE1</checksum>
-    </file>
-    <file>
-      <filename>LargeOffice_VAV_chiller_boiler.epw</filename>
-      <filetype>epw</filetype>
-      <usage_type>test</usage_type>
-      <checksum>A0EA4A35</checksum>
-    </file>
-    <file>
-      <filename>LargeOffice_VAV_chiller_boiler.osm</filename>
-      <filetype>osm</filetype>
-      <usage_type>test</usage_type>
-      <checksum>D3164F50</checksum>
-    </file>
-    <file>
-      <filename>VAV_chiller_boiler_4A.epw</filename>
-      <filetype>epw</filetype>
-      <usage_type>test</usage_type>
-      <checksum>93A87B0C</checksum>
-    </file>
-    <file>
-      <filename>VAV_chiller_boiler_4A.osm</filename>
-      <filetype>osm</filetype>
-      <usage_type>test</usage_type>
-      <checksum>566DED4B</checksum>
-    </file>
-    <file>
-      <filename>VAV_with_reheat_3B.epw</filename>
-      <filetype>epw</filetype>
-      <usage_type>test</usage_type>
-      <checksum>CD6E640B</checksum>
-    </file>
-    <file>
-      <filename>VAV_with_reheat_3B.osm</filename>
-      <filetype>osm</filetype>
-      <usage_type>test</usage_type>
-      <checksum>37D5AEB8</checksum>
+      <checksum>C217698D</checksum>
     </file>
   </files>
 </measure>

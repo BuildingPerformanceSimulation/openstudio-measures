@@ -1,7 +1,7 @@
 
 OS:Version,
-  {5a8e6c44-dfc3-474d-a332-dd4a0e1ff3e9}, !- Handle
-  3.5.1;                                  !- Version Identifier
+  {0204a816-e1d9-4526-957e-b3dbd6453159}, !- Handle
+  3.7.0;                                  !- Version Identifier
 
 OS:Facility,
   {ef1988e3-2b74-4e17-bbab-012bf98ae07f}; !- Handle
@@ -23576,7 +23576,8 @@ OS:Boiler:HotWater,
   {5a4b0077-bca9-4a31-b136-d9ee719f707f}, !- Boiler Water Outlet Node Name
   95.0000000000001,                       !- Water Outlet Upper Temperature Limit {C}
   LeavingSetpointModulated,               !- Boiler Flow Mode
-  0,                                      !- Parasitic Electric Load {W}
+  0,                                      !- On Cycle Parasitic Electric Load {W}
+  0,                                      !- Off Cycle Parasitic Fuel Load {W}
   1,                                      !- Sizing Factor
   General;                                !- End-Use Subcategory
 
@@ -24308,14 +24309,16 @@ OS:Connector:Mixer,
   Connector Mixer 7,                      !- Name
   {8e732348-5f0a-44cd-8acc-57af88525e51}, !- Outlet Branch Name
   {94b0480b-5f21-4b5f-b622-946bde607e55}, !- Inlet Branch Name 1
-  {3a60c36b-969a-4a43-bed0-a122a0de00bb}; !- Inlet Branch Name 2
+  {3a60c36b-969a-4a43-bed0-a122a0de00bb}, !- Inlet Branch Name 2
+  {750663bb-08b9-46f4-a05e-fb3b5ddc0523}; !- Inlet Branch Name 3
 
 OS:Connector:Splitter,
   {c272a738-e9dd-4a94-983a-9cbc997a560b}, !- Handle
   Connector Splitter 7,                   !- Name
   {3737c850-6271-43b5-94af-3afc6ca06d10}, !- Inlet Branch Name
   {add8ee45-5197-4380-8e64-c5466e52a555}, !- Outlet Branch Name 1
-  {9bcad065-6432-42d2-a8d6-a3a01b9b74a3}; !- Outlet Branch Name 2
+  {9bcad065-6432-42d2-a8d6-a3a01b9b74a3}, !- Outlet Branch Name 2
+  {b7df166d-2d3d-4533-a141-bac94be45c18}; !- Outlet Branch Name 3
 
 OS:Connection,
   {5349099a-c892-411c-8741-fe973c11cf70}, !- Handle
@@ -24546,8 +24549,8 @@ OS:Chiller:Electric:EIR,
   3.79805615550756,                       !- Reference COP {W/W}
   6.66666666666669,                       !- Reference Leaving Chilled Water Temperature {C}
   35.0000000000001,                       !- Reference Entering Condenser Fluid Temperature {C}
-  0.005533,                               !- Reference Chilled Water Flow Rate {m3/s}
-  0.00708998,                             !- Reference Condenser Fluid Flow Rate {m3/s}
+  0.0027665,                              !- Reference Chilled Water Flow Rate {m3/s}
+  0.00354499,                             !- Reference Condenser Fluid Flow Rate {m3/s}
   {35a47837-6879-4c55-bc3d-563800e858d0}, !- Cooling Capacity Function of Temperature Curve Name
   {18cf81c9-f433-4de0-94bb-7babab45dbe9}, !- Electric Input to Cooling Output Ratio Function of Temperature Curve Name
   {131fcfa2-263c-4ae3-8307-908df37db366}, !- Electric Input to Cooling Output Ratio Function of Part Load Ratio Curve Name
@@ -25248,7 +25251,8 @@ OS:Controller:OutdoorAir,
   ,                                       !- Humidistat Control Zone Name
   ,                                       !- High Humidity Outdoor Air Flow Ratio
   ,                                       !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
-  BypassWhenWithinEconomizerLimits;       !- Heat Recovery Bypass Control Type
+  BypassWhenWithinEconomizerLimits,       !- Heat Recovery Bypass Control Type
+  InterlockedWithMechanicalCooling;       !- Economizer Operation Staging
 
 OS:Controller:MechanicalVentilation,
   {766676ba-5b6b-42fe-a35c-5edf592bebcf}, !- Handle
@@ -27125,7 +27129,8 @@ OS:Controller:OutdoorAir,
   ,                                       !- Humidistat Control Zone Name
   ,                                       !- High Humidity Outdoor Air Flow Ratio
   ,                                       !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
-  BypassWhenWithinEconomizerLimits;       !- Heat Recovery Bypass Control Type
+  BypassWhenWithinEconomizerLimits,       !- Heat Recovery Bypass Control Type
+  InterlockedWithMechanicalCooling;       !- Economizer Operation Staging
 
 OS:Controller:MechanicalVentilation,
   {79f01af3-21b6-4431-ad97-904dc3a98049}, !- Handle
@@ -29002,7 +29007,8 @@ OS:Controller:OutdoorAir,
   ,                                       !- Humidistat Control Zone Name
   ,                                       !- High Humidity Outdoor Air Flow Ratio
   ,                                       !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
-  BypassWhenWithinEconomizerLimits;       !- Heat Recovery Bypass Control Type
+  BypassWhenWithinEconomizerLimits,       !- Heat Recovery Bypass Control Type
+  InterlockedWithMechanicalCooling;       !- Economizer Operation Staging
 
 OS:Controller:MechanicalVentilation,
   {fef63fa4-93bf-490c-aac1-43f4c4ea8802}, !- Handle
@@ -30879,7 +30885,8 @@ OS:Controller:OutdoorAir,
   ,                                       !- Humidistat Control Zone Name
   ,                                       !- High Humidity Outdoor Air Flow Ratio
   ,                                       !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
-  BypassWhenWithinEconomizerLimits;       !- Heat Recovery Bypass Control Type
+  BypassWhenWithinEconomizerLimits,       !- Heat Recovery Bypass Control Type
+  InterlockedWithMechanicalCooling;       !- Economizer Operation Staging
 
 OS:Controller:MechanicalVentilation,
   {b1791ff9-87b0-4a5a-bebf-436e7df52929}, !- Handle
@@ -32756,7 +32763,8 @@ OS:Controller:OutdoorAir,
   ,                                       !- Humidistat Control Zone Name
   ,                                       !- High Humidity Outdoor Air Flow Ratio
   ,                                       !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
-  BypassWhenWithinEconomizerLimits;       !- Heat Recovery Bypass Control Type
+  BypassWhenWithinEconomizerLimits,       !- Heat Recovery Bypass Control Type
+  InterlockedWithMechanicalCooling;       !- Economizer Operation Staging
 
 OS:Controller:MechanicalVentilation,
   {09635742-4ec9-4bf2-98b2-a00c635519c2}, !- Handle
@@ -34633,7 +34641,8 @@ OS:Controller:OutdoorAir,
   ,                                       !- Humidistat Control Zone Name
   ,                                       !- High Humidity Outdoor Air Flow Ratio
   ,                                       !- Control High Indoor Humidity Based on Outdoor Humidity Ratio
-  BypassWhenWithinEconomizerLimits;       !- Heat Recovery Bypass Control Type
+  BypassWhenWithinEconomizerLimits,       !- Heat Recovery Bypass Control Type
+  InterlockedWithMechanicalCooling;       !- Economizer Operation Staging
 
 OS:Controller:MechanicalVentilation,
   {fe90c32c-bbd5-4f8c-bb4f-9782b1b2afd1}, !- Handle
@@ -42340,22 +42349,6 @@ OS:StandardsInformation:Construction,
   {bca860bf-ce8b-4374-ad73-b097b257f053}, !- Handle
   {25e3c4d5-f9c9-4ef5-89b4-38db5895295a}; !- Construction Name
 
-OS:WeatherFile,
-  {90b2aab1-7a9a-4f89-8843-04ac9a0e14fd}, !- Handle
-  Yeager,                                 !- City
-  WV,                                     !- State Province Region
-  USA,                                    !- Country
-  customized weather file,                !- Data Source
-  724140,                                 !- WMO Number
-  38.38,                                  !- Latitude {deg}
-  -81.59,                                 !- Longitude {deg}
-  -5,                                     !- Time Zone {hr}
-  299,                                    !- Elevation {m}
-  95.epw,                                 !- Url
-  DEDEF016,                               !- Checksum
-  2018,                                   !- Start Date Actual Year
-  Monday;                                 !- Start Day of Week
-
 OS:RadianceParameters,
   {cf6aa5f7-c964-45f5-a8f2-e04ff0afa798}, !- Handle
   1,                                      !- Accumulated Rays per Record
@@ -42390,7 +42383,9 @@ OS:SurfaceConvectionAlgorithm:Outside,
 
 OS:ZoneAirHeatBalanceAlgorithm,
   {7e208a71-0c81-435b-b4af-6543e178a7ed}, !- Handle
-  ThirdOrderBackwardDifference;           !- Algorithm
+  ThirdOrderBackwardDifference,           !- Algorithm
+  ,                                       !- Do Space Heat Balance for Sizing
+  ;                                       !- Do Space Heat Balance for Simulation
 
 OS:ZoneAirContaminantBalance,
   {dc7d5d53-8f37-477f-91c4-8119026b4e2d}; !- Handle
@@ -42414,4 +42409,118 @@ OS:Output:Table:SummaryReports,
 
 OS:Output:Diagnostics,
   {c16701ff-9155-436f-8fd7-9968c079c4a8}; !- Handle
+
+OS:Chiller:Electric:EIR,
+  {63817e83-de39-41e3-ab61-8ac53e3cd59d}, !- Handle
+  Chiller - Air Cooled,                   !- Name
+  Autosize,                               !- Reference Capacity {W}
+  3,                                      !- Reference COP {W/W}
+  ,                                       !- Reference Leaving Chilled Water Temperature {C}
+  ,                                       !- Reference Entering Condenser Fluid Temperature {C}
+  0.0027665,                              !- Reference Chilled Water Flow Rate {m3/s}
+  ,                                       !- Reference Condenser Fluid Flow Rate {m3/s}
+  {cbb35b1d-c9b0-4058-886a-9878d9d061ad}, !- Cooling Capacity Function of Temperature Curve Name
+  {f293860a-b759-49b3-b9a8-3eb82b6baee8}, !- Electric Input to Cooling Output Ratio Function of Temperature Curve Name
+  {88168e2a-c37b-4781-92fa-32d3a59ce68b}, !- Electric Input to Cooling Output Ratio Function of Part Load Ratio Curve Name
+  ,                                       !- Minimum Part Load Ratio
+  ,                                       !- Maximum Part Load Ratio
+  ,                                       !- Optimum Part Load Ratio
+  ,                                       !- Minimum Unloading Ratio
+  {812da95c-3397-4eaa-b206-ae3f5d09183d}, !- Chilled Water Inlet Node Name
+  {63ff7933-6b09-489c-bd4a-15fd5f4a1e7f}, !- Chilled Water Outlet Node Name
+  ,                                       !- Condenser Inlet Node Name
+  ,                                       !- Condenser Outlet Node Name
+  AirCooled,                              !- Condenser Type
+  ,                                       !- Condenser Fan Power Ratio {W/W}
+  ,                                       !- Fraction of Compressor Electric Consumption Rejected by Condenser
+  ,                                       !- Leaving Chilled Water Lower Temperature Limit {C}
+  ConstantFlow,                           !- Chiller Flow Mode
+  Autosize,                               !- Design Heat Recovery Water Flow Rate {m3/s}
+  ,                                       !- Heat Recovery Inlet Node Name
+  ,                                       !- Heat Recovery Outlet Node Name
+  1,                                      !- Sizing Factor
+  0,                                      !- Basin Heater Capacity {W/K}
+  10,                                     !- Basin Heater Setpoint Temperature {C}
+  ,                                       !- Basin Heater Operating Schedule Name
+  1,                                      !- Condenser Heat Recovery Relative Capacity Fraction
+  ,                                       !- Heat Recovery Inlet High Temperature Limit Schedule Name
+  ,                                       !- Heat Recovery Leaving Temperature Setpoint Node Name
+  General;                                !- End-Use Subcategory
+
+OS:Curve:Biquadratic,
+  {cbb35b1d-c9b0-4058-886a-9878d9d061ad}, ! Handle
+  OS:Curve:Biquadratic 3,                 ! Name
+  1.0433811,                              ! Coefficient1 Constant
+  0.040707699999999999,                   ! Coefficient2 x
+  0.0004506,                              ! Coefficient3 x**2
+  -0.0041514000000000004,                 ! Coefficient4 y
+  -8.8599999999999999e-05,                ! Coefficient5 y**2
+  -0.00034670000000000002,                ! Coefficient6 x*y
+  0,                                      ! Minimum Value of x {BasedOnField A2}
+  20,                                     ! Maximum Value of x {BasedOnField A2}
+  0,                                      ! Minimum Value of y {BasedOnField A3}
+  50;                                     ! Maximum Value of y {BasedOnField A3}
+
+OS:Curve:Biquadratic,
+  {f293860a-b759-49b3-b9a8-3eb82b6baee8}, ! Handle
+  OS:Curve:Biquadratic 4,                 ! Name
+  0.59619149999999999,                    ! Coefficient1 Constant
+  -0.0099495999999999994,                 ! Coefficient2 x
+  0.00078879999999999998,                 ! Coefficient3 x**2
+  0.0004506,                              ! Coefficient4 y
+  0.00048749999999999998,                 ! Coefficient5 y**2
+  -0.00076230000000000004,                ! Coefficient6 x*y
+  0,                                      ! Minimum Value of x {BasedOnField A2}
+  20,                                     ! Maximum Value of x {BasedOnField A2}
+  0,                                      ! Minimum Value of y {BasedOnField A3}
+  50;                                     ! Maximum Value of y {BasedOnField A3}
+
+OS:Curve:Quadratic,
+  {88168e2a-c37b-4781-92fa-32d3a59ce68b}, ! Handle
+  OS:Curve:Quadratic 4,                   ! Name
+  1.6853121,                              ! Coefficient1 Constant
+  -0.99934429999999996,                   ! Coefficient2 x
+  0.31403219999999998,                    ! Coefficient3 x**2
+  0,                                      ! Minimum Value of x {BasedOnField A2}
+  1.2;                                    ! Maximum Value of x {BasedOnField A2}
+
+OS:Node,
+  {a2fd1e63-358f-46ae-a71b-d9a7ec6edf00}, !- Handle
+  Node 1,                                 !- Name
+  {b7df166d-2d3d-4533-a141-bac94be45c18}, !- Inlet Port
+  {812da95c-3397-4eaa-b206-ae3f5d09183d}; !- Outlet Port
+
+OS:Connection,
+  {b7df166d-2d3d-4533-a141-bac94be45c18}, !- Handle
+  {c272a738-e9dd-4a94-983a-9cbc997a560b}, !- Source Object
+  5,                                      !- Outlet Port
+  {a2fd1e63-358f-46ae-a71b-d9a7ec6edf00}, !- Target Object
+  2;                                      !- Inlet Port
+
+OS:Node,
+  {6b4e88a4-5fdd-4163-83b4-009c471a85ef}, !- Handle
+  Node 2,                                 !- Name
+  {63ff7933-6b09-489c-bd4a-15fd5f4a1e7f}, !- Inlet Port
+  {750663bb-08b9-46f4-a05e-fb3b5ddc0523}; !- Outlet Port
+
+OS:Connection,
+  {812da95c-3397-4eaa-b206-ae3f5d09183d}, !- Handle
+  {a2fd1e63-358f-46ae-a71b-d9a7ec6edf00}, !- Source Object
+  3,                                      !- Outlet Port
+  {63817e83-de39-41e3-ab61-8ac53e3cd59d}, !- Target Object
+  15;                                     !- Inlet Port
+
+OS:Connection,
+  {63ff7933-6b09-489c-bd4a-15fd5f4a1e7f}, !- Handle
+  {63817e83-de39-41e3-ab61-8ac53e3cd59d}, !- Source Object
+  16,                                     !- Outlet Port
+  {6b4e88a4-5fdd-4163-83b4-009c471a85ef}, !- Target Object
+  2;                                      !- Inlet Port
+
+OS:Connection,
+  {750663bb-08b9-46f4-a05e-fb3b5ddc0523}, !- Handle
+  {6b4e88a4-5fdd-4163-83b4-009c471a85ef}, !- Source Object
+  3,                                      !- Outlet Port
+  {28df3ea1-1ee5-4fce-882a-a9d5b01ff3db}, !- Target Object
+  5;                                      !- Inlet Port
 
