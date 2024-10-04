@@ -334,10 +334,15 @@ class AddHeatRecoveryChiller < OpenStudio::Measure::ModelMeasure
       else
         existing_chiller = model.getChillerElectricEIRByName(existing_chiller_name)
         unless existing_chiller.is_initialized
-          runner.registerError("Chiller named #{chiller} not found in the model. It may have been removed by another measure.")
+          runner.registerError("Chiller named #{existing_chiller_name} not found in the model. It may have been removed by another measure.")
           return false
         end
         heat_recovery_chiller = existing_chiller.get
+      end
+
+      if heat_recovery_chiller.condenserType == 'AirCooled'
+        runner.registerError("Chiller named #{heat_recovery_chiller.name} is an air-cooled chiller. This measure does not support air-cooled chillers. The method works by altering the fraction going to a heat recovery loop versus a condenser loop. With no condenser loop, it won't have the node to have heat recovery. Make your air-cooled chiller a water-cooled chiller, then create a dummy condensor loop. You can set the heat recovery fraction to 1 so the condenser loop never operates.")
+        return false
       end
     else
       runner.registerError("Invalid chiller_choice argument #{chiller_choice}.")
@@ -404,15 +409,10 @@ class AddHeatRecoveryChiller < OpenStudio::Measure::ModelMeasure
     sizing_plant.setDesignLoopExitTemperature(heat_recovery_loop_temperature_c)
     sizing_plant.setLoopDesignTemperatureDifference(OpenStudio.convert(20.0, 'R', 'K').get)
     hr_temp_sch = OpenstudioStandards::Schedules.create_constant_schedule_ruleset(model,
-      heat_recovery_loop_temperature_c,
-      name: "Heat Recovery Loop #{heat_recovery_loop_temperature_f}F",
-      schedule_type_limit: 'Temperature')
-    if chiller_choice == "Add New Chiller"
-      heat_recovery_loop.addDemandBranchForComponent(heat_recovery_chiller.to_HVACComponent.get)
-      puts heat_recovery_chiller
-    else
-      heat_recovery_loop.addDemandBranchForComponent(heat_recovery_chiller.to_HVACComponent.get)
-    end
+                                                                                  heat_recovery_loop_temperature_c,
+                                                                                  name: "Heat Recovery Loop #{heat_recovery_loop_temperature_f}F",
+                                                                                  schedule_type_limit: 'Temperature')
+    heat_recovery_loop.addDemandBranchForComponent(heat_recovery_chiller.to_HVACComponent.get)
 
     if chiller_choice == 'Add New Chiller'
       # something goes here.  Not sure what.  Does this work if the heat recovery loop is a condenser loop (don't use chiller heat recovery fields?). Or do we need a dummy condenser loop?

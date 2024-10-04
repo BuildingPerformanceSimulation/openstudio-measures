@@ -91,7 +91,7 @@ class AddHeatRecoveryChillerTest < Minitest::Test
     return "#{run_dir(test_name)}/reports/eplustbl.html"
   end
 
-  def apply_measure_and_run(test_name, measure, argument_map, osm_path, epw_path, run_model: false)
+  def apply_measure_and_run(test_name, measure, argument_map, osm_path, epw_path, expected_result: 'Success', run_model: false)
     assert(File.exist?(osm_path))
     assert(File.exist?(epw_path))
 
@@ -140,16 +140,15 @@ class AddHeatRecoveryChillerTest < Minitest::Test
     puts "\nAPPLYING MEASURE..."
     measure.run(model, runner, argument_map)
     result = runner.result
-    result_success = result.value.valueName == 'Success'
 
     # show the output
     show_output(result)
 
     # assert that it ran correctly
-    assert_equal('Success', result.value.valueName)
+    assert_equal(expected_result, result.value.valueName)
 
     # check that objects were added
-    assert_equal(1, model.getPlantLoops.size - num_plant_loop_seed)
+    assert_equal(1, model.getPlantLoops.size - num_plant_loop_seed) unless expected_result == 'Fail'
 
     # save model
     model.save(model_output_path(test_name), true)
@@ -237,8 +236,7 @@ class AddHeatRecoveryChillerTest < Minitest::Test
 
   def test_default_measure_arguments
      # this tests what adding a heat recovery chiller does to the model
-     test_name = 'test_default_measure_arguments'
-     puts "\n######\nTEST: #{test_name}\n######\n"
+     puts "\n######\nTEST: #{__method__}\n######\n"
      osm_path = "#{File.dirname(__FILE__)}/95.osm"
      epw_path = "#{File.dirname(__FILE__)}/95.epw"
 
@@ -267,7 +265,7 @@ class AddHeatRecoveryChillerTest < Minitest::Test
     end
 
     # run the model and test applied measure
-    result = apply_measure_and_run(test_name, measure, argument_map, osm_path, epw_path, run_model: true)
+    result = apply_measure_and_run(__method__, measure, argument_map, osm_path, epw_path, run_model: true)
 
     # assert that it ran correctly
     assert(result.value.valueName == 'Success')
@@ -275,8 +273,7 @@ class AddHeatRecoveryChillerTest < Minitest::Test
 
   def test_use_existing_chiller
     # this tests what adding a heat recovery chiller does to the model
-    test_name = 'test_use_existing_chiller'
-    puts "\n######\nTEST: #{test_name}\n######\n"
+    puts "\n######\nTEST: #{__method__}\n######\n"
     osm_path = "#{File.dirname(__FILE__)}/95.osm"
     epw_path = "#{File.dirname(__FILE__)}/95.epw"
 
@@ -307,16 +304,15 @@ class AddHeatRecoveryChillerTest < Minitest::Test
    end
 
    # run the model and test applied measure
-   result = apply_measure_and_run(test_name, measure, argument_map, osm_path, epw_path, run_model: true)
+   result = apply_measure_and_run(__method__, measure, argument_map, osm_path, epw_path, run_model: true)
 
    # assert that it ran correctly
    assert(result.value.valueName == 'Success')
- end
+  end
 
   def test_use_existing_chiller_series
     # this tests what adding a heat recovery chiller does to the model
-    test_name = 'test_use_existing_chiller_series'
-    puts "\n######\nTEST: #{test_name}\n######\n"
+    puts "\n######\nTEST: #{__method__}\n######\n"
     osm_path = "#{File.dirname(__FILE__)}/95.osm"
     epw_path = "#{File.dirname(__FILE__)}/95.epw"
 
@@ -347,9 +343,49 @@ class AddHeatRecoveryChillerTest < Minitest::Test
     end
 
     # run the model and test applied measure
-    result = apply_measure_and_run(test_name, measure, argument_map, osm_path, epw_path, run_model: true)
+    result = apply_measure_and_run(__method__, measure, argument_map, osm_path, epw_path, run_model: true)
 
     # assert that it ran correctly
     assert(result.value.valueName == 'Success')
+  end
+
+  def test_use_existing_chiller_air_cooled
+    # this tests what adding a heat recovery chiller does to the model
+    puts "\n######\nTEST: #{__method__}\n######\n"
+    osm_path = "#{File.dirname(__FILE__)}/95.osm"
+    epw_path = "#{File.dirname(__FILE__)}/95.epw"
+
+    # create an instance of the measure
+   measure = AddHeatRecoveryChiller.new
+
+   #load the model; only used here for populating arugments
+   model = load_model(osm_path)
+
+   # get arguments
+   arguments = measure.arguments(model)
+   argument_map = OpenStudio::Measure.convertOSArgumentVectorToMap(arguments)
+
+   # create hash of argument values.
+   # If the argument has a default that you want to use, you don't need it in the hash
+   args_hash = {}
+   args_hash['heating_loop_name'] = 'Hot Water Loop'
+   args_hash['chiller_choice'] = 'Use Existing Chiller'
+   args_hash['existing_chiller_name'] = 'Chiller - Air Cooled'
+   # using defaults values from measure.rb for other arguments
+
+   # populate argument with specified hash value if specified
+   arguments.each do |arg|
+     temp_arg_var = arg.clone
+     if args_hash.key?(arg.name)
+       assert(temp_arg_var.setValue(args_hash[arg.name]))
+     end
+     argument_map[arg.name] = temp_arg_var
+   end
+
+   # run the model and test applied measure
+   result = apply_measure_and_run(__method__, measure, argument_map, osm_path, epw_path, expected_result: 'Fail')
+
+   # assert that it ran correctly
+   assert(result.value.valueName == 'Fail')
   end
 end
