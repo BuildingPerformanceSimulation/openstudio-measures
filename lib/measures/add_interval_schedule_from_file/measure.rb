@@ -104,7 +104,7 @@ class AddIntervalScheduleFromFile < OpenStudio::Ruleset::ModelUserScript
     end  
 
     # read in csv values
-    csv_values = CSV.read(file_path,{headers: false, converters: :float})
+    csv_values = CSV.read(file_path,headers: false, converters: :float)
     num_rows = csv_values.length
 
     # create values for the timeseries
