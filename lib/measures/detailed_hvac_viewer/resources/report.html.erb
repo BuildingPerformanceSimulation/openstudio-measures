@@ -388,7 +388,7 @@
               dimension.height = dimension.rows[dimension.rows.length - 1];
               comp = nextObjectInLoop(components, comp, 'after_objects')
             } else if (comp.object_type === 'OS_AirLoopHVAC_OutdoorAirSystem') {
-              // sets the OA system and any relief/outdoor nodes. Need to expand to allow equipment on outdoor side like HX
+              // sets the OA system and any relief/outdoor nodes.
               dimension.reliefCol = dimension.width;
               dimension.outdoorCol = dimension.width + 1;
               dimension.numOutdoorComponents = 0;
@@ -753,7 +753,6 @@
           id: comp.name,
           position: {x: comp.column * 100, y: comp.row * 100},
           size: {width: 100, height: 100},
-          // angle: rotation,
           attrs: {
             image: {
               'xlink:href': comp.image,

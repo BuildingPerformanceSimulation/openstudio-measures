@@ -196,7 +196,7 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
     return ann_env_pd
   end
 
-  def straight_component_data_hash(comp, reporting_frequency, variable_names)
+  def straight_component_data_hash(comp, reporting_frequency, variable_names, runner)
     comp_data = {}
     comp = comp.to_StraightComponent.get
     comp_data['object_name'] = comp.name.to_s
@@ -243,6 +243,7 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
           comp_data["#{snake_case_name}"] = timeseries.get.values.map { |t| t.round(rounding_digits) }
         else
           comp_data["#{snake_case_name}"] = []
+		  runner.registerInfo("#{snake_case_name} nor found for #{comp.name.to_s}")
         end
       end
     end
@@ -261,32 +262,16 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
     # capture outdoor air system properties
     if comp.to_AirLoopHVACOutdoorAirSystem.is_initialized
       comp = comp.to_AirLoopHVACOutdoorAirSystem.get
-      if comp.outdoorAirModelObject.is_initialized
-        comp_data['before_objects'] << comp.outdoorAirModelObject.get.name.get
-      end
-      if comp.returnAirModelObject.is_initialized
-        comp_data['before_objects'] << comp.returnAirModelObject.get.name.get
-      end
-      if comp.reliefAirModelObject.is_initialized
-        comp_data['after_objects'] << comp.reliefAirModelObject.get.name.get
-      end
-      if comp.mixedAirModelObject.is_initialized
-        comp_data['after_objects'] << comp.mixedAirModelObject.get.name.get
-      end
+      comp_data['before_objects'] << comp.outdoorAirModelObject.get.name.get if comp.outdoorAirModelObject.is_initialized
+      comp_data['before_objects'] << comp.returnAirModelObject.get.name.get if comp.returnAirModelObject.is_initialized
+      comp_data['after_objects'] << comp.reliefAirModelObject.get.name.get if comp.reliefAirModelObject.is_initialized
+      comp_data['after_objects'] << comp.mixedAirModelObject.get.name.get if comp.mixedAirModelObject.is_initialized
     elsif comp.to_HeatExchangerAirToAirSensibleAndLatent.is_initialized
       comp = comp.to_HeatExchangerAirToAirSensibleAndLatent.get
-      if comp.primaryAirInletModelObject.is_initialized
-        comp_data['before_objects'] << comp.primaryAirInletModelObject.get.name.get
-      end
-      if comp.secondaryAirInletModelObject.is_initialized
-        comp_data['before_objects'] << comp.secondaryAirInletModelObject.get.name.get
-      end
-      if comp.primaryAirOutletModelObject.is_initialized
-        comp_data['after_objects'] << comp.primaryAirOutletModelObject.get.name.get
-      end
-      if comp.secondaryAirOutletModelObject.is_initialized
-        comp_data['after_objects'] << comp.secondaryAirOutletModelObject.get.name.get
-      end
+      comp_data['before_objects'] << comp.primaryAirInletModelObject.get.name.get if comp.primaryAirInletModelObject.is_initialized
+      comp_data['before_objects'] << comp.secondaryAirInletModelObject.get.name.get if comp.secondaryAirInletModelObject.is_initialized
+      comp_data['after_objects'] << comp.primaryAirOutletModelObject.get.name.get if comp.primaryAirOutletModelObject.is_initialized
+      comp_data['after_objects'] << comp.secondaryAirOutletModelObject.get.name.get if comp.secondaryAirOutletModelObject.is_initialized
     elsif comp.to_Splitter.is_initialized
       # if the object is a splitter, log the inlet node and all outlet nodes
       comp = comp.to_Splitter.get
@@ -419,7 +404,7 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
       # loop through supply side components and add them to components array
       hvac_loop.supplyComponents.each do |comp|
         if comp.to_StraightComponent.is_initialized
-          comp_data = straight_component_data_hash(comp, reporting_frequency, variable_names)
+          comp_data = straight_component_data_hash(comp, reporting_frequency, variable_names, runner)
         else
           comp_data = hvac_component_data_hash(comp, reporting_frequency, variable_names)
         end
@@ -433,7 +418,7 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
               hx << temp_comp.name.to_s
             end
             if temp_comp.to_StraightComponent.is_initialized
-              temp_comp_data = straight_component_data_hash(temp_comp, reporting_frequency, variable_names)
+              temp_comp_data = straight_component_data_hash(temp_comp, reporting_frequency, variable_names, runner)
             else
               temp_comp_data = hvac_component_data_hash(temp_comp, reporting_frequency, variable_names)
             end
@@ -443,7 +428,7 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
           oa_comp.reliefComponents.each do |temp_comp|
             unless hx.include?(temp_comp.name.to_s)
               if temp_comp.to_StraightComponent.is_initialized
-                temp_comp_data = straight_component_data_hash(temp_comp, reporting_frequency, variable_names)
+                temp_comp_data = straight_component_data_hash(temp_comp, reporting_frequency, variable_names, runner)
               else
                 temp_comp_data = hvac_component_data_hash(temp_comp, reporting_frequency, variable_names)
               end
@@ -457,7 +442,7 @@ class DetailedHVACViewer < OpenStudio::Measure::ReportingMeasure
       hvac_loop.demandComponents.each do |comp|
         if comp.to_StraightComponent.is_initialized
           # variable_names = [] unless include_demand_nodes
-          comp_data = straight_component_data_hash(comp, reporting_frequency, include_demand_nodes ? variable_names : [])
+          comp_data = straight_component_data_hash(comp, reporting_frequency, include_demand_nodes ? variable_names : [], runner)
         else
           comp_data = hvac_component_data_hash(comp, reporting_frequency, include_demand_nodes ? variable_names : [])
         end

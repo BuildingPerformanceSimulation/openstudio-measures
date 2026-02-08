@@ -10,7 +10,7 @@ class DetailedHVACViewerTest < Minitest::Test
 
   def run_dir(test_name)
     # always generate test output in specially named 'output' directory so result files are not made part of the measure
-    return "#{File.dirname(__FILE__)}/output/#{test_name}"
+    return "#{File.expand_path(File.dirname(__FILE__))}/output/#{test_name}"
   end
 
   def model_output_path(test_name)
@@ -171,8 +171,8 @@ class DetailedHVACViewerTest < Minitest::Test
   def test_office_chicago_pvav
     test_name = 'office_chicago_pvav'
     puts "\n######\nTEST:#{test_name}\n######\n"
-    osm_path = File.dirname(__FILE__) + '/office_chicago_pvav.osm'
-    epw_path = File.dirname(__FILE__) + '/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw'
+    osm_path = File.expand_path(File.dirname(__FILE__) + '/office_chicago_pvav.osm')
+    epw_path = File.expand_path(File.dirname(__FILE__) + '/USA_IL_Chicago-OHare.Intl.AP.725300_TMY3.epw')
     assert(run_test(test_name, osm_path, epw_path))
   end
 end
