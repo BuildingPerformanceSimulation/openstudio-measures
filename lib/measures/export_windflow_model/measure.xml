@@ -1,0 +1,186 @@
+<?xml version="1.0"?>
+<measure>
+  <schema_version>3.1</schema_version>
+  <name>export_windflow_model</name>
+  <uid>949f3e3d-44fa-4c81-8b63-43f12f14045e</uid>
+  <version_id>a8bb334b-3132-42a3-8577-035f2d4cf961</version_id>
+  <version_modified>2026-10-31T06:31:37Z</version_modified>
+  <xml_checksum>DE3258BC</xml_checksum>
+  <class_name>ExportWindflowModel</class_name>
+  <display_name>Export Windflow Model</display_name>
+  <description>Writes the model's geometry as a WindFlow model (.windflow.json) so its natural ventilation can be studied in WindFlow (https://github.com/Bijaykars/Windflow). Spaces become rooms, building stories become storeys, walls, floors, roofs and shading become solid obstacles, and windows and doors become openings. Operable windows are open; fixed windows and doors are closed unless the arguments say otherwise. The OpenStudio model is not changed.</description>
+  <modeler_description>Coordinates are OpenStudio building coordinates (m); NorthDeg = -Building North Axis. Each planar surface becomes a prism centred on its plane, as thick as the sum of its construction's layers (default thickness when unknown); air-boundary constructions are skipped and matched interior pairs are written once. Sub-surfaces in vertical walls become WindFlow openings (an oriented box: centroid on the wall plane, horizontal outward normal, in-plane bounding width and height, depth = host thickness). Skylights and sub-surfaces in sloped surfaces are left out with a warning. A window is open when it is an OperableWindow, when treat_all_windows_operable is true, or when it has an AirflowNetwork simple or detailed opening; doors (Door, GlassDoor, OverheadDoor) are open when treat_doors_as_openings is true or they have an AirflowNetwork opening (no door swing is modelled). An AirflowNetwork simple opening's discharge coefficient is passed through, and an opening factor below 1 narrows the opening about its centre. Rooms are each space's floor polygons in plan with ZMin at the floor and ZMax at the space's highest vertex. Infiltration is not exported: WindFlow treats closed openings as sealed.</modeler_description>
+  <arguments>
+    <argument>
+      <name>output_path</name>
+      <display_name>WindFlow model file</display_name>
+      <description>Where to write the .windflow.json file. A relative path is relative to the measure's run directory (in an OSW run, run/&lt;step&gt;/).</description>
+      <type>String</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>windflow_model.windflow.json</default_value>
+    </argument>
+    <argument>
+      <name>treat_all_windows_operable</name>
+      <display_name>Treat all windows as operable</display_name>
+      <description>When true, every window (FixedWindow as well as OperableWindow) is exported open. When false, only OperableWindow sub-surfaces (and windows with an AirflowNetwork opening) are open. Closed windows can still be opened in WindFlow.</description>
+      <type>Boolean</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>false</default_value>
+      <choices>
+        <choice>
+          <value>true</value>
+          <display_name>true</display_name>
+        </choice>
+        <choice>
+          <value>false</value>
+          <display_name>false</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>treat_doors_as_openings</name>
+      <display_name>Treat doors as openings</display_name>
+      <description>When true, every door (Door, GlassDoor, OverheadDoor, exterior and interior) is exported as an open opening the size of the door; door swing is not modelled. When false, doors are exported closed (they can still be opened in WindFlow).</description>
+      <type>Boolean</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>false</default_value>
+      <choices>
+        <choice>
+          <value>true</value>
+          <display_name>true</display_name>
+        </choice>
+        <choice>
+          <value>false</value>
+          <display_name>false</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>default_wall_thickness</name>
+      <display_name>Default surface thickness (m)</display_name>
+      <description>Thickness used for a surface whose construction has no layers with thickness (or an implausible total, under 0.01 m or over 2 m). WindFlow needs solid walls; OpenStudio surfaces have none.</description>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>0.2</default_value>
+    </argument>
+    <argument>
+      <name>include_shading</name>
+      <display_name>Include shading surfaces</display_name>
+      <description>When true, site, building and space shading surfaces are exported as thin obstacles that block the wind.</description>
+      <type>Boolean</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>true</default_value>
+      <choices>
+        <choice>
+          <value>true</value>
+          <display_name>true</display_name>
+        </choice>
+        <choice>
+          <value>false</value>
+          <display_name>false</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>shading_thickness</name>
+      <display_name>Shading surface thickness (m)</display_name>
+      <description>Thickness given to shading surfaces when they are exported.</description>
+      <type>Double</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>0.05</default_value>
+    </argument>
+  </arguments>
+  <outputs />
+  <provenances />
+  <tags>
+    <tag>Whole Building.Whole Building Schedules</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Measure Type</name>
+      <value>ModelMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Measure Language</name>
+      <value>Ruby</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>Apply Measure Now</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>OpenStudio Application</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Intended Software Tool</name>
+      <value>Parametric Analysis Tool</value>
+      <datatype>string</datatype>
+    </attribute>
+  </attributes>
+  <files>
+    <file>
+      <filename>LICENSE.md</filename>
+      <filetype>md</filetype>
+      <usage_type>license</usage_type>
+      <checksum>D6DD39F2</checksum>
+    </file>
+    <file>
+      <filename>README.md</filename>
+      <filetype>md</filetype>
+      <usage_type>readme</usage_type>
+      <checksum>2612374D</checksum>
+    </file>
+    <file>
+      <filename>README.md.erb</filename>
+      <filetype>erb</filetype>
+      <usage_type>readmeerb</usage_type>
+      <checksum>F1C26127</checksum>
+    </file>
+    <file>
+      <filename>.gitkeep</filename>
+      <filetype>gitkeep</filetype>
+      <usage_type>doc</usage_type>
+      <checksum>00000000</checksum>
+    </file>
+    <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>3.11.0</identifier>
+        <min_compatible>3.11.0</min_compatible>
+      </version>
+      <filename>measure.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>script</usage_type>
+      <checksum>B44B3FC1</checksum>
+    </file>
+    <file>
+      <filename>example_model.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>D6BD40D0</checksum>
+    </file>
+    <file>
+      <filename>export_windflow_model_test.rb</filename>
+      <filetype>rb</filetype>
+      <usage_type>test</usage_type>
+      <checksum>1D158839</checksum>
+    </file>
+    <file>
+      <filename>test_model.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>254E5AD7</checksum>
+    </file>
+  </files>
+</measure>
