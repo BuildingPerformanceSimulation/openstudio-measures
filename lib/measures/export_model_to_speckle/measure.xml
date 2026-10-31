@@ -1,0 +1,272 @@
+<?xml version="1.0"?>
+<measure>
+  <schema_version>3.1</schema_version>
+  <name>export_model_to_speckle</name>
+  <uid>78d20f88-ab41-428d-9207-6763390f4fa4</uid>
+  <version_id>f666ed26-fb5b-4c40-a5a9-a48df08e97be</version_id>
+  <version_modified>2026-10-31T06:31:27Z</version_modified>
+  <xml_checksum>50718C83</xml_checksum>
+  <class_name>ExportModelToSpeckle</class_name>
+  <display_name>Export Model to Speckle</display_name>
+  <description>Publishes the model's geometry and energy-model inputs (constructions, U-values, space types, internal loads, thermal zones, HVAC assignment) to a Speckle project as a new version, so it can be viewed, compared and analysed alongside other design models. The OpenStudio model is not changed.</description>
+  <modeler_description>Surfaces, sub-surfaces, interior partitions and shading surfaces are triangulated in site coordinates (metres, north axis applied) and sent with the specklepy 2026.9+ bundle API (BundleBuilder + operations.send3). Objects are organised Building &gt; Story &gt; Space, linked to Speckle levels, rooms (spaces), hosts (sub-surface -&gt; parent surface), groups (thermal zones) and systems (air loops). specklepy is loaded from the OpenStudio embedded Python (add its folder with the python_packages_path argument) or, failing that, an external Python 3.11+ interpreter given by external_python. A JSON payload of everything sent is always written to the run directory. The token is read from the speckle_token argument, else the SPECKLE_TOKEN environment variable, else a local Speckle desktop-connector account.</modeler_description>
+  <arguments>
+    <argument>
+      <name>speckle_project</name>
+      <display_name>Speckle project (ID, project URL or model URL)</display_name>
+      <description>Paste a project or model link from app.speckle.systems, or just the project ID. A model URL publishes to that exact model.</description>
+      <type>String</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value></default_value>
+    </argument>
+    <argument>
+      <name>speckle_model_name</name>
+      <display_name>Speckle model name</display_name>
+      <description>Model inside the project to publish to; created if it does not exist. Blank = the OpenStudio building name. Ignored when a model URL is given.</description>
+      <type>String</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value></default_value>
+    </argument>
+    <argument>
+      <name>speckle_server</name>
+      <display_name>Speckle server</display_name>
+      <type>String</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value>https://app.speckle.systems</default_value>
+    </argument>
+    <argument>
+      <name>speckle_token</name>
+      <display_name>Speckle personal access token (optional)</display_name>
+      <description>Leave blank to use the SPECKLE_TOKEN environment variable or a signed-in Speckle connector. A token entered here is saved in plain text in the workflow (.osw) file.</description>
+      <type>String</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value></default_value>
+    </argument>
+    <argument>
+      <name>version_message</name>
+      <display_name>Version message</display_name>
+      <type>String</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value></default_value>
+    </argument>
+    <argument>
+      <name>color_by</name>
+      <display_name>Colour surfaces by</display_name>
+      <type>Choice</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>Surface Type</default_value>
+      <choices>
+        <choice>
+          <value>Surface Type</value>
+          <display_name>Surface Type</display_name>
+        </choice>
+        <choice>
+          <value>Boundary Condition</value>
+          <display_name>Boundary Condition</display_name>
+        </choice>
+        <choice>
+          <value>Thermal Zone</value>
+          <display_name>Thermal Zone</display_name>
+        </choice>
+        <choice>
+          <value>Space Type</value>
+          <display_name>Space Type</display_name>
+        </choice>
+        <choice>
+          <value>Construction</value>
+          <display_name>Construction</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>include_shading</name>
+      <display_name>Include shading surfaces</display_name>
+      <type>Boolean</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>true</default_value>
+      <choices>
+        <choice>
+          <value>true</value>
+          <display_name>true</display_name>
+        </choice>
+        <choice>
+          <value>false</value>
+          <display_name>false</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>include_interior_partitions</name>
+      <display_name>Include interior partition surfaces</display_name>
+      <type>Boolean</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>true</default_value>
+      <choices>
+        <choice>
+          <value>true</value>
+          <display_name>true</display_name>
+        </choice>
+        <choice>
+          <value>false</value>
+          <display_name>false</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>include_space_objects</name>
+      <display_name>Include space objects (rooms with loads/zone data)</display_name>
+      <type>Boolean</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>true</default_value>
+      <choices>
+        <choice>
+          <value>true</value>
+          <display_name>true</display_name>
+        </choice>
+        <choice>
+          <value>false</value>
+          <display_name>false</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>dry_run</name>
+      <display_name>Dry run (write payload/bundle locally, do not upload)</display_name>
+      <type>Boolean</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>false</default_value>
+      <choices>
+        <choice>
+          <value>true</value>
+          <display_name>true</display_name>
+        </choice>
+        <choice>
+          <value>false</value>
+          <display_name>false</display_name>
+        </choice>
+      </choices>
+    </argument>
+    <argument>
+      <name>python_packages_path</name>
+      <display_name>Folder with specklepy for the OpenStudio Python (optional)</display_name>
+      <description>Added to sys.path before importing specklepy. Blank = /root/OpenStudio/python_packages if it exists.</description>
+      <type>String</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value></default_value>
+    </argument>
+    <argument>
+      <name>external_python</name>
+      <display_name>External Python with specklepy (optional fallback)</display_name>
+      <description>Path to a Python 3.11+ executable that has specklepy[bundle] installed; used if specklepy cannot be imported inside OpenStudio.</description>
+      <type>String</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value></default_value>
+    </argument>
+    <argument>
+      <name>ca_bundle</name>
+      <display_name>CA certificate bundle (optional, for corporate proxies)</display_name>
+      <description>PEM file of trusted root certificates. Needed when a TLS-inspecting proxy (e.g. Netskope) causes CERTIFICATE_VERIFY_FAILED. Blank = auto-detect (SSL_CERT_FILE, the truststore package, or Netskope's bundle).</description>
+      <type>String</type>
+      <required>false</required>
+      <model_dependent>false</model_dependent>
+      <default_value></default_value>
+    </argument>
+    <argument>
+      <name>fail_on_publish_error</name>
+      <display_name>Fail the workflow if publishing fails</display_name>
+      <description>Off = log a warning and let the rest of the workflow continue.</description>
+      <type>Boolean</type>
+      <required>true</required>
+      <model_dependent>false</model_dependent>
+      <default_value>false</default_value>
+      <choices>
+        <choice>
+          <value>true</value>
+          <display_name>true</display_name>
+        </choice>
+        <choice>
+          <value>false</value>
+          <display_name>false</display_name>
+        </choice>
+      </choices>
+    </argument>
+  </arguments>
+  <outputs />
+  <provenances />
+  <tags>
+    <tag>Reporting.QAQC</tag>
+  </tags>
+  <attributes>
+    <attribute>
+      <name>Measure Type</name>
+      <value>ModelMeasure</value>
+      <datatype>string</datatype>
+    </attribute>
+    <attribute>
+      <name>Measure Language</name>
+      <value>Python</value>
+      <datatype>string</datatype>
+    </attribute>
+  </attributes>
+  <files>
+    <file>
+      <filename>LICENSE.md</filename>
+      <filetype>md</filetype>
+      <usage_type>license</usage_type>
+      <checksum>D6DD39F2</checksum>
+    </file>
+    <file>
+      <filename>README.md</filename>
+      <filetype>md</filetype>
+      <usage_type>readme</usage_type>
+      <checksum>6B463E7D</checksum>
+    </file>
+    <file>
+      <version>
+        <software_program>OpenStudio</software_program>
+        <identifier>3.11.0</identifier>
+        <min_compatible>3.11.0</min_compatible>
+      </version>
+      <filename>measure.py</filename>
+      <filetype>py</filetype>
+      <usage_type>script</usage_type>
+      <checksum>F72EC85D</checksum>
+    </file>
+    <file>
+      <filename>os_speckle_extract.py</filename>
+      <filetype>py</filetype>
+      <usage_type>resource</usage_type>
+      <checksum>776FAA01</checksum>
+    </file>
+    <file>
+      <filename>speckle_publisher.py</filename>
+      <filetype>py</filetype>
+      <usage_type>resource</usage_type>
+      <checksum>D57D0A4D</checksum>
+    </file>
+    <file>
+      <filename>example_model.osm</filename>
+      <filetype>osm</filetype>
+      <usage_type>test</usage_type>
+      <checksum>D6BD40D0</checksum>
+    </file>
+    <file>
+      <filename>test_export_model_to_speckle.py</filename>
+      <filetype>py</filetype>
+      <usage_type>test</usage_type>
+      <checksum>09DA2013</checksum>
+    </file>
+  </files>
+</measure>
